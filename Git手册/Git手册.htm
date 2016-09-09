@@ -1,0 +1,2335 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns:dt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882"
+xmlns:m="http://schemas.microsoft.com/office/2004/12/omml"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=x-cp20936">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 14">
+<meta name=Originator content="Microsoft Word 14">
+<link rel=File-List href="Git手册.files/filelist.xml">
+<title>手机APP接口文档</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>qq</o:Author>
+  <o:LastAuthor>huangxi@themakers.cn</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>136</o:TotalTime>
+  <o:Created>2016-04-12T05:35:00Z</o:Created>
+  <o:LastSaved>2016-04-12T05:35:00Z</o:LastSaved>
+  <o:Pages>6</o:Pages>
+  <o:Words>577</o:Words>
+  <o:Characters>3291</o:Characters>
+  <o:Lines>27</o:Lines>
+  <o:Paragraphs>7</o:Paragraphs>
+  <o:CharactersWithSpaces>3861</o:CharactersWithSpaces>
+  <o:Version>14.00</o:Version>
+ </o:DocumentProperties>
+ <o:CustomDocumentProperties>
+  <o:KSOProductBuildVer dt:dt="string">2052-9.1.0.5100</o:KSOProductBuildVer>
+ </o:CustomDocumentProperties>
+ <o:OfficeDocumentSettings>
+  <o:AllowPNG/>
+ </o:OfficeDocumentSettings>
+</xml><![endif]-->
+<link rel=dataStoreItem href="Git手册.files/item0001.xml"
+target="Git手册.files/props002.xml">
+<link rel=themeData href="Git手册.files/themedata.thmx">
+<link rel=colorSchemeMapping href="Git手册.files/colorschememapping.xml">
+<!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:TrackMoves>false</w:TrackMoves>
+  <w:TrackFormatting/>
+  <w:PunctuationKerning/>
+  <w:DrawingGridHorizontalSpacing>0 磅</w:DrawingGridHorizontalSpacing>
+  <w:DrawingGridVerticalSpacing>7.8 磅</w:DrawingGridVerticalSpacing>
+  <w:DisplayHorizontalDrawingGridEvery>0</w:DisplayHorizontalDrawingGridEvery>
+  <w:DisplayVerticalDrawingGridEvery>2</w:DisplayVerticalDrawingGridEvery>
+  <w:ValidateAgainstSchemas>false</w:ValidateAgainstSchemas>
+  <w:SaveIfXMLInvalid>false</w:SaveIfXMLInvalid>
+  <w:IgnoreMixedContent>false</w:IgnoreMixedContent>
+  <w:AlwaysShowPlaceholderText>false</w:AlwaysShowPlaceholderText>
+  <w:DoNotUnderlineInvalidXML/>
+  <w:DoNotPromoteQF/>
+  <w:LidThemeOther>EN-US</w:LidThemeOther>
+  <w:LidThemeAsian>ZH-CN</w:LidThemeAsian>
+  <w:LidThemeComplexScript>X-NONE</w:LidThemeComplexScript>
+  <w:Compatibility>
+   <w:SpaceForUL/>
+   <w:BalanceSingleByteDoubleByteWidth/>
+   <w:DoNotLeaveBackslashAlone/>
+   <w:ULTrailSpace/>
+   <w:DoNotExpandShiftReturn/>
+   <w:AdjustLineHeightInTable/>
+   <w:BreakWrappedTables/>
+   <w:SnapToGridInCell/>
+   <w:WrapTextWithPunct/>
+   <w:UseAsianBreakRules/>
+   <w:DontGrowAutofit/>
+   <w:DontUseIndentAsNumberingTabStop/>
+   <w:FELineBreak11/>
+   <w:WW11IndentRules/>
+   <w:DontAutofitConstrainedTables/>
+   <w:AutofitLikeWW11/>
+   <w:HangulWidthLikeWW11/>
+   <w:UseNormalStyleForList/>
+   <w:DontVertAlignCellWithSp/>
+   <w:DontBreakConstrainedForcedTables/>
+   <w:DontVertAlignInTxbx/>
+   <w:Word11KerningPairs/>
+   <w:CachedColBalance/>
+   <w:UseFELayout/>
+  </w:Compatibility>
+  <m:mathPr>
+   <m:mathFont m:val="Cambria Math"/>
+   <m:brkBin m:val="before"/>
+   <m:brkBinSub m:val="&#45;-"/>
+   <m:smallFrac m:val="off"/>
+   <m:dispDef/>
+   <m:lMargin m:val="0"/>
+   <m:rMargin m:val="0"/>
+   <m:defJc m:val="centerGroup"/>
+   <m:wrapIndent m:val="1440"/>
+   <m:intLim m:val="subSup"/>
+   <m:naryLim m:val="undOvr"/>
+  </m:mathPr></w:WordDocument>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:LatentStyles DefLockedState="false" DefUnhideWhenUsed="false"
+  DefSemiHidden="false" DefQFormat="false" LatentStyleCount="267">
+  <w:LsdException Locked="false" QFormat="true" Name="Normal"/>
+  <w:LsdException Locked="false" QFormat="true" Name="heading 1"/>
+  <w:LsdException Locked="false" QFormat="true" Name="heading 2"/>
+  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
+   QFormat="true" Name="heading 3"/>
+  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
+   QFormat="true" Name="heading 4"/>
+  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
+   QFormat="true" Name="heading 5"/>
+  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
+   QFormat="true" Name="heading 6"/>
+  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
+   QFormat="true" Name="heading 7"/>
+  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
+   QFormat="true" Name="heading 8"/>
+  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
+   QFormat="true" Name="heading 9"/>
+  <w:LsdException Locked="false" Priority="39" Name="toc 1"/>
+  <w:LsdException Locked="false" Priority="39" Name="toc 2"/>
+  <w:LsdException Locked="false" SemiHidden="true" UnhideWhenUsed="true"
+   QFormat="true" Name="caption"/>
+  <w:LsdException Locked="false" QFormat="true" Name="Title"/>
+  <w:LsdException Locked="false" QFormat="true" Name="Subtitle"/>
+  <w:LsdException Locked="false" Priority="99" UnhideWhenUsed="true"
+   Name="Hyperlink"/>
+  <w:LsdException Locked="false" QFormat="true" Name="Strong"/>
+  <w:LsdException Locked="false" Priority="20" QFormat="true" Name="Emphasis"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="HTML Top of Form"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="HTML Bottom of Form"/>
+  <w:LsdException Locked="false" Priority="99" UnhideWhenUsed="true"
+   Name="Normal Table"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="No List"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Outline List 1"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Outline List 2"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Outline List 3"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Simple 1"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Simple 2"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Simple 3"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Classic 1"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Classic 2"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Classic 3"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Classic 4"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Colorful 1"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Colorful 2"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Colorful 3"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Columns 1"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Columns 2"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Columns 3"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Columns 4"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Columns 5"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Grid 1"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Grid 2"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Grid 3"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Grid 4"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Grid 5"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Grid 6"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Grid 7"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Grid 8"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table List 1"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table List 2"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table List 3"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table List 4"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table List 5"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table List 6"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table List 7"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table List 8"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table 3D effects 1"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table 3D effects 2"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table 3D effects 3"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Contemporary"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Elegant"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Professional"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Subtle 1"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Subtle 2"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Web 1"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Web 2"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Web 3"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Grid"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Table Theme"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Placeholder Text"/>
+  <w:LsdException Locked="false" Priority="99" QFormat="true" Name="No Spacing"/>
+  <w:LsdException Locked="false" Priority="60" Name="Light Shading"/>
+  <w:LsdException Locked="false" Priority="61" Name="Light List"/>
+  <w:LsdException Locked="false" Priority="62" Name="Light Grid"/>
+  <w:LsdException Locked="false" Priority="63" Name="Medium Shading 1"/>
+  <w:LsdException Locked="false" Priority="64" Name="Medium Shading 2"/>
+  <w:LsdException Locked="false" Priority="65" Name="Medium List 1"/>
+  <w:LsdException Locked="false" Priority="66" Name="Medium List 2"/>
+  <w:LsdException Locked="false" Priority="67" Name="Medium Grid 1"/>
+  <w:LsdException Locked="false" Priority="68" Name="Medium Grid 2"/>
+  <w:LsdException Locked="false" Priority="69" Name="Medium Grid 3"/>
+  <w:LsdException Locked="false" Priority="70" Name="Dark List"/>
+  <w:LsdException Locked="false" Priority="71" Name="Colorful Shading"/>
+  <w:LsdException Locked="false" Priority="72" Name="Colorful List"/>
+  <w:LsdException Locked="false" Priority="73" Name="Colorful Grid"/>
+  <w:LsdException Locked="false" Priority="60" Name="Light Shading Accent 1"/>
+  <w:LsdException Locked="false" Priority="61" Name="Light List Accent 1"/>
+  <w:LsdException Locked="false" Priority="62" Name="Light Grid Accent 1"/>
+  <w:LsdException Locked="false" Priority="63" Name="Medium Shading 1 Accent 1"/>
+  <w:LsdException Locked="false" Priority="64" Name="Medium Shading 2 Accent 1"/>
+  <w:LsdException Locked="false" Priority="65" Name="Medium List 1 Accent 1"/>
+  <w:LsdException Locked="false" Priority="99" SemiHidden="true" Name="Revision"/>
+  <w:LsdException Locked="false" Priority="34" QFormat="true"
+   Name="List Paragraph"/>
+  <w:LsdException Locked="false" Priority="99" QFormat="true" Name="Quote"/>
+  <w:LsdException Locked="false" Priority="99" QFormat="true"
+   Name="Intense Quote"/>
+  <w:LsdException Locked="false" Priority="66" Name="Medium List 2 Accent 1"/>
+  <w:LsdException Locked="false" Priority="67" Name="Medium Grid 1 Accent 1"/>
+  <w:LsdException Locked="false" Priority="68" Name="Medium Grid 2 Accent 1"/>
+  <w:LsdException Locked="false" Priority="69" Name="Medium Grid 3 Accent 1"/>
+  <w:LsdException Locked="false" Priority="70" Name="Dark List Accent 1"/>
+  <w:LsdException Locked="false" Priority="71" Name="Colorful Shading Accent 1"/>
+  <w:LsdException Locked="false" Priority="72" Name="Colorful List Accent 1"/>
+  <w:LsdException Locked="false" Priority="73" Name="Colorful Grid Accent 1"/>
+  <w:LsdException Locked="false" Priority="60" Name="Light Shading Accent 2"/>
+  <w:LsdException Locked="false" Priority="61" Name="Light List Accent 2"/>
+  <w:LsdException Locked="false" Priority="62" Name="Light Grid Accent 2"/>
+  <w:LsdException Locked="false" Priority="63" Name="Medium Shading 1 Accent 2"/>
+  <w:LsdException Locked="false" Priority="64" Name="Medium Shading 2 Accent 2"/>
+  <w:LsdException Locked="false" Priority="65" Name="Medium List 1 Accent 2"/>
+  <w:LsdException Locked="false" Priority="66" Name="Medium List 2 Accent 2"/>
+  <w:LsdException Locked="false" Priority="67" Name="Medium Grid 1 Accent 2"/>
+  <w:LsdException Locked="false" Priority="68" Name="Medium Grid 2 Accent 2"/>
+  <w:LsdException Locked="false" Priority="69" Name="Medium Grid 3 Accent 2"/>
+  <w:LsdException Locked="false" Priority="70" Name="Dark List Accent 2"/>
+  <w:LsdException Locked="false" Priority="71" Name="Colorful Shading Accent 2"/>
+  <w:LsdException Locked="false" Priority="72" Name="Colorful List Accent 2"/>
+  <w:LsdException Locked="false" Priority="73" Name="Colorful Grid Accent 2"/>
+  <w:LsdException Locked="false" Priority="60" Name="Light Shading Accent 3"/>
+  <w:LsdException Locked="false" Priority="61" Name="Light List Accent 3"/>
+  <w:LsdException Locked="false" Priority="62" Name="Light Grid Accent 3"/>
+  <w:LsdException Locked="false" Priority="63" Name="Medium Shading 1 Accent 3"/>
+  <w:LsdException Locked="false" Priority="64" Name="Medium Shading 2 Accent 3"/>
+  <w:LsdException Locked="false" Priority="65" Name="Medium List 1 Accent 3"/>
+  <w:LsdException Locked="false" Priority="66" Name="Medium List 2 Accent 3"/>
+  <w:LsdException Locked="false" Priority="67" Name="Medium Grid 1 Accent 3"/>
+  <w:LsdException Locked="false" Priority="68" Name="Medium Grid 2 Accent 3"/>
+  <w:LsdException Locked="false" Priority="69" Name="Medium Grid 3 Accent 3"/>
+  <w:LsdException Locked="false" Priority="70" Name="Dark List Accent 3"/>
+  <w:LsdException Locked="false" Priority="71" Name="Colorful Shading Accent 3"/>
+  <w:LsdException Locked="false" Priority="72" Name="Colorful List Accent 3"/>
+  <w:LsdException Locked="false" Priority="73" Name="Colorful Grid Accent 3"/>
+  <w:LsdException Locked="false" Priority="60" Name="Light Shading Accent 4"/>
+  <w:LsdException Locked="false" Priority="61" Name="Light List Accent 4"/>
+  <w:LsdException Locked="false" Priority="62" Name="Light Grid Accent 4"/>
+  <w:LsdException Locked="false" Priority="63" Name="Medium Shading 1 Accent 4"/>
+  <w:LsdException Locked="false" Priority="64" Name="Medium Shading 2 Accent 4"/>
+  <w:LsdException Locked="false" Priority="65" Name="Medium List 1 Accent 4"/>
+  <w:LsdException Locked="false" Priority="66" Name="Medium List 2 Accent 4"/>
+  <w:LsdException Locked="false" Priority="67" Name="Medium Grid 1 Accent 4"/>
+  <w:LsdException Locked="false" Priority="68" Name="Medium Grid 2 Accent 4"/>
+  <w:LsdException Locked="false" Priority="69" Name="Medium Grid 3 Accent 4"/>
+  <w:LsdException Locked="false" Priority="70" Name="Dark List Accent 4"/>
+  <w:LsdException Locked="false" Priority="71" Name="Colorful Shading Accent 4"/>
+  <w:LsdException Locked="false" Priority="72" Name="Colorful List Accent 4"/>
+  <w:LsdException Locked="false" Priority="73" Name="Colorful Grid Accent 4"/>
+  <w:LsdException Locked="false" Priority="60" Name="Light Shading Accent 5"/>
+  <w:LsdException Locked="false" Priority="61" Name="Light List Accent 5"/>
+  <w:LsdException Locked="false" Priority="62" Name="Light Grid Accent 5"/>
+  <w:LsdException Locked="false" Priority="63" Name="Medium Shading 1 Accent 5"/>
+  <w:LsdException Locked="false" Priority="64" Name="Medium Shading 2 Accent 5"/>
+  <w:LsdException Locked="false" Priority="65" Name="Medium List 1 Accent 5"/>
+  <w:LsdException Locked="false" Priority="66" Name="Medium List 2 Accent 5"/>
+  <w:LsdException Locked="false" Priority="67" Name="Medium Grid 1 Accent 5"/>
+  <w:LsdException Locked="false" Priority="68" Name="Medium Grid 2 Accent 5"/>
+  <w:LsdException Locked="false" Priority="69" Name="Medium Grid 3 Accent 5"/>
+  <w:LsdException Locked="false" Priority="70" Name="Dark List Accent 5"/>
+  <w:LsdException Locked="false" Priority="71" Name="Colorful Shading Accent 5"/>
+  <w:LsdException Locked="false" Priority="72" Name="Colorful List Accent 5"/>
+  <w:LsdException Locked="false" Priority="73" Name="Colorful Grid Accent 5"/>
+  <w:LsdException Locked="false" Priority="60" Name="Light Shading Accent 6"/>
+  <w:LsdException Locked="false" Priority="61" Name="Light List Accent 6"/>
+  <w:LsdException Locked="false" Priority="62" Name="Light Grid Accent 6"/>
+  <w:LsdException Locked="false" Priority="63" Name="Medium Shading 1 Accent 6"/>
+  <w:LsdException Locked="false" Priority="64" Name="Medium Shading 2 Accent 6"/>
+  <w:LsdException Locked="false" Priority="65" Name="Medium List 1 Accent 6"/>
+  <w:LsdException Locked="false" Priority="66" Name="Medium List 2 Accent 6"/>
+  <w:LsdException Locked="false" Priority="67" Name="Medium Grid 1 Accent 6"/>
+  <w:LsdException Locked="false" Priority="68" Name="Medium Grid 2 Accent 6"/>
+  <w:LsdException Locked="false" Priority="69" Name="Medium Grid 3 Accent 6"/>
+  <w:LsdException Locked="false" Priority="70" Name="Dark List Accent 6"/>
+  <w:LsdException Locked="false" Priority="71" Name="Colorful Shading Accent 6"/>
+  <w:LsdException Locked="false" Priority="72" Name="Colorful List Accent 6"/>
+  <w:LsdException Locked="false" Priority="73" Name="Colorful Grid Accent 6"/>
+  <w:LsdException Locked="false" Priority="19" QFormat="true"
+   Name="Subtle Emphasis"/>
+  <w:LsdException Locked="false" Priority="21" QFormat="true"
+   Name="Intense Emphasis"/>
+  <w:LsdException Locked="false" Priority="31" QFormat="true"
+   Name="Subtle Reference"/>
+  <w:LsdException Locked="false" Priority="32" QFormat="true"
+   Name="Intense Reference"/>
+  <w:LsdException Locked="false" Priority="33" QFormat="true" Name="Book Title"/>
+  <w:LsdException Locked="false" Priority="37" SemiHidden="true"
+   UnhideWhenUsed="true" Name="Bibliography"/>
+  <w:LsdException Locked="false" Priority="39" SemiHidden="true"
+   UnhideWhenUsed="true" QFormat="true" Name="TOC Heading"/>
+ </w:LatentStyles>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:2;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:0 268435456 0 0 -2147483648 0;}
+@font-face
+	{font-family:宋体;
+	panose-1:2 1 6 0 3 1 1 1 1 1;
+	mso-font-alt:SimSun;
+	mso-font-charset:134;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:3 680460288 22 0 262145 0;}
+@font-face
+	{font-family:黑体;
+	panose-1:2 1 6 9 6 1 1 1 1 1;
+	mso-font-alt:SimHei;
+	mso-font-charset:134;
+	mso-generic-font-family:modern;
+	mso-font-pitch:fixed;
+	mso-font-signature:-2147482945 953122042 22 0 262145 0;}
+@font-face
+	{font-family:黑体;
+	panose-1:2 1 6 9 6 1 1 1 1 1;
+	mso-font-alt:SimHei;
+	mso-font-charset:134;
+	mso-generic-font-family:modern;
+	mso-font-pitch:fixed;
+	mso-font-signature:-2147482945 953122042 22 0 262145 0;}
+@font-face
+	{font-family:"Arial Unicode MS";
+	panose-1:2 11 6 4 2 2 2 2 2 4;
+	mso-font-charset:134;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:-134238209 -371195905 63 0 4129279 0;}
+@font-face
+	{font-family:Cambria;
+	panose-1:2 4 5 3 5 4 6 3 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:roman;
+	mso-font-pitch:variable;
+	mso-font-signature:-536870145 1073743103 0 0 415 0;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:-520092929 1073786111 9 0 415 0;}
+@font-face
+	{font-family:"\@宋体";
+	panose-1:2 1 6 0 3 1 1 1 1 1;
+	mso-font-charset:134;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:3 680460288 22 0 262145 0;}
+@font-face
+	{font-family:"\@Arial Unicode MS";
+	panose-1:2 11 6 4 2 2 2 2 2 4;
+	mso-font-charset:134;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:-134238209 -371195905 63 0 4129279 0;}
+@font-face
+	{font-family:"\@黑体";
+	panose-1:2 1 6 9 6 1 1 1 1 1;
+	mso-font-charset:134;
+	mso-generic-font-family:modern;
+	mso-font-pitch:fixed;
+	mso-font-signature:-2147482945 953122042 22 0 262145 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	mso-pagination:none;
+	font-size:10.5pt;
+	mso-bidi-font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-fareast-font-family:宋体;
+	mso-bidi-font-family:"Times New Roman";
+	mso-font-kerning:1.0pt;}
+h1
+	{mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-next:正文;
+	margin-top:17.0pt;
+	margin-right:0cm;
+	margin-bottom:16.5pt;
+	margin-left:0cm;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	line-height:240%;
+	mso-pagination:lines-together;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:22.0pt;
+	mso-bidi-font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-bidi-font-family:"Times New Roman";
+	mso-font-kerning:22.0pt;
+	mso-bidi-font-weight:normal;}
+h2
+	{mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-link:"标题 2 Char";
+	mso-style-next:正文;
+	margin-top:13.0pt;
+	margin-right:0cm;
+	margin-bottom:13.0pt;
+	margin-left:0cm;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	line-height:172%;
+	mso-pagination:lines-together;
+	page-break-after:avoid;
+	mso-outline-level:2;
+	font-size:16.0pt;
+	mso-bidi-font-size:11.0pt;
+	font-family:"Arial","sans-serif";
+	mso-fareast-font-family:黑体;
+	mso-bidi-font-family:"Times New Roman";
+	mso-font-kerning:1.0pt;
+	mso-bidi-font-weight:normal;}
+p.MsoToc1, li.MsoToc1, div.MsoToc1
+	{mso-style-priority:39;
+	mso-style-unhide:no;
+	mso-style-next:正文;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	mso-pagination:none;
+	font-size:10.5pt;
+	mso-bidi-font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-fareast-font-family:宋体;
+	mso-bidi-font-family:"Times New Roman";
+	mso-font-kerning:1.0pt;}
+p.MsoToc2, li.MsoToc2, div.MsoToc2
+	{mso-style-priority:39;
+	mso-style-unhide:no;
+	mso-style-next:正文;
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:21.0pt;
+	margin-bottom:.0001pt;
+	mso-para-margin-top:0cm;
+	mso-para-margin-right:0cm;
+	mso-para-margin-bottom:0cm;
+	mso-para-margin-left:2.0gd;
+	mso-para-margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	mso-pagination:none;
+	font-size:10.5pt;
+	mso-bidi-font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-fareast-font-family:宋体;
+	mso-bidi-font-family:"Times New Roman";
+	mso-font-kerning:1.0pt;}
+p.MsoFootnoteText, li.MsoFootnoteText, div.MsoFootnoteText
+	{mso-style-unhide:no;
+	mso-style-link:"脚注文本 Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:none;
+	layout-grid-mode:char;
+	font-size:9.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-fareast-font-family:宋体;
+	mso-bidi-font-family:"Times New Roman";
+	mso-font-kerning:1.0pt;}
+p.MsoCommentText, li.MsoCommentText, div.MsoCommentText
+	{mso-style-unhide:no;
+	mso-style-link:"批注文字 Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:none;
+	font-size:10.5pt;
+	mso-bidi-font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-fareast-font-family:宋体;
+	mso-bidi-font-family:"Times New Roman";
+	mso-font-kerning:1.0pt;}
+p.MsoHeader, li.MsoHeader, div.MsoHeader
+	{mso-style-unhide:no;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	mso-pagination:none;
+	tab-stops:center 207.65pt right 415.3pt;
+	layout-grid-mode:char;
+	border:none;
+	mso-border-alt:none windowtext 0cm;
+	padding:0cm;
+	mso-padding-alt:1.0pt 4.0pt 1.0pt 4.0pt;
+	font-size:9.0pt;
+	mso-bidi-font-size:11.0pt;
+	font-family:"Times New Roman","serif";
+	mso-fareast-font-family:宋体;
+	mso-font-kerning:1.0pt;}
+p.MsoFooter, li.MsoFooter, div.MsoFooter
+	{mso-style-unhide:no;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:none;
+	tab-stops:center 207.65pt right 415.3pt;
+	layout-grid-mode:char;
+	font-size:9.0pt;
+	mso-bidi-font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-fareast-font-family:宋体;
+	mso-bidi-font-family:"Times New Roman";
+	mso-font-kerning:1.0pt;}
+span.MsoFootnoteReference
+	{mso-style-unhide:no;
+	mso-style-parent:"";
+	vertical-align:super;}
+span.MsoCommentReference
+	{mso-style-unhide:no;
+	mso-style-parent:"";
+	mso-ansi-font-size:10.5pt;
+	mso-bidi-font-size:10.5pt;}
+p.MsoTitle, li.MsoTitle, div.MsoTitle
+	{mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-link:"标题 Char";
+	mso-style-next:正文;
+	margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:0cm;
+	text-align:center;
+	mso-pagination:none;
+	mso-outline-level:1;
+	font-size:16.0pt;
+	font-family:"Cambria","serif";
+	mso-fareast-font-family:宋体;
+	mso-bidi-font-family:"Times New Roman";
+	mso-font-kerning:1.0pt;
+	font-weight:bold;}
+p.MsoDate, li.MsoDate, div.MsoDate
+	{mso-style-unhide:no;
+	mso-style-link:"日期 Char";
+	mso-style-next:正文;
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:5.0pt;
+	margin-bottom:.0001pt;
+	mso-para-margin-top:0cm;
+	mso-para-margin-right:0cm;
+	mso-para-margin-bottom:0cm;
+	mso-para-margin-left:25.0gd;
+	mso-para-margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	mso-pagination:none;
+	font-size:10.5pt;
+	mso-bidi-font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-fareast-font-family:宋体;
+	mso-bidi-font-family:"Times New Roman";
+	mso-font-kerning:1.0pt;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	mso-style-parent:"";
+	color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-unhide:no;
+	color:purple;
+	mso-themecolor:followedhyperlink;
+	text-decoration:underline;
+	text-underline:single;}
+p.MsoDocumentMap, li.MsoDocumentMap, div.MsoDocumentMap
+	{mso-style-unhide:no;
+	mso-style-link:"文档结构图 Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	mso-pagination:none;
+	font-size:9.0pt;
+	font-family:宋体;
+	mso-hansi-font-family:Calibri;
+	mso-bidi-font-family:"Times New Roman";
+	mso-font-kerning:1.0pt;}
+p.MsoCommentSubject, li.MsoCommentSubject, div.MsoCommentSubject
+	{mso-style-unhide:no;
+	mso-style-parent:批注文字;
+	mso-style-link:"批注主题 Char";
+	mso-style-next:批注文字;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:none;
+	font-size:10.5pt;
+	mso-bidi-font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-fareast-font-family:宋体;
+	mso-bidi-font-family:"Times New Roman";
+	mso-font-kerning:1.0pt;
+	font-weight:bold;}
+p.MsoAcetate, li.MsoAcetate, div.MsoAcetate
+	{mso-style-unhide:no;
+	mso-style-link:"批注框文本 Char";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	mso-pagination:none;
+	font-size:9.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-fareast-font-family:宋体;
+	mso-bidi-font-family:"Times New Roman";
+	mso-font-kerning:1.0pt;}
+p.MsoRMPane, li.MsoRMPane, div.MsoRMPane
+	{mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-unhide:no;
+	mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.5pt;
+	mso-bidi-font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-fareast-font-family:宋体;
+	mso-bidi-font-family:"Times New Roman";
+	mso-font-kerning:1.0pt;}
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+	{mso-style-priority:34;
+	mso-style-unhide:no;
+	mso-style-qformat:yes;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	text-indent:21.0pt;
+	mso-char-indent-count:2.0;
+	mso-pagination:none;
+	font-size:10.5pt;
+	mso-bidi-font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-fareast-font-family:宋体;
+	mso-bidi-font-family:"Times New Roman";
+	mso-font-kerning:1.0pt;}
+span.2Char
+	{mso-style-name:"标题 2 Char";
+	mso-style-unhide:no;
+	mso-style-locked:yes;
+	mso-style-parent:"";
+	mso-style-link:"标题 2";
+	mso-ansi-font-size:16.0pt;
+	mso-bidi-font-size:11.0pt;
+	font-family:"Arial","sans-serif";
+	mso-ascii-font-family:Arial;
+	mso-fareast-font-family:黑体;
+	mso-hansi-font-family:Arial;
+	mso-font-kerning:1.0pt;
+	font-weight:bold;
+	mso-bidi-font-weight:normal;}
+span.Char
+	{mso-style-name:"批注文字 Char";
+	mso-style-unhide:no;
+	mso-style-locked:yes;
+	mso-style-parent:"";
+	mso-style-link:批注文字;
+	mso-ansi-font-size:10.5pt;
+	mso-bidi-font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-ascii-font-family:Calibri;
+	mso-hansi-font-family:Calibri;
+	mso-font-kerning:1.0pt;}
+span.Char0
+	{mso-style-name:"批注框文本 Char";
+	mso-style-unhide:no;
+	mso-style-locked:yes;
+	mso-style-parent:"";
+	mso-style-link:批注框文本;
+	mso-ansi-font-size:9.0pt;
+	mso-bidi-font-size:9.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-ascii-font-family:Calibri;
+	mso-hansi-font-family:Calibri;
+	mso-font-kerning:1.0pt;}
+span.Char1
+	{mso-style-name:"脚注文本 Char";
+	mso-style-unhide:no;
+	mso-style-locked:yes;
+	mso-style-parent:"";
+	mso-style-link:脚注文本;
+	mso-ansi-font-size:9.0pt;
+	mso-bidi-font-size:9.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-ascii-font-family:Calibri;
+	mso-hansi-font-family:Calibri;
+	mso-font-kerning:1.0pt;}
+span.Char2
+	{mso-style-name:"标题 Char";
+	mso-style-unhide:no;
+	mso-style-locked:yes;
+	mso-style-parent:"";
+	mso-style-link:标题;
+	mso-ansi-font-size:16.0pt;
+	mso-bidi-font-size:16.0pt;
+	font-family:"Cambria","serif";
+	mso-ascii-font-family:Cambria;
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";
+	mso-font-kerning:1.0pt;
+	font-weight:bold;}
+span.Char3
+	{mso-style-name:"文档结构图 Char";
+	mso-style-unhide:no;
+	mso-style-locked:yes;
+	mso-style-parent:"";
+	mso-style-link:文档结构图;
+	mso-ansi-font-size:9.0pt;
+	mso-bidi-font-size:9.0pt;
+	font-family:宋体;
+	mso-ascii-font-family:宋体;
+	mso-hansi-font-family:Calibri;
+	mso-font-kerning:1.0pt;}
+span.Char4
+	{mso-style-name:"批注主题 Char";
+	mso-style-unhide:no;
+	mso-style-locked:yes;
+	mso-style-parent:"";
+	mso-style-link:批注主题;
+	mso-ansi-font-size:10.5pt;
+	mso-bidi-font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-ascii-font-family:Calibri;
+	mso-hansi-font-family:Calibri;
+	mso-font-kerning:1.0pt;
+	font-weight:bold;}
+p.a, li.a, div.a
+	{mso-style-name:首行缩进;
+	mso-style-unhide:no;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	text-indent:24.0pt;
+	mso-char-indent-count:2.0;
+	line-height:150%;
+	mso-pagination:none;
+	font-size:12.0pt;
+	mso-bidi-font-size:11.0pt;
+	font-family:宋体;
+	mso-bidi-font-family:"Times New Roman";
+	mso-font-kerning:1.0pt;}
+span.Char5
+	{mso-style-name:"日期 Char";
+	mso-style-unhide:no;
+	mso-style-locked:yes;
+	mso-style-parent:"";
+	mso-style-link:日期;
+	mso-ansi-font-size:10.5pt;
+	mso-bidi-font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-ascii-font-family:Calibri;
+	mso-hansi-font-family:Calibri;
+	mso-font-kerning:1.0pt;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	mso-default-props:yes;
+	mso-fareast-font-family:宋体;}
+ /* Page Definitions */
+ @page
+	{mso-page-border-surround-header:no;
+	mso-page-border-surround-footer:no;
+	mso-footnote-separator:url("Git手册.files/header.htm") fs;
+	mso-footnote-continuation-separator:url("Git手册.files/header.htm") fcs;
+	mso-endnote-separator:url("Git手册.files/header.htm") es;
+	mso-endnote-continuation-separator:url("Git手册.files/header.htm") ecs;}
+@page WordSection1
+	{size:595.3pt 841.9pt;
+	margin:72.0pt 90.0pt 72.0pt 90.0pt;
+	mso-header-margin:42.55pt;
+	mso-footer-margin:49.6pt;
+	mso-paper-source:0;
+	layout-grid:15.6pt;}
+div.WordSection1
+	{page:WordSection1;}
+@page WordSection2
+	{size:595.3pt 841.9pt;
+	margin:72.0pt 42.45pt 72.0pt 90.0pt;
+	mso-header-margin:42.55pt;
+	mso-footer-margin:49.6pt;
+	mso-paper-source:0;
+	layout-grid:15.6pt;}
+div.WordSection2
+	{page:WordSection2;}
+ /* List Definitions */
+ @list l0
+	{mso-list-id:37;
+	mso-list-template-ids:37;}
+@list l0:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B2;
+	mso-level-tab-stop:45.1pt;
+	mso-level-number-position:left;
+	margin-left:45.1pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l0:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:\F06E;
+	mso-level-tab-stop:66.1pt;
+	mso-level-number-position:left;
+	margin-left:66.1pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l0:level3
+	{mso-level-number-format:bullet;
+	mso-level-text:\F075;
+	mso-level-tab-stop:87.1pt;
+	mso-level-number-position:left;
+	margin-left:87.1pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l0:level4
+	{mso-level-number-format:bullet;
+	mso-level-text:\F06C;
+	mso-level-tab-stop:108.1pt;
+	mso-level-number-position:left;
+	margin-left:108.1pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l0:level5
+	{mso-level-number-format:bullet;
+	mso-level-text:\F06E;
+	mso-level-tab-stop:129.1pt;
+	mso-level-number-position:left;
+	margin-left:129.1pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l0:level6
+	{mso-level-number-format:bullet;
+	mso-level-text:\F075;
+	mso-level-tab-stop:150.1pt;
+	mso-level-number-position:left;
+	margin-left:150.1pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l0:level7
+	{mso-level-number-format:bullet;
+	mso-level-text:\F06C;
+	mso-level-tab-stop:171.1pt;
+	mso-level-number-position:left;
+	margin-left:171.1pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l0:level8
+	{mso-level-number-format:bullet;
+	mso-level-text:\F06E;
+	mso-level-tab-stop:192.1pt;
+	mso-level-number-position:left;
+	margin-left:192.1pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l0:level9
+	{mso-level-number-format:bullet;
+	mso-level-text:\F075;
+	mso-level-tab-stop:213.1pt;
+	mso-level-number-position:left;
+	margin-left:213.1pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l1
+	{mso-list-id:11148667;
+	mso-list-template-ids:11148667;}
+@list l1:level1
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:21.25pt;
+	text-indent:-21.25pt;}
+@list l1:level2
+	{mso-level-text:"%1\.%2\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:1.0cm;
+	text-indent:-1.0cm;}
+@list l1:level3
+	{mso-level-text:"%1\.%2\.%3\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:35.45pt;
+	text-indent:-35.45pt;}
+@list l1:level4
+	{mso-level-text:"%1\.%2\.%3\.%4\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:42.55pt;
+	text-indent:-42.55pt;}
+@list l1:level5
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:49.6pt;
+	text-indent:-49.6pt;}
+@list l1:level6
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:2.0cm;
+	text-indent:-2.0cm;}
+@list l1:level7
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:63.8pt;
+	text-indent:-63.8pt;}
+@list l1:level8
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:70.9pt;
+	text-indent:-70.9pt;}
+@list l1:level9
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.%9\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:77.95pt;
+	text-indent:-77.95pt;}
+@list l2
+	{mso-list-id:397947107;
+	mso-list-template-ids:397947107;}
+@list l2:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B2;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:42.25pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l2:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:\F06E;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:63.25pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l2:level3
+	{mso-level-number-format:bullet;
+	mso-level-text:\F075;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:84.25pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l2:level4
+	{mso-level-number-format:bullet;
+	mso-level-text:\F06C;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:105.25pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l2:level5
+	{mso-level-number-format:bullet;
+	mso-level-text:\F06E;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:126.25pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l2:level6
+	{mso-level-number-format:bullet;
+	mso-level-text:\F075;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:147.25pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l2:level7
+	{mso-level-number-format:bullet;
+	mso-level-text:\F06C;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:168.25pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l2:level8
+	{mso-level-number-format:bullet;
+	mso-level-text:\F06E;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:189.25pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l2:level9
+	{mso-level-number-format:bullet;
+	mso-level-text:\F075;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:210.25pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l3
+	{mso-list-id:904993199;
+	mso-list-template-ids:904993199;}
+@list l3:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F06C;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:21.0pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l3:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:\F06E;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:42.0pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l3:level3
+	{mso-level-number-format:bullet;
+	mso-level-text:\F075;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:63.0pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l3:level4
+	{mso-level-number-format:bullet;
+	mso-level-text:\F06C;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:84.0pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l3:level5
+	{mso-level-number-format:bullet;
+	mso-level-text:\F06E;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:105.0pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l3:level6
+	{mso-level-number-format:bullet;
+	mso-level-text:\F075;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:126.0pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l3:level7
+	{mso-level-number-format:bullet;
+	mso-level-text:\F06C;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:147.0pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l3:level8
+	{mso-level-number-format:bullet;
+	mso-level-text:\F06E;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:168.0pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l3:level9
+	{mso-level-number-format:bullet;
+	mso-level-text:\F075;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:189.0pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l4
+	{mso-list-id:967928642;
+	mso-list-template-ids:967928642;}
+@list l4:level1
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:21.25pt;
+	text-indent:-21.25pt;}
+@list l4:level2
+	{mso-level-text:"%1\.%2\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:1.0cm;
+	text-indent:-1.0cm;}
+@list l4:level3
+	{mso-level-text:"%1\.%2\.%3\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:35.45pt;
+	text-indent:-35.45pt;}
+@list l4:level4
+	{mso-level-text:"%1\.%2\.%3\.%4\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:42.55pt;
+	text-indent:-42.55pt;}
+@list l4:level5
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:49.6pt;
+	text-indent:-49.6pt;}
+@list l4:level6
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:2.0cm;
+	text-indent:-2.0cm;}
+@list l4:level7
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:63.8pt;
+	text-indent:-63.8pt;}
+@list l4:level8
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:70.9pt;
+	text-indent:-70.9pt;}
+@list l4:level9
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.%9\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:77.95pt;
+	text-indent:-77.95pt;}
+@list l5
+	{mso-list-id:1507675934;
+	mso-list-template-ids:1507675934;}
+@list l5:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B2;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:21.0pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l5:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:\F06E;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:42.0pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l5:level3
+	{mso-level-number-format:bullet;
+	mso-level-text:\F075;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:63.0pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l5:level4
+	{mso-level-number-format:bullet;
+	mso-level-text:\F06C;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:84.0pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l5:level5
+	{mso-level-number-format:bullet;
+	mso-level-text:\F06E;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:105.0pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l5:level6
+	{mso-level-number-format:bullet;
+	mso-level-text:\F075;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:126.0pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l5:level7
+	{mso-level-number-format:bullet;
+	mso-level-text:\F06C;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:147.0pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l5:level8
+	{mso-level-number-format:bullet;
+	mso-level-text:\F06E;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:168.0pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l5:level9
+	{mso-level-number-format:bullet;
+	mso-level-text:\F075;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:189.0pt;
+	text-indent:-21.0pt;
+	font-family:Wingdings;}
+@list l6
+	{mso-list-id:1546017287;
+	mso-list-template-ids:1546017287;}
+@list l6:level1
+	{mso-level-text:%1;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:21.25pt;
+	text-indent:-21.25pt;}
+@list l6:level2
+	{mso-level-text:"%1\.%2";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:49.6pt;
+	text-indent:-1.0cm;}
+@list l6:level3
+	{mso-level-text:"%1\.%2\.%3";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:70.9pt;
+	text-indent:-1.0cm;}
+@list l6:level4
+	{mso-level-text:"%1\.%2\.%3\.%4";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:99.2pt;
+	text-indent:-35.4pt;}
+@list l6:level5
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:127.55pt;
+	text-indent:-42.5pt;}
+@list l6:level6
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:163.0pt;
+	text-indent:-2.0cm;}
+@list l6:level7
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:191.35pt;
+	text-indent:-63.8pt;}
+@list l6:level8
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:219.7pt;
+	text-indent:-70.9pt;}
+@list l6:level9
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.%9";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:255.1pt;
+	text-indent:-85.0pt;}
+@list l7
+	{mso-list-id:1687514927;
+	mso-list-template-ids:1687514927;}
+@list l7:level1
+	{mso-level-text:%1-;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:18.0pt;
+	text-indent:-18.0pt;}
+@list l7:level2
+	{mso-level-number-format:alpha-lower;
+	mso-level-text:"%2\)";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:42.0pt;
+	text-indent:-21.0pt;}
+@list l7:level3
+	{mso-level-number-format:roman-lower;
+	mso-level-tab-stop:none;
+	mso-level-number-position:right;
+	margin-left:63.0pt;
+	text-indent:-21.0pt;}
+@list l7:level4
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:84.0pt;
+	text-indent:-21.0pt;}
+@list l7:level5
+	{mso-level-number-format:alpha-lower;
+	mso-level-text:"%5\)";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:105.0pt;
+	text-indent:-21.0pt;}
+@list l7:level6
+	{mso-level-number-format:roman-lower;
+	mso-level-tab-stop:none;
+	mso-level-number-position:right;
+	margin-left:126.0pt;
+	text-indent:-21.0pt;}
+@list l7:level7
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:147.0pt;
+	text-indent:-21.0pt;}
+@list l7:level8
+	{mso-level-number-format:alpha-lower;
+	mso-level-text:"%8\)";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:168.0pt;
+	text-indent:-21.0pt;}
+@list l7:level9
+	{mso-level-number-format:roman-lower;
+	mso-level-tab-stop:none;
+	mso-level-number-position:right;
+	margin-left:189.0pt;
+	text-indent:-21.0pt;}
+ol
+	{margin-bottom:0cm;}
+ul
+	{margin-bottom:0cm;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:普通表格;
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-priority:99;
+	mso-style-parent:"";
+	mso-padding-alt:0cm 5.4pt 0cm 5.4pt;
+	mso-para-margin:0cm;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman","serif";}
+</style>
+<![endif]--><!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="2049" fillcolor="#9cbee0"
+  strokecolor="#739cc3">
+  <v:fill color="#9cbee0" color2="#bbd5f0" type="gradient">
+   <o:fill v:ext="view" type="gradientUnscaled"/>
+  </v:fill>
+  <v:stroke color="#739cc3" weight="1.25pt"/>
+ </o:shapedefaults></xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body bgcolor=white lang=ZH-CN link=blue vlink=purple style='tab-interval:21.0pt;
+text-justify-trim:punctuation'>
+
+<div class=WordSection1 style='layout-grid:15.6pt'>
+
+<p class=MsoNormal align=center style='text-align:center'><b style='mso-bidi-font-weight:
+normal'><span lang=EN-US style='font-size:26.0pt'>Git</span></b><b
+style='mso-bidi-font-weight:normal'><span style='font-size:26.0pt;font-family:
+宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri'>手册</span></b><b
+style='mso-bidi-font-weight:normal'><span lang=EN-US style='font-size:26.0pt'>
+for Developers<o:p></o:p></span></b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b style='mso-bidi-font-weight:
+normal'><span lang=EN-US style='font-size:14.0pt;mso-bidi-font-size:26.0pt;
+font-family:"Arial Unicode MS","sans-serif"'>2016/4/12</span></b><span
+lang=EN-US style='font-size:5.5pt;mso-bidi-font-size:11.0pt;font-family:"Arial Unicode MS","sans-serif"'><o:p></o:p></span></p>
+
+<p class=MsoToc1 style='tab-stops:21.0pt right dotted 414.8pt'><!--[if supportFields]><b
+style='mso-bidi-font-weight:normal'><span lang=EN-US style='font-size:26.0pt'><span
+style='mso-element:field-begin'></span>TOC \o &quot;1-3&quot; \t &quot;&quot;
+\h<span style='mso-spacerun:yes'>&nbsp; </span>\z<span
+style='mso-spacerun:yes'>&nbsp; </span>\u <span style='mso-element:field-separator'></span></span></b><![endif]--><span
+class=MsoHyperlink><span lang=EN-US style='mso-no-proof:yes'><a
+href="#_Toc448224038">1<span style='color:windowtext;text-decoration:none;
+text-underline:none'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+lang=EN-US style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:
+Calibri'><span lang=EN-US>分支管理</span></span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-tab-count:1 dotted'>... </span></span><!--[if supportFields]><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'><span style='mso-element:field-begin'></span></span><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'> PAGEREF _Toc448224038 \h </span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-separator'></span></span><![endif]--><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'>2</span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><!--[if gte mso 9]><xml>
+ <w:data>08D0C9EA79F9BACE118C8200AA004BA90B02000000080000000E0000005F0054006F0063003400340038003200320034003000330038000000</w:data>
+</xml><![endif]--></span><!--[if supportFields]><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-end'></span></span><![endif]--></a></span></span><span
+lang=EN-US style='mso-no-proof:yes'><o:p></o:p></span></p>
+
+<p class=MsoToc2 style='tab-stops:52.5pt right dotted 414.8pt'><span
+class=MsoHyperlink><span lang=EN-US style='mso-no-proof:yes'><a
+href="#_Toc448224039">1.1.<span style='color:windowtext;text-decoration:none;
+text-underline:none'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+lang=EN-US style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:
+Calibri'><span lang=EN-US>主分支</span></span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-tab-count:1 dotted'>... </span></span><!--[if supportFields]><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'><span style='mso-element:field-begin'></span></span><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'> PAGEREF _Toc448224039 \h </span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-separator'></span></span><![endif]--><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'>2</span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><!--[if gte mso 9]><xml>
+ <w:data>08D0C9EA79F9BACE118C8200AA004BA90B02000000080000000E0000005F0054006F0063003400340038003200320034003000330039000000</w:data>
+</xml><![endif]--></span><!--[if supportFields]><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-end'></span></span><![endif]--></a></span></span><span
+lang=EN-US style='mso-no-proof:yes'><o:p></o:p></span></p>
+
+<p class=MsoToc2 style='tab-stops:52.5pt right dotted 414.8pt'><span
+class=MsoHyperlink><span lang=EN-US style='mso-no-proof:yes'><a
+href="#_Toc448224040">1.2.<span style='color:windowtext;text-decoration:none;
+text-underline:none'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+lang=EN-US style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:
+Calibri'><span lang=EN-US>开发分支</span></span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-tab-count:1 dotted'>... </span></span><!--[if supportFields]><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'><span style='mso-element:field-begin'></span></span><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'> PAGEREF _Toc448224040 \h </span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-separator'></span></span><![endif]--><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'>2</span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><!--[if gte mso 9]><xml>
+ <w:data>08D0C9EA79F9BACE118C8200AA004BA90B02000000080000000E0000005F0054006F0063003400340038003200320034003000340030000000</w:data>
+</xml><![endif]--></span><!--[if supportFields]><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-end'></span></span><![endif]--></a></span></span><span
+lang=EN-US style='mso-no-proof:yes'><o:p></o:p></span></p>
+
+<p class=MsoToc2 style='tab-stops:52.5pt right dotted 414.8pt'><span
+class=MsoHyperlink><span lang=EN-US style='mso-no-proof:yes'><a
+href="#_Toc448224041">1.3.<span style='color:windowtext;text-decoration:none;
+text-underline:none'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+lang=EN-US style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:
+Calibri'><span lang=EN-US>分支命名</span></span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-tab-count:1 dotted'>... </span></span><!--[if supportFields]><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'><span style='mso-element:field-begin'></span></span><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'> PAGEREF _Toc448224041 \h </span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-separator'></span></span><![endif]--><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'>2</span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><!--[if gte mso 9]><xml>
+ <w:data>08D0C9EA79F9BACE118C8200AA004BA90B02000000080000000E0000005F0054006F0063003400340038003200320034003000340031000000</w:data>
+</xml><![endif]--></span><!--[if supportFields]><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-end'></span></span><![endif]--></a></span></span><span
+lang=EN-US style='mso-no-proof:yes'><o:p></o:p></span></p>
+
+<p class=MsoToc1 style='tab-stops:21.0pt right dotted 414.8pt'><span
+class=MsoHyperlink><span lang=EN-US style='mso-no-proof:yes'><a
+href="#_Toc448224042">2<span style='color:windowtext;text-decoration:none;
+text-underline:none'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+lang=EN-US style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:
+Calibri'><span lang=EN-US>获取代码</span></span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-tab-count:1 dotted'>... </span></span><!--[if supportFields]><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'><span style='mso-element:field-begin'></span></span><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'> PAGEREF _Toc448224042 \h </span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-separator'></span></span><![endif]--><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'>3</span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><!--[if gte mso 9]><xml>
+ <w:data>08D0C9EA79F9BACE118C8200AA004BA90B02000000080000000E0000005F0054006F0063003400340038003200320034003000340032000000</w:data>
+</xml><![endif]--></span><!--[if supportFields]><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-end'></span></span><![endif]--></a></span></span><span
+lang=EN-US style='mso-no-proof:yes'><o:p></o:p></span></p>
+
+<p class=MsoToc2 style='tab-stops:52.5pt right dotted 414.8pt'><span
+class=MsoHyperlink><span lang=EN-US style='mso-no-proof:yes'><a
+href="#_Toc448224045">2.1.<span style='color:windowtext;text-decoration:none;
+text-underline:none'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+lang=EN-US style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:
+Calibri'><span lang=EN-US>本地安装</span></span>git<span lang=EN-US
+style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri'><span
+lang=EN-US>，配置</span></span>git<span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-tab-count:1 dotted'>. </span></span><!--[if supportFields]><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'><span style='mso-element:field-begin'></span></span><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'> PAGEREF _Toc448224045 \h </span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-separator'></span></span><![endif]--><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'>3</span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><!--[if gte mso 9]><xml>
+ <w:data>08D0C9EA79F9BACE118C8200AA004BA90B02000000080000000E0000005F0054006F0063003400340038003200320034003000340035000000</w:data>
+</xml><![endif]--></span><!--[if supportFields]><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-end'></span></span><![endif]--></a></span></span><span
+lang=EN-US style='mso-no-proof:yes'><o:p></o:p></span></p>
+
+<p class=MsoToc2 style='tab-stops:52.5pt right dotted 414.8pt'><span
+class=MsoHyperlink><span lang=EN-US style='mso-no-proof:yes'><a
+href="#_Toc448224046">2.2.<span style='color:windowtext;text-decoration:none;
+text-underline:none'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+lang=EN-US style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:
+Calibri'><span lang=EN-US>本地生成</span></span>SSH<span lang=EN-US
+style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri'><span
+lang=EN-US>秘钥</span></span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-tab-count:1 dotted'>... </span></span><!--[if supportFields]><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'><span style='mso-element:field-begin'></span></span><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'> PAGEREF _Toc448224046 \h </span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-separator'></span></span><![endif]--><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'>3</span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><!--[if gte mso 9]><xml>
+ <w:data>08D0C9EA79F9BACE118C8200AA004BA90B02000000080000000E0000005F0054006F0063003400340038003200320034003000340036000000</w:data>
+</xml><![endif]--></span><!--[if supportFields]><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-end'></span></span><![endif]--></a></span></span><span
+lang=EN-US style='mso-no-proof:yes'><o:p></o:p></span></p>
+
+<p class=MsoToc2 style='tab-stops:52.5pt right dotted 414.8pt'><span
+class=MsoHyperlink><span lang=EN-US style='mso-no-proof:yes'><a
+href="#_Toc448224047">2.3.<span style='color:windowtext;text-decoration:none;
+text-underline:none'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+lang=EN-US style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:
+Calibri'><span lang=EN-US>配置你的</span></span>github<span lang=EN-US
+style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri'><span
+lang=EN-US>账户</span></span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-tab-count:1 dotted'>... </span></span><!--[if supportFields]><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'><span style='mso-element:field-begin'></span></span><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'> PAGEREF _Toc448224047 \h </span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-separator'></span></span><![endif]--><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'>3</span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><!--[if gte mso 9]><xml>
+ <w:data>08D0C9EA79F9BACE118C8200AA004BA90B02000000080000000E0000005F0054006F0063003400340038003200320034003000340037000000</w:data>
+</xml><![endif]--></span><!--[if supportFields]><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-end'></span></span><![endif]--></a></span></span><span
+lang=EN-US style='mso-no-proof:yes'><o:p></o:p></span></p>
+
+<p class=MsoToc2 style='tab-stops:52.5pt right dotted 414.8pt'><span
+class=MsoHyperlink><span lang=EN-US style='mso-no-proof:yes'><a
+href="#_Toc448224048">2.4.<span style='color:windowtext;text-decoration:none;
+text-underline:none'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+lang=EN-US style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:
+Calibri'><span lang=EN-US>从</span></span>github<span lang=EN-US
+style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri'><span
+lang=EN-US>仓库克隆代码</span></span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-tab-count:1 dotted'>... </span></span><!--[if supportFields]><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'><span style='mso-element:field-begin'></span></span><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'> PAGEREF _Toc448224048 \h </span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-separator'></span></span><![endif]--><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'>3</span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><!--[if gte mso 9]><xml>
+ <w:data>08D0C9EA79F9BACE118C8200AA004BA90B02000000080000000E0000005F0054006F0063003400340038003200320034003000340038000000</w:data>
+</xml><![endif]--></span><!--[if supportFields]><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-end'></span></span><![endif]--></a></span></span><span
+lang=EN-US style='mso-no-proof:yes'><o:p></o:p></span></p>
+
+<p class=MsoToc1 style='tab-stops:21.0pt right dotted 414.8pt'><span
+class=MsoHyperlink><span lang=EN-US style='mso-no-proof:yes'><a
+href="#_Toc448224049">3<span style='color:windowtext;text-decoration:none;
+text-underline:none'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+lang=EN-US style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:
+Calibri'><span lang=EN-US>初次提交</span></span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-tab-count:1 dotted'>... </span></span><!--[if supportFields]><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'><span style='mso-element:field-begin'></span></span><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'> PAGEREF _Toc448224049 \h </span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-separator'></span></span><![endif]--><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'>4</span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><!--[if gte mso 9]><xml>
+ <w:data>08D0C9EA79F9BACE118C8200AA004BA90B02000000080000000E0000005F0054006F0063003400340038003200320034003000340039000000</w:data>
+</xml><![endif]--></span><!--[if supportFields]><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-end'></span></span><![endif]--></a></span></span><span
+lang=EN-US style='mso-no-proof:yes'><o:p></o:p></span></p>
+
+<p class=MsoToc2 style='tab-stops:52.5pt right dotted 414.8pt'><span
+class=MsoHyperlink><span lang=EN-US style='mso-no-proof:yes'><a
+href="#_Toc448224051">3.1.<span style='color:windowtext;text-decoration:none;
+text-underline:none'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>git<span
+lang=EN-US style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:
+Calibri'><span lang=EN-US>的提交</span></span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-tab-count:1 dotted'>... </span></span><!--[if supportFields]><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'><span style='mso-element:field-begin'></span></span><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'> PAGEREF _Toc448224051 \h </span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-separator'></span></span><![endif]--><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'>4</span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><!--[if gte mso 9]><xml>
+ <w:data>08D0C9EA79F9BACE118C8200AA004BA90B02000000080000000E0000005F0054006F0063003400340038003200320034003000350031000000</w:data>
+</xml><![endif]--></span><!--[if supportFields]><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-end'></span></span><![endif]--></a></span></span><span
+lang=EN-US style='mso-no-proof:yes'><o:p></o:p></span></p>
+
+<p class=MsoToc2 style='tab-stops:52.5pt right dotted 414.8pt'><span
+class=MsoHyperlink><span lang=EN-US style='mso-no-proof:yes'><a
+href="#_Toc448224052">3.2.<span style='color:windowtext;text-decoration:none;
+text-underline:none'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>git
+add<span style='color:windowtext;display:none;mso-hide:screen;text-decoration:
+none;text-underline:none'><span style='mso-tab-count:1 dotted'>. </span></span><!--[if supportFields]><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'><span style='mso-element:field-begin'></span></span><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'> PAGEREF _Toc448224052 \h </span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-separator'></span></span><![endif]--><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'>4</span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><!--[if gte mso 9]><xml>
+ <w:data>08D0C9EA79F9BACE118C8200AA004BA90B02000000080000000E0000005F0054006F0063003400340038003200320034003000350032000000</w:data>
+</xml><![endif]--></span><!--[if supportFields]><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-end'></span></span><![endif]--></a></span></span><span
+lang=EN-US style='mso-no-proof:yes'><o:p></o:p></span></p>
+
+<p class=MsoToc2 style='tab-stops:52.5pt right dotted 414.8pt'><span
+class=MsoHyperlink><span lang=EN-US style='mso-no-proof:yes'><a
+href="#_Toc448224053">3.3.<span style='color:windowtext;text-decoration:none;
+text-underline:none'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>git
+commit<span style='color:windowtext;display:none;mso-hide:screen;text-decoration:
+none;text-underline:none'><span style='mso-tab-count:1 dotted'>. </span></span><!--[if supportFields]><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'><span style='mso-element:field-begin'></span></span><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'> PAGEREF _Toc448224053 \h </span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-separator'></span></span><![endif]--><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'>4</span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><!--[if gte mso 9]><xml>
+ <w:data>08D0C9EA79F9BACE118C8200AA004BA90B02000000080000000E0000005F0054006F0063003400340038003200320034003000350033000000</w:data>
+</xml><![endif]--></span><!--[if supportFields]><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-end'></span></span><![endif]--></a></span></span><span
+lang=EN-US style='mso-no-proof:yes'><o:p></o:p></span></p>
+
+<p class=MsoToc2 style='tab-stops:52.5pt right dotted 414.8pt'><span
+class=MsoHyperlink><span lang=EN-US style='mso-no-proof:yes'><a
+href="#_Toc448224054">3.4.<span style='color:windowtext;text-decoration:none;
+text-underline:none'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>git
+reset<span style='color:windowtext;display:none;mso-hide:screen;text-decoration:
+none;text-underline:none'><span style='mso-tab-count:1 dotted'>. </span></span><!--[if supportFields]><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'><span style='mso-element:field-begin'></span></span><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'> PAGEREF _Toc448224054 \h </span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-separator'></span></span><![endif]--><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'>5</span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><!--[if gte mso 9]><xml>
+ <w:data>08D0C9EA79F9BACE118C8200AA004BA90B02000000080000000E0000005F0054006F0063003400340038003200320034003000350034000000</w:data>
+</xml><![endif]--></span><!--[if supportFields]><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-end'></span></span><![endif]--></a></span></span><span
+lang=EN-US style='mso-no-proof:yes'><o:p></o:p></span></p>
+
+<p class=MsoToc2 style='tab-stops:52.5pt right dotted 414.8pt'><span
+class=MsoHyperlink><span lang=EN-US style='mso-no-proof:yes'><a
+href="#_Toc448224055">3.5.<span style='color:windowtext;text-decoration:none;
+text-underline:none'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>git
+checkout<span style='color:windowtext;display:none;mso-hide:screen;text-decoration:
+none;text-underline:none'><span style='mso-tab-count:1 dotted'>. </span></span><!--[if supportFields]><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'><span style='mso-element:field-begin'></span></span><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'> PAGEREF _Toc448224055 \h </span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-separator'></span></span><![endif]--><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'>5</span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><!--[if gte mso 9]><xml>
+ <w:data>08D0C9EA79F9BACE118C8200AA004BA90B02000000080000000E0000005F0054006F0063003400340038003200320034003000350035000000</w:data>
+</xml><![endif]--></span><!--[if supportFields]><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-end'></span></span><![endif]--></a></span></span><span
+lang=EN-US style='mso-no-proof:yes'><o:p></o:p></span></p>
+
+<p class=MsoToc2 style='tab-stops:52.5pt right dotted 414.8pt'><span
+class=MsoHyperlink><span lang=EN-US style='mso-no-proof:yes'><a
+href="#_Toc448224056">3.6.<span style='color:windowtext;text-decoration:none;
+text-underline:none'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>git
+push<span style='color:windowtext;display:none;mso-hide:screen;text-decoration:
+none;text-underline:none'><span style='mso-tab-count:1 dotted'>. </span></span><!--[if supportFields]><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'><span style='mso-element:field-begin'></span></span><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'> PAGEREF _Toc448224056 \h </span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-separator'></span></span><![endif]--><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'>5</span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><!--[if gte mso 9]><xml>
+ <w:data>08D0C9EA79F9BACE118C8200AA004BA90B02000000080000000E0000005F0054006F0063003400340038003200320034003000350036000000</w:data>
+</xml><![endif]--></span><!--[if supportFields]><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-end'></span></span><![endif]--></a></span></span><span
+lang=EN-US style='mso-no-proof:yes'><o:p></o:p></span></p>
+
+<p class=MsoToc1 style='tab-stops:21.0pt right dotted 414.8pt'><span
+class=MsoHyperlink><span lang=EN-US style='mso-no-proof:yes'><a
+href="#_Toc448224057">4<span style='color:windowtext;text-decoration:none;
+text-underline:none'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+lang=EN-US style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:
+Calibri'><span lang=EN-US>迭代提交</span></span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-tab-count:1 dotted'>... </span></span><!--[if supportFields]><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'><span style='mso-element:field-begin'></span></span><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'> PAGEREF _Toc448224057 \h </span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-separator'></span></span><![endif]--><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'>6</span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><!--[if gte mso 9]><xml>
+ <w:data>08D0C9EA79F9BACE118C8200AA004BA90B02000000080000000E0000005F0054006F0063003400340038003200320034003000350037000000</w:data>
+</xml><![endif]--></span><!--[if supportFields]><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-end'></span></span><![endif]--></a></span></span><span
+lang=EN-US style='mso-no-proof:yes'><o:p></o:p></span></p>
+
+<p class=MsoToc2 style='tab-stops:52.5pt right dotted 414.8pt'><span
+class=MsoHyperlink><span lang=EN-US style='mso-no-proof:yes'><a
+href="#_Toc448224059">4.1.<span style='color:windowtext;text-decoration:none;
+text-underline:none'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+lang=EN-US style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:
+Calibri'><span lang=EN-US>新的开发还是迭代开发？</span></span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-tab-count:1 dotted'>... </span></span><!--[if supportFields]><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'><span style='mso-element:field-begin'></span></span><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'> PAGEREF _Toc448224059 \h </span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-separator'></span></span><![endif]--><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'>6</span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><!--[if gte mso 9]><xml>
+ <w:data>08D0C9EA79F9BACE118C8200AA004BA90B02000000080000000E0000005F0054006F0063003400340038003200320034003000350039000000</w:data>
+</xml><![endif]--></span><!--[if supportFields]><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-end'></span></span><![endif]--></a></span></span><span
+lang=EN-US style='mso-no-proof:yes'><o:p></o:p></span></p>
+
+<p class=MsoToc2 style='tab-stops:52.5pt right dotted 414.8pt'><span
+class=MsoHyperlink><span lang=EN-US style='mso-no-proof:yes'><a
+href="#_Toc448224060">4.2.<span style='color:windowtext;text-decoration:none;
+text-underline:none'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+lang=EN-US style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:
+Calibri'><span lang=EN-US>本地分支</span></span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-tab-count:1 dotted'>... </span></span><!--[if supportFields]><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'><span style='mso-element:field-begin'></span></span><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'> PAGEREF _Toc448224060 \h </span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-separator'></span></span><![endif]--><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'>6</span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><!--[if gte mso 9]><xml>
+ <w:data>08D0C9EA79F9BACE118C8200AA004BA90B02000000080000000E0000005F0054006F0063003400340038003200320034003000360030000000</w:data>
+</xml><![endif]--></span><!--[if supportFields]><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-end'></span></span><![endif]--></a></span></span><span
+lang=EN-US style='mso-no-proof:yes'><o:p></o:p></span></p>
+
+<p class=MsoToc2 style='tab-stops:52.5pt right dotted 414.8pt'><span
+class=MsoHyperlink><span lang=EN-US style='mso-no-proof:yes'><a
+href="#_Toc448224061">4.3.<span style='color:windowtext;text-decoration:none;
+text-underline:none'><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span
+lang=EN-US style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:
+Calibri'><span lang=EN-US>新的开发</span></span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-tab-count:1 dotted'>... </span></span><!--[if supportFields]><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'><span style='mso-element:field-begin'></span></span><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'> PAGEREF _Toc448224061 \h </span><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-separator'></span></span><![endif]--><span
+style='color:windowtext;display:none;mso-hide:screen;text-decoration:none;
+text-underline:none'>6</span><span style='color:windowtext;display:none;
+mso-hide:screen;text-decoration:none;text-underline:none'><!--[if gte mso 9]><xml>
+ <w:data>08D0C9EA79F9BACE118C8200AA004BA90B02000000080000000E0000005F0054006F0063003400340038003200320034003000360031000000</w:data>
+</xml><![endif]--></span><!--[if supportFields]><span style='color:windowtext;
+display:none;mso-hide:screen;text-decoration:none;text-underline:none'><span
+style='mso-element:field-end'></span></span><![endif]--></a></span></span><span
+lang=EN-US style='mso-no-proof:yes'><o:p></o:p></span></p>
+
+<p class=MsoNormal><!--[if supportFields]><span lang=EN-US><span
+style='mso-element:field-end'></span></span><![endif]--><span lang=EN-US><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+<span lang=EN-US style='font-size:12.0pt;font-family:"Calibri","sans-serif";
+mso-fareast-font-family:宋体;mso-bidi-font-family:"Times New Roman";mso-font-kerning:
+1.0pt;mso-ansi-language:EN-US;mso-fareast-language:ZH-CN;mso-bidi-language:
+AR-SA'><br clear=all style='page-break-before:always;mso-break-type:section-break'>
+</span>
+
+<div class=WordSection2 style='layout-grid:15.6pt'>
+
+<h1 style='margin-left:21.25pt;text-indent:-21.25pt;mso-list:l6 level1 lfo2'><a
+name="_Toc448224038"><![if !supportLists]><span lang=EN-US style='mso-fareast-font-family:
+Calibri;mso-bidi-font-family:Calibri'><span style='mso-list:Ignore'>1<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><![endif]><span
+style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri'>分支管理</span></a></h1>
+
+<h2 style='margin-left:1.0cm;text-indent:-1.0cm;mso-list:l4 level2 lfo3'><a
+name="_Toc448224039"><![if !supportLists]><span lang=EN-US style='mso-fareast-font-family:
+Arial;mso-bidi-font-family:Arial'><span style='mso-list:Ignore'>1.1.<span
+style='font:7.0pt "Times New Roman"'> </span></span></span><![endif]><span
+style='font-family:黑体;mso-ascii-font-family:Arial;mso-hansi-font-family:Arial'>主分支</span></a></h2>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>主分支即<span
+lang=EN-US>master</span>分支，用来部署生产环境的分支。</p>
+
+<h2 style='margin-left:1.0cm;text-indent:-1.0cm;mso-list:l4 level2 lfo3'><a
+name="_Toc448224040"><![if !supportLists]><span lang=EN-US style='mso-fareast-font-family:
+Arial;mso-bidi-font-family:Arial'><span style='mso-list:Ignore'>1.2.<span
+style='font:7.0pt "Times New Roman"'> </span></span></span><![endif]><span
+style='font-family:黑体;mso-ascii-font-family:Arial;mso-hansi-font-family:Arial'>开发分支</span></a></h2>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>在 <span lang=EN-US>git
+</span>中，每个分支都是独立的项目，有着各自的版本管理。</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>代码在开发过程中，根据需求创建的分支称为开发分支。</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>开发分支的创建基于当前的主分支。</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>开发分支是并发的、独立互不影响。</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>一旦完成开发，开发分支单独进测，测试通过，合并到主分支。</p>
+
+<h2 style='margin-left:1.0cm;text-indent:-1.0cm;mso-list:l4 level2 lfo3'><a
+name="_Toc448224041"><![if !supportLists]><span lang=EN-US style='mso-fareast-font-family:
+Arial;mso-bidi-font-family:Arial'><span style='mso-list:Ignore'>1.3.<span
+style='font:7.0pt "Times New Roman"'> </span></span></span><![endif]><span
+style='font-family:黑体;mso-ascii-font-family:Arial;mso-hansi-font-family:Arial'>分支命名</span></a></h2>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'><b style='mso-bidi-font-weight:
+normal'>分支名唯一，不重复。<span lang=EN-US><o:p></o:p></span></b></p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>开发分支名使用<span
+lang=EN-US>story + <i style='mso-bidi-font-style:normal'>$story_id </i></span>的方法命名，例如<span
+lang=EN-US>story6335</span>。</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>如果一个分支含有多个<span
+lang=EN-US>story</span>，那么使用<span lang=EN-US>task + <i style='mso-bidi-font-style:
+normal'>$task_id</i> </span>命名。</p>
+
+<b style='mso-bidi-font-weight:normal'><span lang=EN-US style='font-size:22.0pt;
+mso-bidi-font-size:11.0pt;line-height:240%;font-family:"Calibri","sans-serif";
+mso-fareast-font-family:宋体;mso-bidi-font-family:"Times New Roman";mso-font-kerning:
+22.0pt;mso-ansi-language:EN-US;mso-fareast-language:ZH-CN;mso-bidi-language:
+AR-SA'><br clear=all style='page-break-before:always'>
+</span></b>
+
+<h1 style='margin-left:21.25pt;text-indent:-21.25pt;mso-list:l6 level1 lfo2'><a
+name="_Toc448224042"><![if !supportLists]><span lang=EN-US style='mso-fareast-font-family:
+Calibri;mso-bidi-font-family:Calibri'><span style='mso-list:Ignore'>2<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><![endif]><span
+style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri'>获取代码</span></a></h1>
+
+<p class=MsoListParagraph style='margin-top:13.0pt;margin-right:0cm;margin-bottom:
+13.0pt;margin-left:21.25pt;text-indent:-21.25pt;mso-char-indent-count:0;
+line-height:172%;mso-pagination:lines-together;page-break-after:avoid;
+mso-outline-level:2;mso-list:l1 level1 lfo5;display:none'><a
+name="_Toc421879890"></a><a name="_Toc421882513"></a><a name="_Toc422233107"></a><a
+name="_Toc422819215"></a><a name="_Toc422909365"></a><a name="_Toc432074787"></a><a
+name="_Toc432074810"></a><a name="_Toc432075082"></a><a name="_Toc432075238"></a><a
+name="_Toc433735883"></a><a name="_Toc433739393"></a><a name="_Toc448218144"></a><a
+name="_Toc448222421"></a><a name="_Toc448224043"></a><![if !supportLists]><b
+style='mso-bidi-font-weight:normal'><span lang=EN-US style='font-size:16.0pt;
+mso-bidi-font-size:11.0pt;line-height:172%;font-family:"Arial","sans-serif";
+mso-fareast-font-family:Arial;display:none;mso-hide:all'><span
+style='mso-list:Ignore'>1.<span style='font:7.0pt "Times New Roman"'> </span></span></span></b><![endif]><b
+style='mso-bidi-font-weight:normal'><span lang=EN-US style='font-size:16.0pt;
+mso-bidi-font-size:11.0pt;line-height:172%;font-family:"Arial","sans-serif";
+mso-fareast-font-family:黑体;mso-bidi-font-family:"Times New Roman";display:none;
+mso-hide:all'><o:p>&nbsp;</o:p></span></b></p>
+
+<p class=MsoListParagraph style='margin-top:13.0pt;margin-right:0cm;margin-bottom:
+13.0pt;margin-left:21.25pt;text-indent:-21.25pt;mso-char-indent-count:0;
+line-height:172%;mso-pagination:lines-together;page-break-after:avoid;
+mso-outline-level:2;mso-list:l1 level1 lfo5;display:none'><a
+name="_Toc432074788"></a><a name="_Toc432074811"></a><a name="_Toc432075083"></a><a
+name="_Toc432075239"></a><a name="_Toc433735884"></a><a name="_Toc433739394"></a><a
+name="_Toc448218145"></a><a name="_Toc448222422"></a><a name="_Toc448224044"></a><![if !supportLists]><b
+style='mso-bidi-font-weight:normal'><span lang=EN-US style='font-size:16.0pt;
+mso-bidi-font-size:11.0pt;line-height:172%;font-family:"Arial","sans-serif";
+mso-fareast-font-family:Arial;display:none;mso-hide:all'><span
+style='mso-list:Ignore'>2.<span style='font:7.0pt "Times New Roman"'> </span></span></span></b><![endif]><b
+style='mso-bidi-font-weight:normal'><span lang=EN-US style='font-size:16.0pt;
+mso-bidi-font-size:11.0pt;line-height:172%;font-family:"Arial","sans-serif";
+mso-fareast-font-family:黑体;mso-bidi-font-family:"Times New Roman";display:none;
+mso-hide:all'><o:p>&nbsp;</o:p></span></b></p>
+
+<h2 style='margin-left:1.0cm;text-indent:-1.0cm;mso-list:l1 level2 lfo5'><a
+name="_Toc448224045"><![if !supportLists]><span lang=EN-US style='mso-fareast-font-family:
+Arial;mso-bidi-font-family:Arial'><span style='mso-list:Ignore'>2.1.<span
+style='font:7.0pt "Times New Roman"'> </span></span></span><![endif]><span
+style='font-family:黑体;mso-ascii-font-family:Arial;mso-hansi-font-family:Arial'>本地安装</span><span
+lang=EN-US>git</span></a><span style='mso-bookmark:_Toc448224045'><span
+style='font-family:黑体;mso-ascii-font-family:Arial;mso-hansi-font-family:Arial'>，配置</span><span
+lang=EN-US>git</span></span></h2>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'><span lang=EN-US>Windows</span>用户从<span
+lang=EN-US>http://www.git-scm.com/download/</span>下载安装</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>打开<span lang=EN-US>git
+bash</span>，使用命令</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'><span lang=EN-US>git
+config --global user.name &quot;<s>yourName</s>&quot;</span></p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'><span lang=EN-US>git
+config --global user.email &quot;<s>yourName</s>@themakers.cn&quot;</span></p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'><b style='mso-bidi-font-weight:
+normal'>注意替换<s><span lang=EN-US>yourName</span></s><span lang=EN-US><o:p></o:p></span></b></p>
+
+<h2 style='margin-left:1.0cm;text-indent:-1.0cm;mso-list:l1 level2 lfo5'><a
+name="_Toc448224046"><![if !supportLists]><span lang=EN-US style='mso-fareast-font-family:
+Arial;mso-bidi-font-family:Arial'><span style='mso-list:Ignore'>2.2.<span
+style='font:7.0pt "Times New Roman"'> </span></span></span><![endif]><span
+style='font-family:黑体;mso-ascii-font-family:Arial;mso-hansi-font-family:Arial'>本地生成</span><span
+lang=EN-US>SSH</span></a><span style='mso-bookmark:_Toc448224046'><span
+style='font-family:黑体;mso-ascii-font-family:Arial;mso-hansi-font-family:Arial'>秘钥</span></span></h2>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>打开<span lang=EN-US>git
+bash</span>，</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>使用命令<span
+lang=EN-US>ssh-keygen -t rsa -C &quot;<s>yourName</s>@themakers.cn&quot;</span>，一路回车即可。</p>
+
+<h2 style='margin-left:1.0cm;text-indent:-1.0cm;mso-list:l1 level2 lfo5'><a
+name="_Toc448224047"><![if !supportLists]><span lang=EN-US style='mso-fareast-font-family:
+Arial;mso-bidi-font-family:Arial'><span style='mso-list:Ignore'>2.3.<span
+style='font:7.0pt "Times New Roman"'> </span></span></span><![endif]><span
+style='font-family:黑体;mso-ascii-font-family:Arial;mso-hansi-font-family:Arial'>配置你的</span><span
+lang=EN-US>github</span></a><span style='mso-bookmark:_Toc448224047'><span
+style='font-family:黑体;mso-ascii-font-family:Arial;mso-hansi-font-family:Arial'>账户</span></span></h2>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>注册并登陆<span
+lang=EN-US>github</span></p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>访问<span lang=EN-US><a
+href="https://github.com/settings/keys">https://github.com/settings/keys</a></span>，点击<span
+lang=EN-US>New SSH key</span>，添加<span lang=EN-US>SSH key</span>。</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>用记事本打开你本地的<span
+lang=EN-US>id_rsa.pub</span>文件，</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'><span lang=EN-US>Windows</span>用户该文件在<span
+lang=EN-US>&quot;%HOMEPATH%/.ssh/&quot;</span>路径下</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>将<span lang=EN-US>id_rsa.pub</span>文件的全部内容复制粘贴到<span
+lang=EN-US>Key</span>的内容区域，点击保存。</p>
+
+<h2 style='margin-left:1.0cm;text-indent:-1.0cm;mso-list:l1 level2 lfo5'><a
+name="_Toc448224048"><![if !supportLists]><span lang=EN-US style='mso-fareast-font-family:
+Arial;mso-bidi-font-family:Arial'><span style='mso-list:Ignore'>2.4.<span
+style='font:7.0pt "Times New Roman"'> </span></span></span><![endif]><span
+style='font-family:黑体;mso-ascii-font-family:Arial;mso-hansi-font-family:Arial'>从</span><span
+lang=EN-US>github</span></a><span style='mso-bookmark:_Toc448224048'><span
+style='font-family:黑体;mso-ascii-font-family:Arial;mso-hansi-font-family:Arial'>仓库克隆代码</span></span></h2>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>打开<span lang=EN-US>git
+bash</span>，使用命令</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'><span lang=EN-US>git
+clone git@github.com:ufzt/themakers.git</span></p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>从仓库克隆整个项目的代码</p>
+
+<h1 style='margin-left:21.25pt;text-indent:-21.25pt;mso-list:l6 level1 lfo2'><a
+name="_Toc448224049"><![if !supportLists]><span lang=EN-US style='mso-fareast-font-family:
+Calibri;mso-bidi-font-family:Calibri'><span style='mso-list:Ignore'>3<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><![endif]><span
+style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri'>初次提交</span></a></h1>
+
+<p class=MsoListParagraph style='margin-top:13.0pt;margin-right:0cm;margin-bottom:
+13.0pt;margin-left:21.25pt;text-indent:-21.25pt;mso-char-indent-count:0;
+line-height:172%;mso-pagination:lines-together;page-break-after:avoid;
+mso-outline-level:2;mso-list:l1 level1 lfo5;display:none'><a
+name="_Toc432075090"></a><a name="_Toc432075246"></a><a name="_Toc433735891"></a><a
+name="_Toc433739401"></a><a name="_Toc448218152"></a><a name="_Toc448222428"></a><a
+name="_Toc448224050"></a><![if !supportLists]><b style='mso-bidi-font-weight:
+normal'><span lang=EN-US style='font-size:16.0pt;mso-bidi-font-size:11.0pt;
+line-height:172%;font-family:"Arial","sans-serif";mso-fareast-font-family:Arial;
+display:none;mso-hide:all'><span style='mso-list:Ignore'>3.<span
+style='font:7.0pt "Times New Roman"'> </span></span></span></b><![endif]><b
+style='mso-bidi-font-weight:normal'><span lang=EN-US style='font-size:16.0pt;
+mso-bidi-font-size:11.0pt;line-height:172%;font-family:"Arial","sans-serif";
+mso-fareast-font-family:黑体;mso-bidi-font-family:"Times New Roman";display:none;
+mso-hide:all'><o:p>&nbsp;</o:p></span></b></p>
+
+<h2 style='margin-left:1.0cm;text-indent:-1.0cm;mso-list:l1 level2 lfo5'><a
+name="_Toc448224051"><![if !supportLists]><span lang=EN-US style='mso-fareast-font-family:
+Arial;mso-bidi-font-family:Arial'><span style='mso-list:Ignore'>3.1.<span
+style='font:7.0pt "Times New Roman"'> </span></span></span><![endif]><span
+lang=EN-US>git</span></a><span style='mso-bookmark:_Toc448224051'><span
+style='font-family:黑体;mso-ascii-font-family:Arial;mso-hansi-font-family:Arial'>的提交</span></span></h2>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>在<span lang=EN-US>git</span>里，代码提交一不需要更新代码二不需要与服务器通信。</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>简单理解，本地随意提交代码。</p>
+
+<h2 style='margin-left:1.0cm;text-indent:-1.0cm;mso-list:l1 level2 lfo5'><a
+name="_Toc448224052"><![if !supportLists]><span lang=EN-US style='mso-fareast-font-family:
+Arial;mso-bidi-font-family:Arial'><span style='mso-list:Ignore'>3.2.<span
+style='font:7.0pt "Times New Roman"'> </span></span></span><![endif]><span
+lang=EN-US>git add</span></a></h2>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>使用命令<span
+lang=EN-US> git status </span>查看本地的修改情况</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>如果你没有修改过文件，你什么也看不到</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>如果你修改过文件<span
+lang=EN-US>a</span>，你会看到文件<span lang=EN-US>a</span>会被列出，并且会<span
+style='background:red;mso-highlight:red'>显示成红色</span></p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'><span lang=EN-US><o:p>&nbsp;</o:p></span></p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'><span lang=EN-US>git</span>的提交内容需要你主动<span
+lang=EN-US>add</span>，与你修改了几个文件没有关系。</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>比如你修改了<span
+lang=EN-US>a</span>和<span lang=EN-US>b</span>两个文件，你只有<span lang=EN-US>add</span>了<span
+lang=EN-US>a</span>和<span lang=EN-US>b</span>两个文件，才会提交这两个文件。</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'><span lang=EN-US><o:p>&nbsp;</o:p></span></p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>你可以通过绝对路径<span
+lang=EN-US> add </span>文件，例如使用命令</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'><span lang=EN-US>git
+add module/eventsMod.class.php</span></p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>来<span lang=EN-US>add
+eventsMod.class.php</span>文件</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'><span lang=EN-US><o:p>&nbsp;</o:p></span></p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>使用<span lang=EN-US>git
+status</span>查看，<span lang=EN-US>add</span>后的文件会单独列出来，并且会<span
+style='background:lime;mso-highlight:lime'>显示成绿色</span>。它们会在你提交时被提交。</p>
+
+<h2 style='margin-left:1.0cm;text-indent:-1.0cm;mso-list:l1 level2 lfo5'><a
+name="_Toc448224053"><![if !supportLists]><span lang=EN-US style='mso-fareast-font-family:
+Arial;mso-bidi-font-family:Arial'><span style='mso-list:Ignore'>3.3.<span
+style='font:7.0pt "Times New Roman"'> </span></span></span><![endif]><span
+lang=EN-US>git commit</span></a></h2>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>提交之前，你需要<span
+lang=EN-US> git add</span>所有需要提交的文件</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>使用<span lang=EN-US>git
+status </span>确认你所有要提交的文件</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>使用<span lang=EN-US>git
+diff --cached </span>查看你即将要提交的所有改动</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>最后，使用命令<span
+lang=EN-US>git commit -m '</span><s>你提交了什么</s><span lang=EN-US>' </span>提交你的代码</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'><s>你提交了什么</s> 是你提交的备注，一行以内，言简意赅</p>
+
+<h2 style='margin-left:1.0cm;text-indent:-1.0cm;mso-list:l1 level2 lfo5'><a
+name="_Toc448224054"><![if !supportLists]><span lang=EN-US style='mso-fareast-font-family:
+Arial;mso-bidi-font-family:Arial'><span style='mso-list:Ignore'>3.4.<span
+style='font:7.0pt "Times New Roman"'> </span></span></span><![endif]><span
+lang=EN-US>git reset</span></a></h2>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'><span lang=EN-US>git
+add</span>的可逆操作，<span lang=EN-US>git reset</span></p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>在提交前，你忽然不想提交<span
+lang=EN-US>b</span>文件了，但之前你已经<span lang=EN-US>add</span>了<span lang=EN-US>a</span>和<span
+lang=EN-US>b</span>两个文件</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>使用命令<span
+lang=EN-US> git reset module/eventsMod.class.php </span>来取消<span lang=EN-US>add
+</span>文件</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>使用<span lang=EN-US>git
+status</span>查看，<span style='background:lime;mso-highlight:lime'>绿色标记</span>里没有了<span
+lang=EN-US>b</span>文件，<span style='background:red;mso-highlight:red'>红色标记</span>里出现了<span
+lang=EN-US>b</span>文件</p>
+
+<h2 style='margin-left:1.0cm;text-indent:-1.0cm;mso-list:l1 level2 lfo5'><a
+name="_Toc448224055"><![if !supportLists]><span lang=EN-US style='mso-fareast-font-family:
+Arial;mso-bidi-font-family:Arial'><span style='mso-list:Ignore'>3.5.<span
+style='font:7.0pt "Times New Roman"'> </span></span></span><![endif]><span
+lang=EN-US>git checkout</span></a></h2>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>如果你不小心删除了整个<span
+lang=EN-US>api</span>文件夹，你不需要去仓库拉代码。</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>使用命令<span
+lang=EN-US>git checkout api</span>，你会发现删除的文件夹恢复了。<span lang=EN-US>Git</span>保留的是全部的代码。</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'><span lang=EN-US><o:p>&nbsp;</o:p></span></p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>如果你修改了<span
+lang=EN-US>b</span>文件，你也不打算提交它，你想撤销对<span lang=EN-US>b</span>文件的修改。</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>使用命令<span
+lang=EN-US>git checkout module/eventsMod.class.php</span></p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>文件回到了修改前的状态</p>
+
+<h2 style='margin-left:1.0cm;text-indent:-1.0cm;mso-list:l1 level2 lfo5'><a
+name="_Toc448224056"><![if !supportLists]><span lang=EN-US style='mso-fareast-font-family:
+Arial;mso-bidi-font-family:Arial'><span style='mso-list:Ignore'>3.6.<span
+style='font:7.0pt "Times New Roman"'> </span></span></span><![endif]><span
+lang=EN-US>git push</span></a></h2>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>你的功能开发完了，你可以把你的分支推到仓库。</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'><b style='mso-bidi-font-weight:
+normal'>只有开发分支可以推送到仓库，主分支<span lang=EN-US>(master</span>分支<span lang=EN-US>)</span>，不允许推到仓库。<span
+lang=EN-US><o:p></o:p></span></b></p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>使用命令<span
+lang=EN-US>git branch -m <s>story6335</s> </span>可以重命名当前分支</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>使用命令<span
+lang=EN-US>git push origin <s>story6335</s> </span>将你的分支推送到仓库</p>
+
+<b style='mso-bidi-font-weight:normal'><span lang=EN-US style='font-size:22.0pt;
+mso-bidi-font-size:11.0pt;line-height:240%;font-family:"Calibri","sans-serif";
+mso-fareast-font-family:宋体;mso-bidi-font-family:"Times New Roman";mso-font-kerning:
+22.0pt;mso-ansi-language:EN-US;mso-fareast-language:ZH-CN;mso-bidi-language:
+AR-SA'><br clear=all style='page-break-before:always'>
+</span></b>
+
+<h1 style='margin-left:21.25pt;text-indent:-21.25pt;mso-list:l6 level1 lfo2'><a
+name="_Toc448224057"><![if !supportLists]><span lang=EN-US style='mso-fareast-font-family:
+Calibri;mso-bidi-font-family:Calibri'><span style='mso-list:Ignore'>4<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><![endif]><span
+style='font-family:宋体;mso-ascii-font-family:Calibri;mso-hansi-font-family:Calibri'>迭代提交</span></a></h1>
+
+<p class=MsoListParagraph style='margin-top:13.0pt;margin-right:0cm;margin-bottom:
+13.0pt;margin-left:21.25pt;text-indent:-21.25pt;mso-char-indent-count:0;
+line-height:172%;mso-pagination:lines-together;page-break-after:avoid;
+mso-outline-level:2;mso-list:l1 level1 lfo5;display:none'><a
+name="_Toc433739409"></a><a name="_Toc448218160"></a><a name="_Toc448222436"></a><a
+name="_Toc448224058"></a><![if !supportLists]><b style='mso-bidi-font-weight:
+normal'><span lang=EN-US style='font-size:16.0pt;mso-bidi-font-size:11.0pt;
+line-height:172%;font-family:"Arial","sans-serif";mso-fareast-font-family:Arial;
+display:none;mso-hide:all'><span style='mso-list:Ignore'>4.<span
+style='font:7.0pt "Times New Roman"'> </span></span></span></b><![endif]><b
+style='mso-bidi-font-weight:normal'><span lang=EN-US style='font-size:16.0pt;
+mso-bidi-font-size:11.0pt;line-height:172%;font-family:"Arial","sans-serif";
+mso-fareast-font-family:黑体;mso-bidi-font-family:"Times New Roman";display:none;
+mso-hide:all'><o:p>&nbsp;</o:p></span></b></p>
+
+<h2 style='margin-left:1.0cm;text-indent:-1.0cm;mso-list:l1 level2 lfo5'><a
+name="_Toc448224059"><![if !supportLists]><span lang=EN-US style='mso-fareast-font-family:
+Arial;mso-bidi-font-family:Arial'><span style='mso-list:Ignore'>4.1.<span
+style='font:7.0pt "Times New Roman"'> </span></span></span><![endif]><span
+style='font-family:黑体;mso-ascii-font-family:Arial;mso-hansi-font-family:Arial'>新的开发还是迭代开发？</span></a></h2>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>你的开发是否基于之前的分支？（选项<span
+lang=EN-US>A</span>）</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>或者你需要从主分支开始全新的开发？（选项<span
+lang=EN-US>B</span>）</p>
+
+<h2 style='margin-left:1.0cm;text-indent:-1.0cm;mso-list:l1 level2 lfo5'><a
+name="_Toc448224060"><![if !supportLists]><span lang=EN-US style='mso-fareast-font-family:
+Arial;mso-bidi-font-family:Arial'><span style='mso-list:Ignore'>4.2.<span
+style='font:7.0pt "Times New Roman"'> </span></span></span><![endif]><span
+style='font-family:黑体;mso-ascii-font-family:Arial;mso-hansi-font-family:Arial'>本地分支</span></a></h2>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>你的开发是基于之前的分支？ </p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'><span lang=EN-US>git
+branch</span>命令用于查看本地分支，标有<span lang=EN-US>*</span>的分支是当前分支</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>你可以通过命令</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'><span lang=EN-US>git
+fetch origin </span><s>仓库分支</s>名<span lang=EN-US>:</span><s>本地自拟名</s></p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>把仓库分支拉回本地</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>再通过命令 <span
+lang=EN-US>git checkout </span><s>本地分支名</s>，切换到本地目标分支</p>
+
+<h2 style='margin-left:1.0cm;text-indent:-1.0cm;mso-list:l1 level2 lfo5'><a
+name="_Toc448224061"><![if !supportLists]><span lang=EN-US style='mso-fareast-font-family:
+Arial;mso-bidi-font-family:Arial'><span style='mso-list:Ignore'>4.3.<span
+style='font:7.0pt "Times New Roman"'> </span></span></span><![endif]><span
+style='font-family:黑体;mso-ascii-font-family:Arial;mso-hansi-font-family:Arial'>新的开发</span></a></h2>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>你需要从主分支开始全新的开发？</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>用命令<span lang=EN-US>git
+fetch origin master:<s>story4567</s>, </span>创建基于主分支的开发分支<span lang=EN-US>story4567</span>。</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'><span lang=EN-US>git
+checkout <s>story4567</s></span>，切换到开发分支<span lang=EN-US>story4567</span></p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'><span lang=EN-US><o:p>&nbsp;</o:p></span></p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>你可以按照<span
+lang=EN-US>git add, git commit</span>步骤，逐步提交你的代码。</p>
+
+<p class=a style='text-indent:0cm;mso-char-indent-count:0'>记住每天<span
+lang=EN-US>git push</span>你的分支到仓库。</p>
+
+</div>
+
+</body>
+
+</html>
