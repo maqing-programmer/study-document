@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+</head>
+<body>
+<input type="text" id="input"/>
+<button onclick="validate()">确定</button>
+<script>
+
+function validate(){
+	value=document.getElementById("input").value;
+    if(value==""){
+    	alert("没有输入");
+    }else if(isNaN(value)){
+    	alert("输入的不是数字");
+    }else{
+    	alert(value);
+    }
+}
+</script>
+	</body>
+</html>

@@ -1,0 +1,120 @@
+1.JavaScript中的变量
+(1)变量的命名：
+  -必须以字母、数字、$或下划线开头
+  -变量名称对大小写敏感(因为JavaScript对大小写是敏感的)
+(2)声明变量
+   使用 var 关键字声明变量
+   var x; 声明了一个变量x，没有值，默认的值是undefined
+   var y=1;
+   var z="hello";
+
+   可以重复声明变量:
+   如果重新声明 JavaScript 变量，该变量的值不会丢失
+   var x=1;
+   var x;
+   这两条语句执行后，x的值还是1;
+
+2.JavaScript中的数据类型
+字符串，数字，布尔，数组，对象，Null,Undefined
+
+ -字符串  var x="hello";
+ -数字    var x=1; var y=2.5;
+ -布尔    var x=true; var y=false;
+ -数组
+  var x=new Array();
+  x[0]="Hello";
+  x[1]="my";
+  x[2]="friend";
+
+ 或者： var x=new Array("Hello","my","friend");
+
+ 或者:  var x=["Hello","my","friend"];
+
+ -对象
+ （1）对象的声明：
+  使用花括号{}声明对象,对象的属性以名称和值对的形式(name:value)
+  var person={id:"001",name:"张三",age:20};
+  这样就声明了一个对象person 有三个属性 id,name,age,值分别为001,张三,20
+ （2）获取对象的属性值：
+  var name=person.name;  var id=person.id; var age=person.age;
+  或: name=person["name"]; var id=person["id"]; var age=person["age"];
+
+ -undefined和Null
+  
+  undefined就表示变量不含有值
+  var x; x的值就是undefined
+  
+  可以通过null来将变量的值清空
+  var x=1;
+  x=null;
+
+(3)使用new关键字来声明变量类型
+var x=new String;
+var y=new Number;
+var z=new Boolean;
+var w=new Array;
+var person=new Object;
+JavaScript中的变量实际上都是一个对象，你声明了一个变量，就创建了一个新的对象。
+
+(4)JavaScript中的对象
+
+前面已经介绍了对象的声明，这里详细学习一下对象
+
+JavaScript这种所有的事物都是对象：字符串，数字，数组，日期等等。
+对象就是拥有属性和方法的数据
+
+var person=new Object();//创建一个变量为对象类型
+perosn.id="001";
+person.name="张三"；
+person.age=20;
+
+创建新 JavaScript 对象有很多不同的方法，并且您还可以向已存在的对象添加属性和方法。
+
+3.JavaScript中的函数
+
+定义一个函数的语法:
+
+function functionName(arg1,arg2){
+  
+
+}
+
+带有返回值的函数
+有时，我们会希望函数将值返回调用它的地方。
+通过使用 return 语句就可以实现。
+
+function add(num1,num2){
+  var x=num1+num2;
+  return x;
+}
+
+4.JavaScript中的运算符
+  与Java相似
+
+5.JavaScript中的条件语句
+
+if... else 语句
+switch 语句
+使用都和Java相同
+
+6.DOM(Document Object Model)文档对象模型
+ 当网页被加载时，浏览器会创建页面的文档对象模型,HTML DOM模型被构造为树
+ 即DOM数
+
+ JavaScript通过DOM可以对查找Html中的元素并且对Html元素进行操作。
+
+ （1）查找Html中的元素
+   -通过id查找 document.getElementById()
+   -通过标签名查找 document.getElementsByTagName();
+   
+
+
+
+
+
+
+
+
+
+
+

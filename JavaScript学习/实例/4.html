@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+</head>
+<body>
+
+<img id="myimage" src="eg_bulboff.gif" onclick="fun()"/>
+
+<script>
+function fun(){
+element=document.getElementById("myimage")
+	if(element.src.match("bulboff")){
+			element.src="eg_bulbon.gif";
+	}else{
+			element.src="eg_bulboff.gif";
+	}
+}
+</script>
+</body>
+<html>
