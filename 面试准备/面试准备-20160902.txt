@@ -1,0 +1,158 @@
+1.HashMap与HashTable的区别
+
+先看一下这两个类的定义:
+
+HashMap的源码：
+
+public class HashMap<K,V> extends AbstractMap<K,V>
+    implements Map<K,V>, Cloneable, Serializable {
+      	/**
+      
+      	**/
+    }
+
+HashTable的源码:
+
+public class Hashtable<K,V>
+    extends Dictionary<K,V>
+    implements Map<K,V>, Cloneable, java.io.Serializable {
+    	 /**
+
+     	**/
+    }
+
+-通过源码可以知道HasnMap与HashTable都是Map的实现类。
+ 并且通过查看内部实现可知，HashMap与HashTable底层数据结构是一样的，都是使用哈希表
+ 来存放键值对的。
+
+-再继续查看HashMap与HashTable的具体实现，会发现HashTable中的方法除了构造方法之外，基本上方法
+ 前面都有synchronized(同步)关键字，说明HashTable是支持线程同步的，而HashMap里的方法就没有用
+ synchronized,说明是不支持线程同步的。
+
+-HashMap允许key和value为null,而HashTable不允许key和value为null
+
+2.ConcurrentHashMap与HashTable的比较
+  HashTable是线程同步的，ConcurrentHashMap也是线程同步的。
+  但是HashTable实现线程同步的锁机制是每次都锁住整个哈希表，效率比较低，
+  而ConcurrentHashMap默认将哈希表分为16个桶，每次操作(如get,put,remove等操作)，只锁住当前的操作的桶，效率比较高。
+
+  所以ConcurrentHashMap与hashTable的比较总结:
+  -都是Map的实现类，也都是支持线程同步的
+  -ConcurrentHashMap比HashTable的效率要高。
+
+3.Service
+  今天在复习Service的时候，发现竟然忘记了启动的Service的特点，再复习一下：
+  在MainActivity中启动了一个Service,然后我按返回键退出了应用，发现Service的onDestroy中的log信息没有打印，MainActivity的onDestroy中的log信息打印了，一直很纠结。
+    
+  其实就应该是这样的，在MainActivity中启动Service后，MainActivity就与这个Service没有什么关系了，
+  所以你按返回键，仅仅是关闭了MainActivity，但是应用的进程还在，所以Service还是处于启动状态，
+  Service并没有被关闭。
+   
+  如果是绑定的Service,MainActivity绑定Service后，如果MainActivity被关闭了，Service也就被关闭了。
+
+4.Service的自启动
+  Service在被关闭后，怎么自启动？
+  因为是自启动，所以我们考虑的当然是启动的服务，不是绑定的服务。 
+  对于Service被关闭分为以下情况：
+（1）在系统资源紧张，内存不够的时候，系统会杀掉一些服务，和不可见的Activity等所在的进程，
+     启动的Service的生命周期函数onStartCommand()有一个int型的返回值，这个int型的返回值
+     主要有以下几种：
+
+     START_NO_STICKY
+     如果在系统资源不足时，服务被杀死了，这个服务不会自动重新创建
+
+     START_STICKY
+     如果在系统资源不足时，服务被杀死了，系统会重新创建这个服务并且调用onStartCommand()方法，
+     但是不会重新传递最后的Intent对象，系统会用一个null的Intent对象来调用onStartCommand()方法
+
+     START_REDELIVER_INTENT
+     如果系统资源不足时，服务被杀死了，系统会重新创建这个服务并且用最后发送给这个服务的Intent来
+     调用onStartCommand()方法。
+
+     当然我们可以通过提高服务的优先级来尽量避免服务被杀死：
+     1.把service写成系统服务，将不会被回收(未实践)：
+      在Manifest.xml文件中设置persistent属性为true，则可使该服务免受out-of-memory killer的影响。但是这种做法一定要谨慎，系统服务太多将严重影响系统的整体运行效率
+      <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:persistent="true"
+        >
+     2.设置service的优先级(1000是最高值)
+      <service android:name=".MyService" >
+        <intent-filter android:priority="1000"></intent-filter>
+       </service>
+     
+     3.通过setForeground API把服务设置成前台服务
+      默认启动的 Service 是被标记为 background，当前运行的 Activity 一般被标记为 foreground，也就是说你给 Service 设置了 foreground 那么他就和正在运行的 Activity 类似优先级得到了一定的提高。当让这并不能保证你得 Service 永远不被杀掉，只是提高了他的优先级。
+
+      startForeground(int, Notification)传入参数notification，它会在状态栏里显示正在进行的foreground service。background service不会在状态栏里显示
+
+       Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentInfo("补充内容");
+        builder.setContentText("主内容区");
+        builder.setContentTitle("通知标题");
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setTicker("新消息");
+        builder.setAutoCancel(true);
+        builder.setWhen(System.currentTimeMillis());
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.setComponent(new ComponentName(this, MainActivity.class));//用ComponentName得到class对象
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        builder.setContentIntent(pendingIntent);
+        Notification notification = builder.build();
+
+         //注意:notifyID为0时，通知不会在通知栏中显示，如果你希望通知不在通知栏中显示，可以吧notifyID设为0
+
+        startForeground(notifyID, notification);
+
+（2）用户通过 settings -> Apps -> Running -> Stop 方式杀死服务
+     用户干预，主动杀掉运行中的服务。这个过程杀死服务会通过服务的生命周期，也就是会调用 onDestory() 方法，
+     这时候一个方案就是在 onDestory() 中发送广播开启自己。这样杀死服务后会立即启动
+   
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

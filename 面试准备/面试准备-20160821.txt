@@ -1,0 +1,134 @@
+1.Android中的网络请求
+在android 6.0（API 23）中，Google已经移除了Apache HttpClient相关的类
+推荐使用HttpUrlConnection
+如果希望使用HttpClient的话，需要在Module的build.gradle中添加：useLibrary 'org.apache.http.legacy'
+
+2.Java中的集合
+Collection 集合
+Collleciton(接口)
+Set和List都是Collection的子接口
+Set的实现类：HashSet
+List的实现类：ArrayList、Vector
+
+List集合中的元素是有序的，Set集合中的元素是无序的
+List集合中的元素可以是重复的，Set集合中的元素不能是重复的。
+
+
+Map 映射
+Map中存放的是键值对
+Map接口的实现类：HashMap
+
+3.接口是可以被继承的，但是只能是一个接口继承自另外一个接口
+
+4.Eclipse设置查看JDK类库的源代码
+
+	-点 “window”-> "Preferences" -> "Java" -> "Installed JRES"
+
+	-此时"Installed JRES"右边是列表窗格，列出了系统中的 JRE 环境，选择你的JRE，然后点边上的 "Edit..."， 会出现一个窗口(Edit JRE)
+
+	-选中rt.jar文件的这一项：“c:\program files\java\jre_1.5.0_06\lib\rt.jar” 
+		点 左边的“+” 号展开它，
+
+	-展开后，可以看到“Source Attachment:(none)”，点这一项，点右边的按钮“Source Attachment...”, 选择你的JDK目录下的 “src.zip”文件
+
+	-一路点"ok",结束。
+
+5.Android中的事件处理机制
+  事件处理机制：为用户的动作提供响应的机制就是事件处理机制
+  
+  Android中有两种事件处理机制：
+  -基于监听的事件处理机制
+   Event Source(事件源):发生事件的场所
+   Event(事件)
+   Event Listener(事件监听器)：监听事件源发生的事件
+  -基于回调的事件处理机制
+  重写控件或者是Activtiy的事件回调方法
+  Android系统为绝大部分组件提供了事件响应的回调方法
+  以View为例：
+  onKeyDown 用户在组建上按下按键的时候触发该方法
+  onKeyUp 用户在组件上松开按键时触发该方法
+  onTouchEvent(MotionEvent event) 用户在组件上触摸时触发该方法
+  
+  几乎所有的事件响应的回调方法都有一个boolean的返回值，这个boolean型的返回值表示这个回调方法是否已经完全处理了该事件。
+  返回值为true,表明回调方法已经完全处理了该事件，事件不会传播出去。
+  返回值为false,表明回调方法没有完全处理该事件，事件会传播出去。
+  在基于回调的事件处理机制的事件传播中，某组件上发生的事件不仅会触发组件上的事件回调方法，如果事件没有被完全处理，事件会传播到组件所在的Activity,从而会触发Activity的相应的事件回调方法。
+
+6.Android中的数据存储
+-SharedPreferences 共享参数
+ SharedPreferences是Android系统中一个轻量级的数据存储类,是以键值对的形式将数据存储在一个XML文件中,
+ SharedPreferences主要用于存储一些较少的，数据格式比较简单的数据，如一些配置数据。
+-文件存储
+(1)应用程序数据文件夹下文件的读写
+	Context提供了 FileInputStream openFileInput(String name)
+				  FileOutputStream openFileOutput(String name,int mode)
+    这两个方法来打开应用程序数据文件下name文件的输入输出流
+    File getFilesDir()获取应用程序数据文件夹的绝对路径  /data/data/应用程序包名/files/
+	
+	当然我们可以不使用Context提供的两个获取文件输入输出流的方法,使用File类来实现
+	File file=new File(getFilesDir(),"a.txt");     /data/data/应用程序包名/files/a.txt
+	FileInputStream fis=new FileInputStream(file);
+    这就获取了应用程序数据文件夹下a.txt文件的输入流，文件的输出流也可以通过这种方式获取
+
+	在应用程序数据文件夹下创建文件夹或者是文件方法，完全可以采用Java中的方法:
+	-创建目录
+	File dir=new File(getFilesDir().getPath()+"/mydata");
+	if(!dir.exists()){
+     	dir.mkdir();
+	}
+	这样就在应用程序数据文件夹下创建了一个目录 mydata  (data/data/应用程序包名/files/mydata)
+	-创建文件
+	File file=new File(getFilesDir(),"a.txt");
+	if(!file.exists()){
+	file.createFile();
+	}
+	这样就在应用程序数据文件夹下创建了一个a.txt文件 (data/data/应用程序包名/files/a.txt);
+(2)SD卡的文件的读写
+    只要拿到SD卡的根目录，其他就是和Java中文件的读写操作是一样的了
+    Environment.getExternalStorageDirectory() 	
+	但是一定要在AndroidManifest.xml文件中注册对SD卡的操作权限
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>  注册对SD卡中文件的读权限
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>  注册对SD卡中文件的写权限
+-SQLite数据库
+ SQLite数据库是一个轻量级的嵌入式数据库引擎，主要适用于资源有限的设备上适量数据的存储。
+ 从本质上来看，对SQLite数据库的操作就是一种更为便捷的文件操作。当应用程序创建或者是打开一个数据库时，其实就是打开一个文件准备读写。
+ 对SQLite数据库进行操作需要借助于SQLiteOpenHelper类，定义一个类继承自SQliteOpenHelper类，实现onCreate().onUpgrade方法
+ 
+7.手势
+手势：用户手指或者是触摸笔在触摸屏上的连续触碰行为称之为手势
+Android系统提供了一个手势检测器类GestureDetector,一个GestureDetector实例代表了一个手势检测器，创建一个GestureDetector实例需要传入一个GestureDetector.OnGestureListener实例，
+GestureDetector.OnGestureListener实例是一个监听器，负责为用户的手势提供响应。
+OnGestureListener包含了一些手势响应的回调方法
+-onDown
+-onScroll
+-onFling
+-onShowPress
+-onLongPress
+-onSingleTapUp
+
+
+ 
+ 
+ 
+ 
+  
+		
+	
+	
+	
+	
+	
+   
+	 
+	
+  
+    
+
+
+
+
+
+
+
+  				
+				

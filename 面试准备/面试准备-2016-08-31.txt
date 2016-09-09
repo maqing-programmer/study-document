@@ -1,0 +1,135 @@
+ 熟悉Android 的Service ，Handler，HandlerThread，Task的使用
+ retroft rxjava
+ 安全加密
+
+1.Handler的post(Runnable runnable)方法
+Handler的post方法的作用主要是可以用来实现在主线程中进行操作，与sendMessage的作用一样。
+Handler的post(Runnable runnable)方法与sendMessage(Message msg)这个方法的本质是一样的
+都是发送消息到消息队列中。
+
+可以通过源码来分析：
+  /**
+     * Causes the Runnable r to be added to the message queue.
+     * 这里源码注释的意思是：把r这个任务对象添加到消息队列中。
+     */
+    public final boolean post(Runnable r)
+    {
+       return  sendMessageDelayed(getPostMessage(r), 0);
+    }
+
+/**
+     * Enqueue a message into the message queue after all pending messages
+*然后我们接着看post方法中直接调用到的发送延时消息的方法，源码注释*的意思是把这个消息放入消息队列，
+     */
+    public final boolean sendMessageDelayed(Message msg, long delayMillis)
+    {
+        if (delayMillis < 0) {
+            delayMillis = 0;
+        }
+        return sendMessageAtTime(msg, SystemClock.uptimeMillis() + delayMillis);
+    }
+
+/*最后我们再看post中调用的另外一个方法，源码中没有注释，但我们很容易看出来，这个方法就是把r这个任务包装成了一个空的消息并且返回*/
+private static Message getPostMessage(Runnable r) {
+        Message m = Message.obtain();
+        m.callback = r;
+        return m;
+}
+通过源码分析post(Runnable runnable)的本质也是发送一个消息到消息队列中.
+
+2.HandlerThread
+
+  Handy class for starting a new thread that has a looper. The looper can then be used to create handler classes. Note that start() must still be called.
+  这是官方文档对HandlerThread的描述：意思就是HandlerThread这个类就是一个含有Looper的线程，通过start()方法启动线程。
+  
+  HandlerThread类是继承自Thread的。
+  
+  那为什么会引入HandlerThread这个类呢？
+  我们知道Handler是Android中的消息传递机制，可以用来实现线程之间的通信，包括主线程与子线程之间的通信，以及子线程于子线程之间的通信。Handler的消息传递机制包括了 Looper.Handler,NessageQueue,Message这几个对象。
+  我们知道，主线程中会有一个默认的Looper对象，而新建的子线程中是没有Looper对象的，必须通过Looper.prepare()方法来为子线程创建一个Looper对象，并且通过Looper.loop()方法启动Looper。
+  而HandlerThread就是包含Looper的Thread，所以如果我们希望通过Handler实现线程之间的通信，如果发送消息到子线程中，这个子线程就可以用HandlerThread来创建，创建后就默认包含Looper对象，就不需要再调用
+  Looper.preapare()，Looper.loop()来创建和启动Looper了。
+  
+  HandlerThread的用法，在介绍HandlerThread的用法之前，我们先纠正一个之前的错误认识；
+  纠正错误认识：
+  以前我们创建Handler，都是认为在主线程中创建Handler，Handler就与主线程关联，
+  在子线程中创建Handler，Handler就与子线程中关联，其实并不是这样的。
+  Handler与哪个线程关联，不是看它在哪里声明创建，而是实例化的时候，传入的是哪个线程的Looper对象，
+  Handler mHandler=new Handler(mLooper){
+         
+         public void handleMessage(Message msg){
+
+
+         }
+
+  }; 
+  由于之前我们创建Handler的时候，都不是用的这个构造方法，而是用的默认的构造方法，如下：
+
+  Handler mHandler=new Handler(){
+         
+      	 public void handleMessage(Message msg){
+
+
+         }
+
+  };
+
+默认的构造方法则是将Handler与当前线程的Looper关联，所以导致我们认为在哪个线程中声明创建Handler，Handler就是与哪个
+线程关联，实际上不是这样的。
+
+错误认识纠正总结：
+	如果我们用Handler默认的构造方法创建Handler，则Handler是在哪个线程中创建的，Handler就是与哪个线程关联，
+    如果我们是用Handler的带有Looper参数的构造方法创建Handler，则传入的是哪线程中的Looper，Handler就是
+    与哪个线程关联,相应的Handler的handleMessag()方法也就是在相应的线程中执行。
+
+纠正了上面的错误认识后，下面来介绍HandlerThread的使用：
+Handler mHandler;
+HandlerThread mThread=new HandlerThread("myHandlerThread");
+mThread.start();
+mHandler=new Handler(mTHread.getLooper());
+上面代码就是创建了一个HandlerThread对象，并且把mHandler与HandlerThread这个线程关联。
+
+那么如何使用HandlerThread来执行任务，主要是调用Handler的API
+post方法提交任务
+postAtFrontOfQueue将任务加到队列前端
+postAtTime在指定时间提交任务
+PostDelayed延时提交任务
+sendMessage方法发送消息
+sendMessageAtFronOfQueue将消息放入消息队列前端
+senfMessageAtTime指定时间发送消息
+sendMessageDelayed延后提交消息
+
+例如：
+mHandler.post(new Runnable{
+	public void run(){
+      /**
+       耗时操作
+      **/
+	}
+
+})
+这里的耗时操作就是在HandlerThread这个子线程中执行的。
+
+3.aar文件
+  我们在开发项目的时候，会引用到一些jar包，jar包包含的就是.class文件，也就是
+  把一些功能类打包成一个包的形式来方便引用。
+  但是jar包不能包含图片、布局等资源文件，这样如果我们希望把一个Android项目打包成一个
+  jar包来使用就不行了，只能引用整个Android项目。
+  但是通过引用整个Android项目的方式就会让我们的项目变得很臃肿，这个时候aar文件就能派上用场了。
+  aar文件可以包含所有资源，.class文件，图片，布局等所有资源文件，这样我们就可以我们的Android项目
+  打包成一个arr文件，来供其它项目使用。
+
+  这里只了解一下arr文件，具体的使用方式暂不介绍。
+
+  4.今天在GitHub 克隆了一个项目到Android Studio中,发现项目无法运行，
+    打开Module的build.gradle文件 发现第一行：apply plugin: 'com.android.library'
+    说明这是一个Library项目，不是一个Application项目。 
+
+
+
+
+
+
+
+
+

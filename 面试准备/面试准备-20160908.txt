@@ -1,0 +1,47 @@
+1.Android中的Application
+  用来维护应用程序全局状态的一个类
+  Android系统在每个程序运行时为这个程序创建一个Application类的对象，且仅创建一个。所以Application可以说是单例(singleton)模式的一个类。
+  且Application对象的生命周期是整个程序中最长的，它的生命周期就等于这个程序的生命周期。
+
+  我们可以定义一个类继承自Application类，然后在Application的生命周期函数中做一些初始化的操作(一般是在onCreate()周期函数中),然后在AndroidManifest.xml文件中<application/>标签中使用android:name=".MyApplication" 配置使用定义的Application。
+
+2.今天在定义一个TextView的id的时候，android:id="@+id/title",
+   使用了title作为这个TextView的id,但是在代码中R.id.然后使用代码提示ALT+/
+   始终找不到title这个id，但是其它定义的id都能找到。
+   然后为这个TextView换了一个id android:id="@+id/myTitile",然后这个id可以找到。
+
+   原因：
+   原来是R.java中已经定义了一个名为title的id，应该是被系统使用的资源id，在代码中我们是无法使用的，所以R.id.找不到这个名为title的id，所以我们以后在定义id的时候要注意，不要使用这个title作为id。 
+
+3.Java中的接口的定义
+   interface
+
+4.layout_weight、weightSum 
+  
+  (1)简介
+  weightSum是LinearLaout中的属性，layout_weight是LinearLayout的子视图中可以使用的属性。
+  weightSum定义了weight总和，如果没有指定该值，那么weight的总和就是所有子视图的layout_weight的和。
+  
+  (2)使用规则：
+
+  LinearLayout中空间的分配规则：
+  
+  第一步：先按照子视图的layout_width(layout_height)设置的值来分配空间，
+  第二步：然后剩余的空间按照layout_weight的比例来分配（这里的比例应该是layout_weight/weightSum,如果LinearLayout没有
+  设置weightSum,那么weightSum默认就是子视图中所有layout_weight的和）。
+
+
+5.增量更新  
+
+
+6.Java无法直接与硬件交互
+  所以Android中的NDK开发师非常重要的
+  JNI（Java Native Interface）Java与C/C++交互的接口机制
+
+7.每一种声音都是一个通道(Channel)
+
+
+
+
+  
+ 

@@ -1,0 +1,115 @@
+-你必须非常努力，才能看起来毫不费力
+
+1.自定义View
+-自定义View的步骤
+  (1)自定义View的属性
+  (2)在View的构造方法中获取我们自定义的属性
+  (3)重写onMeasure方法(不是必须的，但是大部分情况都是要重写的)
+  (4)重写onDraw方法
+
+现在我们就按照上面的步骤来自定义一个View
+  (1)自定义View的属性 在res/values下建一个attrs.xml文件，在里面定义自定义View的属性
+     <resources>
+	 <declare-styleable name="CustomView">
+	 <attr name="text" format="string">
+	 <attr name="textSize" format="dimension">
+	 <attr name="textColor" format="color">
+	 </declare-styleable>
+   </resources>
+   
+   定义了三个属性：text(文本)、textSize(字体大小)、textColor(字体颜色)
+   定义属性的时候 name是属性的名字 format是属性的取值类型
+   format可以是string,color,dimension,integer,enum,references,float,boolean,fraction,flag
+   
+   在定义属性的时候要注意一个问题，就是说如果有多个自定义的View有一个同名的属性，比如说两个View都以一个name为text的属性，
+   这个时候如果直接在两个自定义View的declare-styleable中 都写上 <attr name="text" format="string">这样运行时是会报错的，
+   提示：
+   Error:Execution failed for task ':app:mergeDebugResources'.
+> G:\Project_Workspace\Android_Studio_Worksapce\CustomViewDemo\app\src\main\res\values\attrs.xml: Error: Found item Attr/text more than one time
+   
+   就是说系统检测到text属性被定义了多次。
+   这种情况，text属性就不能在View的<decalre-stysleable>中定义了，而是直接拿出来定义,然后在View的<decalre-stysleable>里声明一下就可以了。
+   如下所示：
+   
+   <resources>
+   
+   <attr name="text" format="string">
+   
+   <declare-styleable name="CustomViewA">
+	 <attr name="text">
+	 <attr name="textSize" format="dimension">
+	 <attr name="textColor" format="color">
+	</declare-styleable>
+   
+    <declare-styleable name="CustomViewB">
+	 <attr name="text">
+	</declare-styleable>
+	
+	</resources>
+   
+   
+  (2)在View的构造方法中获取我们的自定义属性
+       public CustomView(Context context) {
+        this(context, null);
+    }
+
+    public CustomView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public CustomView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.CustomView, defStyleAttr, 0);
+        int n = typedArray.getIndexCount();
+        for (int i = 0; i < n; i++) {
+            int index = typedArray.getIndex(i);
+            switch (index) {
+                case R.styleable.CustomView_text:
+                    mText = typedArray.getString(index);
+                    break;
+                case R.styleable.CustomView_textsize:
+                    mTextSize = typedArray.getDimensionPixelSize(index, (int) TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_SP, 16, getResources().getDisplayMetrics()));
+                    break;
+                case R.styleable.CustomView_textcolor:
+                    mTextColor = typedArray.getColor(index, Color.BLACK);
+                    break;
+            }
+        }
+        typedArray.recycle();
+		//获得绘制文本的宽和高
+        mPaint = new Paint();
+        mPaint.setTextSize(mTextSize);
+        mBound = new Rect();
+        mPaint.getTextBounds(mText, 0, mText.length(), mBound);
+    }  
+   
+   
+   
+   定义View时，重写了三个构造方法,获取View的属性时，是在View的有三个参数的构造方法中获取的，
+   如果是在布局文件中使用这个自定义的View,系统默认是调用有两个参数的构造方法,所以让所有的构造方法
+   都调用三个参数的构造方法。
+   
+   (3)重写onMeasure方法 
+      这里onMeasure方法就直接让它调用父类的onMeasure方法
+      @Override  
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)  
+    {  
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);  
+    } 
+   (4)重写onDraw()方法
+      mPaint.setColor(Color.YELLOW) ;
+      canvas.drawRect(0,0,getMeasureWidth(),getMeasureHeight(),mPaint);
+      
+      mPaint.setColor(mTextColor);
+      canvas.drawText(mText,getWidth()/2-mBound.width()/2,getHeight()/2+mBound.height()/2,mPaint);
+ 
+-分析一下：drawText(String text, float x, float y,Paint paint)中x,y的含义
+ Android系统中绘制文本是从下往上绘制的,x是文本的横坐标，y是baseline的y坐标。注意这里的y不是文本的纵坐标，是baseline的纵坐标。
+ 这里又涉及到baseline这个概念，Android系统绘制文本是从baseline处开始从下往上绘制的,所以这里的y是baseline的纵坐标。
+ 
+  
+ 
+  
+   
+  

@@ -1,0 +1,299 @@
+Crash问题：
+就是遇到未知问题，序运行出错退出了。crash是崩溃的意思
+分辨率适配问题
+
+1.创建一个通知(Notification)，在通知栏中点击这个通知,返回程序，而不是启动一个新的Activity。
+  
+    NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentInfo("补充内容");
+        builder.setContentText("主内容区");
+        builder.setContentTitle("通知标题");
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setTicker("新消息");
+        builder.setAutoCancel(true);
+        builder.setWhen(System.currentTimeMillis());
+       
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.setComponent(new ComponentName(this, MainActivity.class));//用ComponentName得到class对象
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+  
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        builder.setContentIntent(pendingIntent);
+        Notification notification = builder.build();
+        notificationManager.notify(1, notification);
+
+  这样点击通知栏中的该通知，直接返回程序，而不是返回到启动的Activity。
+
+  2.观察者模式(Observer模式)
+    
+    观察者模式定义的是一种一对多的依赖关系，让多个观察者对象同时监听某个主题对象，
+    这个主题对象的状态发生改变时，会通知多有的观察者。 
+
+    subject(抽象被观察者)
+
+    ConcreteSubject(被观察者的实现)
+
+    Observer(抽象观察者)
+
+    ConcreteObserver(观察者的实现)
+
+    Java中提供了java.util.Observable类和java.util.Observer接口来帮助我们去实现观察者模式，
+    我们定义一个类去继承自Observable来定义一个主题对象（被观察者）
+    再定义一个类实现Observer接口来定义一个观察者对象
+
+   3.SQLite数据库中的vachar数据类型
+   
+   SQLite不强制VARCHAR的长度。你可以在SQLITE中声明一个VARCHAR(10)，SQLite还是可以很高兴地允许你放入500个字符。并且这500个字符是原封不动的，它永远不会被截断 
+   
+   你也可以不设置VARCHAR的长度：
+   create table user(id integer primary key AUTOINCREMENT,name varchar) 
+
+   4.SQLite数据库，使用查询语句查询时，即使没有查询到数据，Cursor也不为空.
+    所以不用对Cursor做空值判断。
+
+   5.多个应用程序或者同一个应用程序的多个实例能同时存取同一个数据库文件吗？
+    
+     多个进程可同时打开同一个数据库。多个进程可以同时进行SELECT操作，但在任一时刻，只能有一个进程对数据库进行更改。
+
+  5.SQLite线程安全的
+  
+ 6.SQLite允许向一个integer型字段中插入字符串
+
+   SQLite允许向一个integer型字段中插入字符串,这是一个特性，而不是一个bug。SQLite不强制数据类型约束。任何数据都可以插入任何列。你可以向一个整型列中插入任意长度的字符串，向布尔型列中插入浮点数，或者向字符型列中插入日期型值。在CREATE TABLE中所指定的数据类型不会限制在该列中插入任何数据。任何列均可接受任意长度的字符串（只有一种情况除外：标志为INTEGER PRIMARY KEY的列只能存储64位整数，当向这种列中插数据除整数以外的数据时，将会产生错误。
+
+   但SQLite确实使用声明的列类型来指示你所期望的格式。所以，例如你向一个整型列中插入字符串时，SQLite会试图将该字符串转换成一个整数。如果可以转换，它将插入该整数；否则，将插入字符串。这种特性有时被称为类型或列亲和性（亲缘性）(type or column affinity).
+  
+  7.SQLite数据库中VARCHAR字段的最大长度是多少？
+    SQLite数据库不对VARCHAR字段做长度限制
+
+  5.SQLite数据库支持分页查询
+
+    select * from user limit 0,5; 
+
+    select * from user limit 5 offset 0; 
+   
+   上面是SQLite数据库支持的两种分页查询语句，查询的是从第一行开始的5行数据,
+   注意:
+   第一条查询语句： limit 0,5 表示的是从第一行开始的5条数据
+   第二条查询语句:  limit 5 offset 0, limit后跟的是查询的记录数，offset后跟的是从第几条记录之后开始查询
+
+  6.SQLite中主键必须是Integer(integer)类型的,int也不行。
+    如果不是主键，则可以使用int类型作为整型。  
+
+  7.switch能否使用String作为参数
+    可以使用String作为参数
+    String str = "A";
+    switch (str) {
+    case "A":
+      System.out.println("A");
+      break;
+    case "B":
+      System.out.println("B");
+      break;
+    case "C":
+      System.out.println("C");
+      break;
+    }
+   
+  8.Java中的HashCode
+  Java的Object类有一个hashCode()方法，返回的是一个整数值，这个整数值
+  是这个对象的HashCode即哈希码。
+  这个哈希码到底有什么作用呢，这个哈希码是用来确定当这个对象存放在哈希表时，其存放的位置。
+  用来提高查找的效率。
+
+  对于HashSet、HashMap、HashTable这些集合通过Hash算法来散列对象的。我们知道对于Set类集合(HashSet)是不允许存储重复元素的，那么Java是怎么来判断Set中是否有相同元素的呢，首先获取要存放对象的HashCode,也即找到对象要存放的位置，如果该位置为空，则将对象存入该位置，如果位置上有元素，则使用equals方法比较该位置的对象和要插入的对象是否相等，如果相等，则对象就不插入了，如果不相等，则根据哈希冲突解决算法将对象插入其它位置。
+
+  这比将要插入对象与Set中的元素一个个比较效率要高得多，只有HashCode相等才做比较。
+  
+  因为Java中对于判断Set类集合中的元素是否重复（对象是否相等） 是先比较HashCode,HashCode相等才
+  通过equals()方法比较,也就是说使用equals()方法比较的时候，HashCode一定是相等的。
+  
+  也即：如果两个对象equals()相等，hashCode()返回值也一定相等。
+        
+        但是如果hashCode()相等，equals()不一定相等。  
+
+  注意: 
+  如果我们是用Java中原生的equals()方法和hashCode()方法，那Java是保证了equals()相等
+  的两个对象，hashCode()一定是相等的。
+  但是我们可能会重写equals()方法，如果重写了equals()方法那就一定要重写hashCode()方法
+  以保证equals()相等的两个对象的hashCode()的值也相等。
+  否则：就会出现两个该类型对象equals()相等(对象相等), 但是Set集合(HashSet)中却存放了这两个一样的对象,这就与Set中不能存放重复元素冲突了。
+
+  8. wait()和sleep()的区别
+
+     wait可以指定时间，也可以不指定时间
+     sleep必须指定时间
+  
+     在同步中时，对CPU的执行权和锁的处理不同
+     wait:释放执行权，释放锁
+     sleep:释放执行权，不释放锁
+
+     只能在同步控制方法或同步块中调用wait()、notify()和notifyAll()。如果在非同步的方法里调用这些方法，在运行时会抛出IllegalMonitorStateException异常。
+  
+  9.break和continue
+    break是跳出整个循环，但是如果是多层循环，break跳出的是一层循环。
+    continue是跳过本次循环，进入下一次循环。
+
+  10.Android中的assets目录和res/raw目录 
+
+
+     asstes目录和res/raw目录都是用来存放一些资源文件的，如图片、音频或者文本文件等。
+    
+     1.res/raw中的文件会被映射到R.java文件中,访问的时候可以通过资源ID来访问，R.id.filename
+     assets目录下的文件不会被映射到R.java文件中,访问的时候需要AssetsManager类。
+
+     2.res/raw不可以有目录结构，也就是raw下不能再建子目录。
+       assets可以有目录结构，也就是assets目录下可以再建子目录。
+    
+    读取res/raw下的文件资源，通过以下方式获取输入流来进行写操作
+    InputStream is = getResources().openRawResource(R.raw.filename);
+    
+    读取asstes目录下的资源文件
+    AssetManager assetManager = getAssets();
+    InputStream in = assetManager.open("test.txt");
+
+   注意:在Android Studio中assets目录是在main目录下创建，切换到Project视图然后在main目录下创建assets目录
+
+   11.WebView
+
+    (1) 背景介绍:
+     NativeAPP(原生的APP,纯Java代码，加上XML文件)  
+     
+     WebAPP
+
+    (2)WebView简介:
+     WebView是一个浏览器组件，可以用来显示网页。
+
+    (3)WebView的使用：
+     WebView的使用也比较简单，直接在布局文件中通过<WebView/>标签使用即可。
+
+     在代码中通过如下加载一个网页(可以是本地网页，也可以远程网页):
+     webView.loadUrl("http://www.baidu.com") 
+     (当然如果加载远程网页是需要网络权限的 <uses-permission name="android.permission.INTERNET">)
+      
+      不过需要注意，如果是加载本地html，传入的url需要做些处理，例如：
+　  　如果html文件存于assets：则加前缀：file:///android_asset/ 
+      webView.loadUrl("file:///android_asset/test.html") ;
+    
+
+
+     但是如果仅仅这样写，运行程序你会发现，应用是调用你手机里的浏览器来显示网页的，而不是
+     直接在WebView里显示的。
+
+     解决：
+     如果希望应用是直接在WebView中显示网页，而不是调用系统的浏览器，需要为WebView设置一个WebViewClient
+     webView.setWebViewClient(new WebViewClient());
+     这样网页就是直接在WebView中显示，而不是调用系统的浏览器显示。
+
+     WebView的常用方法:
+     goBack():后退
+     goForward():前进
+     loadUrl(String url):加载指定Url对应的网页,图片并显示（本地或是网络上的网页、图片、gif） 
+     zoomIn():放大网页
+     zoomOut():缩小网页
+
+     WebView的常用设置，通过WebSettings类来设置
+     webSettings=webView.getSettings();
+     WebSettings 的常用方法介绍:
+     setJavaScriptEnabled(true);  //设置WebView支持js
+     setSupportZoom(true);  //支持缩放 
+     setPluginsEnabled(true);  //支持插件
+
+     (4)WebView中的JavaScript调用Android中的方法
+
+     WebView中加载Html，Html上有一个按钮，点击按钮，弹出Toast信息,
+     由于该按钮是Html上的按钮，点击只能触发JavaScript脚本，这就需要JavaScript脚本来调用Android中的方法。
+     
+     首先要设置WebView加载Html中的JavaScript能后被激发
+     WebSettings webSettings=webView.getSettings();
+     webSettings.setJavaScriptEnable(true)
+
+     JavaScript要想调用Android中的方法,那么WebView就必须把Android中的对象暴露给JavaScript
+
+     //创建一个对象
+      public class MyObject{
+
+        Context context;
+        public MyObject(Context context){
+        this.context=context;
+        }
+
+        //showToast方法是需要在JS中调用的，要加上@JavascriptInterface注解,否则JS中无法调用。
+        @JavascriptInterface
+        public void showToast(){
+        Toast.makeText(context,"点击了按钮",Toast.LENGTH_SHORT).show();
+        } 
+      }
+
+      webSettings.addJavaScriptInterface(new MyObject(this),"myobj");
+
+      这句代码就是把Android中的一个MyObject对象暴露给了Html中的JS,并且对象在JS中的名字是myobj
+
+      //本地html文件如下
+        <html>
+          <head>
+             <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+          </head>
+        <body>
+          <h1>WebView加载本地Html</h1>
+        <button onclick="myobj.showToast()">显示Toast</button>
+        </body>
+      </html>
+
+      html中有一个button,button的onclick事件调用的是Android中的MyObject对象的showToast()方法
+
+      这样就实现了在JS调用Android中的方法。这样点击Html中的按钮，触发的是Android中的MyObject对象的
+      showToast方法，会弹出Tost。
+
+
+
+    12.ListView卡顿的原因与优化
+    （1）在getView中没有使用ViewHolder进行组件的复用
+
+    （2）ListView的Item布局过于复杂,有大量的图片或者是背景所致,或者是Item里有复杂的计算和耗时操作。
+
+    （3）ListView被多层嵌套。
+
+
+    13.Scrollview怎么判断是否滑倒底部
+
+
+    13.ScrollView与HorizontalScrollView嵌套使用会有冲突吗? 
+
+      
+    
+  
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+  
+       
+
+
+
+
+
+    
+    
+
+
+
+
+

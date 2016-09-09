@@ -1,0 +1,199 @@
+1.Service与Activity怎么实现通信
+ （1）启动的Service
+   组件启动Service时会传递一个Intent对象到Service的onStartCommand()方法中
+   但是只能是组件向Activity传递数据
+  
+   如果我们希望Service也能够传递数据到Activity,
+   可以在Service中定义回调接口，在组件中调用这个回调接口。
+   或者是在Service中发送广播，组件中注册广播接收者接收广播。
+  
+ (2)绑定的Service
+    绑定Service的时候，组件也会传递一个Intent对象到Service的onBind（）方法中,
+    组件就传递了数据到Service中
+
+    组件与Servcie成功绑定，并且建立连接后，组件定义的ServiceConnection的onServiceConnected（）方法
+    会被回调，可以拿到一个IBinder对象,这个IBinder对象是Service传过来的。
+
+    当然我们也可在Service中定义回到接口，组件调用回调接口，实现从Service传递数据到Activity
+    也可以在Service中发送广播，组件中注册广播接收者接收广播。
+
+ 
+ 最后总结：如果我们希望Service中的操作能够实时更新组件UI，可以使用回调接口的方式。
+
+
+2.ProgressBar可以在子线程中更新进度?????? 
+  查看ProgressBar的源码的setProgress()方法可知，如果是在UI主线程中，则直接更新进度，
+  如果不是在UI主线程中,则创建一个RefreshProgressRunnable对象,然后调用View.post(Runnable) 方法
+  将RefreshProgressRunnable添加到UI主线程的消息队列中
+
+  同理：SeekBar，ProgressDialog也是可以在子线程中直接更新进度的。    
+
+3.怎么实现ListView多种布局
+Android使用的BaseAdapter提供了解决多种布局文件的重用方法。
+
+1）重写 getViewTypeCount() – 该方法返回多少个不同的布局
+
+2）重写 getItemViewType(int) – 返回当前Item布局类型
+
+我们只需要在数据对象中添加一个类型属性，然后我们就可以根据这个类型属性，为
+这个数据设置相应的布局
+
+5.内存存不足时系统会杀掉后台的Activity，若需要进行一些临时状态的保存，在哪个方法进行？
+
+  Activity的 onSaveInstanceState() 和 onRestoreInstanceState()并不是生命周期方法，它们不同于 onCreate()、onPause()等生命周期方法，它们并不一定会被触发。当应用遇到意外情况（如：内存不足、用户直接按Home键,默认情况下切换横竖屏）由系统销毁一个Activity，onSaveInstanceState() 会被调用。但是当用户主动去销毁一个Activity时，例如在应用中按返回键，onSaveInstanceState()就不会被调用。除非该activity是被用户主动销毁的，通常onSaveInstanceState()只适合用于保存一些临时性的状态，而onPause()适合用于数据的持久化保存。
+
+
+6.dispatchTouchEvent:
+  Android中所有的事件都必须经过这个方法的分发，然后决定是自身消费当前事件还是
+  继续往下分发给子控件处理，返回为true表示不继续分发，事件没有被消费，
+  返回为false，则继续分发。如果是ViewGroup则分发给onInterceptTouchEvent进行判断是否
+  拦截该事件。
+
+  onInterceptTouchEvent:
+  这个方法是ViewGroup中的方法，View中没有，它的作用是负责事件的拦截，返回为true的时候
+  表示拦截当前的事件，不继续分发下去，交给自身的onTouchEvent方法进行处理。
+  返回false，则不拦截，继续往下传。
+  这是ViewGroup中特有的方法，因为ViewGroup可能有子View，而View中不可能再包含子View。
+
+  onTouchEvent:
+  该方法用于事件的处理，返回为true表示消费处理该事件，返回为false则表示不处理，交给子控件继续分发。
+
+  分发--->拦截--->处理
+
+10.屏幕发生旋转时，Activity的生命周期
+    
+   首先介绍知识点：
+   -怎么判断屏幕当前是横屏还是竖屏?
+    获取屏幕的方向：int orientation=getResources().getConfiguration().orientation
+    orientation==Configuation.ORIENTATION_PORTRAIT  竖屏
+    orientation===Configuation.ORIENTATION_LANDSCAPE 横屏
+   
+   -设置屏幕的方向
+    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)  设置屏幕为横屏
+    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)  设置屏幕为竖屏
+
+   切换屏幕时，Activity的生命周期
+
+   默认情况下，切换屏幕方向时，Activity会被销毁，然后重新创建。
+   所以默认情况下，切换屏幕，Activtiy的生命周期如下：
+   onPause()--->onStop()--->onDestroy() --->onCreate()--->onStart()--->onResume()
+
+   如果我们不希望在切换屏幕时，Activity被重建，则可以在AndroidManifest.xml文件中的Activtiy的注册中
+   添加如下设置:
+   android:configChanges="orientation|keyboardHidden|screenSize"
+   这样切换屏幕时，Activity就不会重建，只有onConfigurationChanged()方法被回调。
+
+11.View中 setOnTouchListener的onTouch，onTouchEvent，onClick的执行顺序
+   onTouch--->onTouchEvent--->onClick
+
+12.什么是数据持久化?
+   就是数据存储  SharedPreferences ,File,SQLite,服务器存储
+
+13. Davlik虚拟机与JVM虚拟机  
+
+    Davlik虚拟机是用来执行Android应用程序的，每一个Android应用程序都是在一个独立的Davlik虚拟机实例中执行
+    
+    Davlik虚拟机执行的.dex格式的字节码文件，JVM中执行的是.class的字节码文件。
+
+14.如何使用JNI
+  在Java方法前使用native关键字 private native String printJNI(String inputStr);
+
+15.Android有没有办法直接退出整个应用
+   1.我们可以写一个Activity的管理类，可以用一个列表数据结构来存放应用中没有销毁的Activtiy,
+   在onCreate方法中把Activity添加到类表中，Activity销毁时，移出列表，保证列表中存放的都是
+   应用中没有被销毁的Activity，在应用想要直接退出时，直接关闭所有列表中所有Activity即可。
+
+   2.或者是在每一个Activity中都注册一个广播，广播中的操作就是结束当前的Activity，当需要退出应用时，
+     就可以发出广播，那么所有接收到广播的Activity，都会自动关闭，从而退出整个应用。
+
+16.AIDL的全称是什么？如何工作？
+  AIDL(Android Interface Definition Language)
+
+
+
+
+
+
+
+17.让Activity变成一个窗口：Activity属性设定
+   通过Activtiy的主题属性设置 
+    android:theme="@android:style/Theme.Dialog"   
+
+18.你后台的Activity被系统回收怎么办
+   我们只需要在onSaveInstanceState()方法中来保存需要的状态即可。
+
+19.子类继承父类，如果重写父类的方法，要保证这个方法的访问权限不能比父类中该方法的访问权限严格
+
+   比如说父类中该方法的访问权限是public ,那子类重写该方法时，要保证访问权限不能比public低，不能是private,也不能是protected,只能是public
+   如果父类中方法的访问权限是protected,那子类重写该方法时，要保证该方法的访问权限不能低于protected,不能是private,可以是protected，也可以是public
+
+20.子类可以继承父类的静态方法，但是不能重写父类的静态方法
+    public class ParentClass {
+	public static void fun() {
+		System.out.println("ParentClass fun");
+	}
+}
+
+
+public class ChildClass extends ParentClass {
+
+	public static void fun() {
+		System.out.println("ChildClass fun");
+	}
+}
+
+这样写是没有问题，编译，运行都没有问题，但是实际上ChildClass只是定义了一个与父类一样的静态方法，并不是重写。
+
+因为根据Java的多态，对象向上转型： 
+ParentClass object=new ChildClass();
+            object.fun()
+如果是重写，这里调用的应该是子类中的方法，但实际上调用的是父类中的方法，不满足Java中重写实现多态的本质，所以子类并没有重写父类中的静态方法，只是定义了一个一样的方法。
+所以总结：子类不能重写父类的静态方法
+
+21.Java中的多态
+（1）方法的重写与重载
+（2）对象的向上转型。
+
+22.Android中多线程实现机制
+ Activity.runOnUiThread(Runnable)
+ View.post(Runnable)
+ View.postDelay(Runnable,long)
+ Handler
+ AsyncTask
+
+23.invalidate()和postInvalidate()方法的区别
+
+这两个方法都是用来重绘View的
+invalidate()方法是在UI主线程中使用的
+postInvalidate()方法是在子线程中调用重绘View的
+
+24.ListView为什么要复用?
+   ListView复用的目的是节省内存，避免不必要的内存开销，如果不进行复用，那么创建
+   一千个Item,就要实例化一千个实例，会造成内存溢出。
+
+   ListView的复用原理：ListView实际上创建的就是一屏幕的Item，   
+
+  
+    
+
+   
+
+
+
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+

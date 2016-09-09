@@ -1,0 +1,281 @@
+1.简述ContentResolver获取ContentProvider中内容的基本步骤
+  (1)通过Context提供的getContentResolver()方法来获取ContentResolver对象。
+  (2)通过ContentResolver提供的query()方法来获取想要获取的数据
+  (3)对ContentResolver的query()方法返回Cursor对象进行遍历。
+
+2.Android中的动画
+  主要分为2类:FrameAnimation(逐帧动画) 补间动画(TweenAnimation)
+ (1)FrameAnimation：主要是显示一张张的静态图片来达到动画的效果
+  一般是在drawable资源文件夹下，定义一个资源文件 ，使用layer-list标签 通过item子标签添加一张张静态图片
+  然后作为一个组件的背景
+  在代码中获取组件的背景，强转成AnimationDrawable对象，通过这个对象控制动画的播放即可
+(2)TweenAnimation:只需要提供动画的开始帧，结束帧，以及持续时间即可，由系统计算并插入中间帧。
+   主要是对图片进行透明度、位移、缩放、旋转操作实现动画效果
+
+   一般是在res下新建anim目录，然后在anim目录下新建动画资源文件 ,通过在<set>标签下加入
+   <alpha> <scale> <translate> <rotation>标签实现动画
+
+   然后在程序中通过AnimationUtils.loadAnimation(animresource)方法加载动画
+   通过组件的startAnimation方法启动动画 
+    
+   补充：
+   PropertyAnimation （属性动画）
+   主要是对View的属性做改变
+
+3.Android的国际化
+  Java程序国际化的思想就是将程序中使用到的标签、提示信息都放到资源文件中，程序需要支持哪些国家，语言
+  环境，就在提供相应版本的资源文件即可。
+
+  Android中实现国际化比较容易，因为Android中本来就是XML资源文件的形式来保存程序中用到的字符串
+  ，我们需要支持哪些国家、语言环境，就提供相应资源目录，在目录名后面添加 -语言代码-r国家代码 来区别即可。
+
+  4.Java的单例模式
+   是一种对象的创建模式
+
+   单例模式有以下特点:
+   (1)单例类只能产生一个实例
+   (2)单例类必须自己创建自己的唯一实例
+   (3)单例类必须给其它对象提供这一实例
+
+   单例模式的五种实现方式：饿汉式、懒汉式、静态内部类，枚举式,双重检测锁式(由于JVM底层内部模型原因，偶尔会出问题，不加以使用)
+
+   主要是三种:饿汉式，懒汉式,静态内部类
+   
+   -饿汉式(线程安全的，调用效率高，不能延时加载)
+    优点：类初始化的时候立即创建这个对象，是天然的线程安全的。
+
+/**
+ * @author Home-Pc 饿汉式单例模式
+ */
+public class MySingleClassA {
+	private static MySingleClassA mySingleClassA = new MySingleClassA();
+
+	/**
+	 * 构造方法私有化
+	 */
+	private MySingleClassA() {
+
+	}
+
+	public static MySingleClassA getInstance() {
+		return mySingleClassA;
+	}
+
+}
+
+   -懒汉式（非线程安全的，调用效率低,可以延时加载）
+
+ /**
+ * @author Home-Pc 懒汉式单例模式
+ */
+public class MySingleClassB {
+	private static MySingleClassB mySingleClassB = null;
+
+	/**
+	 * 构造方法私有化
+	 */
+	private MySingleClassB() {
+
+	}
+
+	public static MySingleClassB getInstance() {
+		if (mySingleClassB == null) {
+			mySingleClassB = new MySingleClassB();
+		}
+		return mySingleClassB;
+	}
+
+}
+
+-静态内部类单例模式
+ 是比较好的一种单例模式实现化的方式
+ 
+ 不会像饿汉式那样立即加载，由于是静态的常量，只能被赋值一次，所以是线程安全的。
+
+
+/**
+ * @author Home-Pc 静态内部类式单例模式
+ */
+public class MySingleClassC {
+	/**
+	 * 静态内部类
+	 */
+	private static class MySingleClass {
+		private static final MySingleClassC mySingleClassC = new MySingleClassC();
+	}
+
+	/**
+	 * 构造方法私有化
+	 */
+	private MySingleClassC() {
+
+	}
+
+	public static MySingleClassC getInstance() {
+		return MySingleClass.mySingleClassC;
+	}
+
+}
+
+-枚举式单例模式
+   
+   线程安全，调用效率高，但是不能延时加载，可以天然的防止反射和反序列化。
+/**
+ * @author Home-Pc 枚举式单例模式
+ */
+public enum MySingleClassD {
+
+	// 这个枚举元素就是单例对象
+	INSTANCE;
+
+	// 添加相应的操作方法
+	public void fun() {
+	}
+}
+
+比较：如果不需要延时加载，枚举式好于饿汉式。
+      如果需要延时加载，静态内部类好于懒汉式。
+
+5.二分法搜索
+ 
+    在一个有序数组中快速查找元素
+
+	public static int binarySearch(int a[], int x) {
+		int left = 0;
+		int right = a.length - 1;
+		int index = -1;
+		int pos;
+		while (left <=right) {
+			pos = (left + right) / 2;
+			if (a[pos] == x) {
+				index = pos;
+				break;
+			} else if (a[pos] < x) {
+				left = pos + 1;
+			} else if (a[pos] > x) {
+				right = pos - 1;
+			}
+		}
+		return index;
+	} 
+
+时间复杂度:O(log2n)
+
+
+
+6.反射机制
+
+程序在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，
+都能够调用它的任意一个方法和属性；这种动态获取信息以及动态调用对象的方法的功能
+称为java语言的反射机制。
+
+Class stuClass=Class.fromName("com.test.Student");(获取Student类)
+Class stuClass=Student.class;(获取Student类)
+
+Student stu=stuClass.newInstance()(newInstance()调用的Student类的无参构造方法，创建一个实例，如果Student没有无参构造方法会报错)
+
+Constructor cons[]=stuClass.getConstructors(); //获取Student类的所有的public公有构造方法
+Constructor cons[]=stuClass.getDeclaredConstructors(); //获取Student类的所有构造方法
+
+Method[] methods=stuClass.getMethods();//获取Student类所有的public成员方法
+Method[] methods=stuClass.getDeclaredMethods();//获取Student类的所有成员方法(不论公有私有还是其它权限);
+
+Filed[] fields=stuClass.getFileds() ;//获取Student类的所有public成员变量
+Field[] fileds=stuClass.getDeclaredFields();//获取Student类所有的成员变量(不论公有私有还是其它权限);
+
+
+
+      
+垃圾回收,反射,手写代码题是 单例,二分法,还有一个 手写线程池
+
+7。在java里char型变量中可以存储一个中文汉字
+  char是按照字符存储的，不管是英文还是汉字，固定占两个字节
+  Java采用Unicode编码,  Unicode字符集包含了汉字。
+   
+8.Android中visibility熟悉invisibility、gone区别？
+
+9.以button为例说明android：gravity与layout:layout_gravity的区别
+
+10.ArrayList,LinkedList,Vector的存储特性和区别
+
+   ArrayList、LinkedList、Vector都是List接口的实现类
+   
+   ArrayList和Vector都是使用数组实现的，查找比较高效。ArrayList是非线程安全的，Vector是线程安全的。
+   LinkedList是采用双向链表是实现的，插入比较简单，查找效率比较低。
+
+ 11.Adapter有什么作用？至少列出3个常见的adapter  
+
+  数据适配器: 是AdapterView和底层数据之间的桥梁,用于提供数据项的访问
+
+  ArrayAdapter 可用于将数组或者是集合中的多个数值包装成多个列表项
+
+  SimpleAdapter 可用于将集合中的多个对象包装成多个列表项
+
+  BaseAdapter 一般用于扩展，通过扩展BaseAdapter可以实现列表项的最大限度的定制
+
+  12.如何避免ANR？
+    ANR-Application Not Responding
+
+  13.Android引入广播机制的用意
+     广播接收者是一个全局监听器，用来接收系统的全局广播消息，实现组件之间的通信。
+
+  14.什么情况会导致Force Close ?如何避免？
+     出现异常（空指针异常） 
+
+  15.IntentService   
+
+     -Activity的进程在处理Intent时 会产生一个对应的Servcie，Android的进程
+     处理器现在会尽可能的不kill掉你
+     
+    -  IntentServcie是继承自Service的，它的onHandleIntent方法里的操作都是在一个单独的子线程中执行的
+     所以不用另外开启子线程了。
+
+  16，广播的生命周期?
+
+  17.两个Activity切换的时候依次回调了什么方法
+     ActivityA->ActivityB
+
+     ActivityA: onPause()--->onStop()--->onDestroy()
+     ActivtiyB：onCreate()--->onStart()--->onResume()
+
+     再由ActivtiyB返回ActivtiyA
+     ActivityB  onPause()--->onStop()--->onDestroy()
+     ActivityA  onRestart()--->onStart()--->onResume()
+
+  18.横竖屏切换依次调用什么方法
+     PORTRITA  
+     LANDSCAPE 
+     默认的情况下横竖屏切换：Activity会被销毁然后重新创建
+     onPause()--->onStop()--->onDestroy()--->onCreate()--->onStart()--->onResume()
+
+     如果不希望Activity重新创建 :在AndroidManifest.xml文件中配置 android:onConfigChanges="orientation|keyboardHidden|screenSize"
+     然后切换横竖屏幕的时候，只会调用onConfigurationChanged()方法
+  19:有多少种情况可以更新ui
+      Handler
+      AsyncTask(异步任务)
+      runOnUiThread(Runnable run)
+      view.post(Runnable run)
+
+ 20.Parcelable和Serializable的区别？
+    Parcelable和Serializable都是实现自定义对象序列化的方式
+    序列化:把对象转成字节序列的过程就是对象的序列化
+
+    对象序列化的主要用途: 
+  （1）实现对象的持久化
+       把对象的字节序列保存到文件中，数据库中。
+  （2）用于在网络中，程序内和程序间传输对象数据。
+   
+   两种实现对象序列化方式的比较：
+   Parcelable的性能要比Serializable好，内存开销小，所以内存间数据传输推荐使用Parcelbale,
+   如Activity间数据的传输。
+   而Serializable主要用于数据的持久化,需要保存数据或者是在网络将传输对象数据选择Serializable。
+
+21.Android中的设计模式
+1.Application 单例模式
+2. 观察者模式 各种listener
+3. MVC 这个好理解
+
+
+
+
+

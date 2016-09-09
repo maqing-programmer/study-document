@@ -1,0 +1,249 @@
+1.ContentProvider
+
+-Android系统四大组件之一，是Android系统中用来实现不同应用程序之间数据共享的标准API。
+当一个应用程序通过ContentProvider暴露了自己的数据操作接口，那么其它应用就可以通过ContentResolver来操作ContentProvider暴露的数据。
+并且一旦一个应用通过ContentProvider暴露了自己的数据操作接口，那么，不论这个应用是否启动，其它的应用程序都可以通过这个数据操作接口
+来操作这个应用程序的数据(增、删、改、查)
+
+-开发ContentProvider的步骤
+  定义一个类继承自ContentProvider基类
+  在AndroidManifest.xml文件中注册
+
+-Android系统提供了许多的ContentProvider,如获取联系人、多媒体数据的ContentProvider,
+ 在实际开发过程中，自己实现ContentProvider还是比较少的，一般都是使用系统提供的ContentProvider.
+2.Android中的动画
+-FrameAnimation(逐帧动画)
+逐帧动画就是开发者提供动画过程中的每张静态图片，然后由Android系统控制依次显示这些静态图片。
+
+定义使用逐帧动画：
+(1)通过资源文件定义逐帧动画
+   在drawable中定义一个资源文件,在<animation-list>标签中使用<item/>子元素定义动画的全部帧，并指定各帧的持续时间
+   frame_animation.xml文件
+   
+   <animation-list
+   android:oneshot="false"
+   >
+   <item
+   android:drawable="@drawable/process_1"
+   android:duration="60"
+   >
+   <item
+   android:drawable="@drawable/process_2"
+   android:duration="60"
+   >
+   <item
+   android:drawable="@drawable/process_3"
+   android:duration="60"
+   >
+   <item
+   android:drawable="@drawable/process_4"
+   android:duration="60"
+   >
+   </item>
+   </animation-list> 
+
+  android:oneshot控制动画是否循环播放，true表示只播放一次，false表示循环播放
+
+ 一旦程序获取了AnimationDrawable对象，接下来就可以用ImageView把AnimationDrawable显示出来-一般是把AnimationDrawable设置成ImageView的背景
+ 
+ 我们可以在布局文件中设置ImageView的背景为该动画资源文件 android:background="@drawable/frame_animation"
+
+ 在代码中获取AnimationDrawable对象：AnimationDrawable animationDrawable=(AnimationDrawable)imageView.getBackground();
+ AnimationDrawable对象代表的动画默认是不播放的，必须在程序中启动播放才可以，AnimationDrawable提供了如下两个方法来启动和停止动画
+ start():开始播放动画
+ stop():停止播放动画 
+ 
+(2)在代码中定义逐帧动画
+   先创建AnimationDrawable对象，然后调用addFrame(Drawable drawable,int duration)向动画中添加每一帧,并设置每-帧播放的时间。
+      
+ AnimationDrawable animationDrawable = new AnimationDrawable();
+ //添加动画的每一帧图片
+        animationDrawable.addFrame(getResources().getDrawable(R.drawable.process_1), 60);
+        animationDrawable.addFrame(getResources().getDrawable(R.drawable.process_2), 60);
+        animationDrawable.addFrame(getResources().getDrawable(R.drawable.process_3), 60);
+        animationDrawable.addFrame(getResources().getDrawable(R.drawable.process_4), 60);
+        animationDrawable.addFrame(getResources().getDrawable(R.drawable.process_5), 60);
+        animationDrawable.addFrame(getResources().getDrawable(R.drawable.process_6), 60);
+        animationDrawable.setOneShot(false); //设置动画循环播放
+ imageView.setBackgroundDrawable(animationDrawable);  //把AnimationDrawable设置成ImageView的背景
+ 
+ animationDrawable.start()启动播放动画
+ animationDrawable.stop()停止播放动画
+ 
+-TweenAnimation(补间动画)
+ FrameAnimation(逐帧动画)需要提供动画过程中的每一帧，TweenAnimation(补间动画)只需要提供动画开始、动画结束处的关键帧，
+ 由系统计算动画过程中的中间帧。
+ 
+ 补间动画的开始帧、结束帧不是图片，而是一些值，大小，透明度，旋转角度，坐标。
+ 也就是说实际上我们提供的关键帧就是图片开始时和结束时的大小、透明度、旋转角度、坐标。
+ 也即代表的是图形的大小缩放动画、透明度的改变动画、旋转动画、位移动画。
+ 上面几种动画对应以下几种类：
+ AlphaAnimation:透明度改变的动画
+ ScaleAnimation:大小缩放的动画
+ TranslateAnimation:位移变化的动画
+ RotateAnimation:旋转动画 
+ 
+ 补间动画有三个要素：
+ 开始帧、结束帧、动画持续时间。
+ 一旦这三个要素确定之后，系统就会计算出需要在中间插入多少帧，为了控制在动画期间需要插入多少帧，需要借助于Interpolator(插值器)
+ Interplator根据特定的算法计算出动画过程中需要插入的帧的密度和位置。
+ Interpolator就是控制动画的变化速度，可以使动画匀速变化、加速变化、减速变化等各种速度变化。
+ Interpolator是一个接口，有以下几个实现类，分别用于实现不同的动画变化速度。
+ -LinearInterpolator:动画以均匀速度变化
+ -AccelerateInterpolator:动画变化的速度不断加快
+ -AccelerateDecelerateInterpolator:动画开始的时候速度不断加快，在结束的时候有不断变慢。
+ -CycleInterpolator:动画循环播放指定的次数，速度变化按正玄曲线变化。
+ -DecelerateInterpolator:动画变化的速度不断减慢。
+ 
+-定义和使用补间动画
+ 在资源文件中定义定义补间动画：在res目录下新建一个anim目录，这个anim目录就是补间动画的资源文件夹:引用动画资源的方式： R.anim.my_tween_anim
+ 在anim目录中创建一个补间动画资源文件 my_tween_anim.xml
+ <set
+ android:interplator="@android:anim/linear_interpolator"
+ >
+    <scale
+        android:duration="3000"
+        android:fromXScale="0.01"
+        android:fromYScale="0.01"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toXScale="1"
+        android:toYScale="1"></scale>
+ </set>
+ 
+ 这里<set>中只有一个<scale/>标签，也即只有一个大小缩放的变化,还可以在<set>添加<alpha>、<translate>、<rorate>来实现透明度、位移、旋转变化
+ 并且这里<set>中有一个android:interpolator属性，来设置动画的Interpolator,来设置动画变化的速度，这里设置的@android:anim/linear_interpolator
+ 表示动画变化的速度是均匀的
+ 还有@android:anim/accelerate_interpolator、@android:anim/accelerate_decelerate_interpolator、@android:anim/cycle_interpolator、@android:anim/decelerate_interpolator
+ 与上面的Interpolator的几个实现类是相对应的。
+ 
+ 定义好了补间动画的资源文件后，就要在代码中来使用补间动画了。
+ 
+ 通过Animation animation= AnimationUtils.loadAnimation(this,R.anim.my_tween_anim)来获取AnimationDrawable对象，
+
+ 然后通过ImageView启动动画的播放: imageView.startAnimation(animation) ，
+ 停止动画:imageView.clearAnimation();
+ 
+ 这里要注意的是ImageView在XML文件中要设置一张背景图片,这个背景图片就是动画变化过程的原始图片。
+ 
+     <ImageView
+        android:id="@+id/imageview2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/process_1" />
+		
+3.RecycleView的使用
+-在module的build.gradle文件中的dependencies中添加对RecycleView的依赖 
+ compile 'com.android.support:recyclerview-v7:22.2.1'
+ 从Android5.0，Google推出了RecycleView控件，RecycleView是support-v7包中的控件，是一个强大的滑动控件。
+-RecycleView的优点
+RecycleView是ListView的升级版，具有以下优点：
+(1)RecycleView封装了ViewHolder的回收复用，RecycleView标准化了ViewHolder,编写Adapter面向的是ViewHolder而不在再是View了
+   也就是说复用逻辑被封装了，写起来更加简单了。
+(2)针对Item的显示，RecycleView专门抽取了相应的类来控制Item的显示，扩展性非常强，如果想控制横向或者是纵向滑动列表
+   可以通过LinearLayoutManager这个类来进行控制(与GridView对应的效果是GridLayoutManager) ,也就是说RecycleView不再拘泥于
+   ListView的线性展示方式，也可以实现GridView等多种展示效果。
+(3)RecycleView的分割线可以通过继承自RecycleView的ItemDecoration类，自己定义分割线。  
+(4)可以控制Item的增删动画，通过ItemAnimator这个类进行控制，RecycleView有其自己默认的实现。DefaultItemAnimator
+
+-RecycleVie的使用
+ 首先要在module的build.grade文件的dependencies中添加对RecycleView的依赖: compile 'com.android.support:recycleview-v7:22.2.1'
+ recycleview.setLayoutManager(layoutManager);//设置布局管理器 (必须设置)
+ recycleview.setAdapter(adapter);//设置适配器 (必须设置)
+ recycleview.setItemAnimator(new DefaultAnimator);//设置Item的增、删动画
+ recycleview.addItemDecoration(itemDecoration);//设置分割线
+ 
+ RecycleView的适配器需要自定义，且是继承自RecycleView.Adapter的,重写 onCreateViewHolder()、onBindViewHolder()、getItemCount()方法。
+ 还需要自定义一个ViewHolder内部类，这个ViewHolder必须是要继承自RecycleView.ViewHolder的。
+ 
+-RecycleView的使用相对于ListView好像要复杂一点，但是这正是RecycleView高度解耦的表现，具有极高的可扩展性。
+
+-为RecycleView的Item添加点击事件
+  ListView本身提供了setOnItemClick、setOnLongItemClick方法来添加Item的点击和长按事件，但是RecycleView并没有提供这些方法，所以需要我们自己去定义
+  来实现RecycleView的Item的点击事件。
+  为RecycleView的Item添加点击事件，需要在RecycleView的Adapter中实现，然后对外开放一个接口即可。
+  
+  首先在Adapter中定义一个接口: 
+  public interface OnItemClickListener{
+   public void onItemClick(View view,int position);
+  }
+  然后定义一个接口变量：public mOnItemClickListener;
+  
+  然后让Adapter去实现View.OnItemClickListener接口，重写onClick方法
+    @Override
+    public void onClick(View view) {
+        if (mOnItemClickListener != null) {
+            mOnItemClickListener.onItemClick(view, (Integer) view.getTag());
+        }
+    }
+  这里的view.getTag()应该是position，应该是在onBindViewHolder(MyViewHolder holder, int position)中设置的
+  @Override
+    public void onBindViewHolder(MyViewHolder holder, int position) {
+        holder.textView.setText(data.get(position));
+        holder.itemView.setTag(position);//设置Tag为position,以便在点击方法中拿到position
+    }
+	
+ 在Adapter的onCreateViewHolder(ViewGroup parent,int ViewType)中为Item添加点击事件。
+   @Override
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.recycleview_item, parent, false);
+        view.setOnClickListener(this);//为View也即RecycleView的Item添加点击事件。
+        MyViewHolder myViewHolder = new MyViewHolder(view);
+        return myViewHolder;
+    }
+
+ 然后需要对外开放接口： 
+ public void setOnItemClickListener(OnItemClickListener mOnItemClickListener){
+    this.mOnItemClickListener=mOnItemClickListener;
+ }
+ 
+ 然后如果我们需要对RecycleView的Item添加点击事件，就可以通过RecycleView的adapter调用setOnItemClickListener方法来添加点击事件
+ adapter.setOnItemClickListener(new MyRecycleViewAdapter.OnItemClickListener(){
+            @Override
+            public void onItemClick(View view, int position) {
+                Toast.makeText(MainActivity.this, "item" + position, Toast.LENGTH_SHORT).show();
+            }
+ });
+ 
+ 以上就实现了为RecycleView的Item添加点击事件，长按事件与点击事件的实现是一样的，可以参照点击事件的实现。
+ 
+ 
+ 
+ 
+	
+	
+   
+   
+   
+ 
+ 
+ 
+  
+  
+ 
+ 
+ 
+ 
+ 
+   
+ 
+ 
+ 
+ 
+		
+ 
+ 
+  
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+

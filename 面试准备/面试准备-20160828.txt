@@ -1,0 +1,203 @@
+1.ProgressBar(进度条) 
+-进度条简介
+  ProgressBar是Android开发中比较常用的一个UI组件。
+  主要就是用来显示任务的执行进度的，以及向用户表明任务正在执行中。
+  
+  Android系统提供的ProgressBar的样式主要可以分为两种：水平的进度条，环形的进度条
+  水平的进度条可以显示任务执行的进度(百分比),而环形的进度条则是不能显示执行的进度的，环形进度条只是
+  向用户表明任务还在执行中。
+  
+  通过style属性可以为ProgressBar指定样式，Android系统主要提供以下样式：
+  @android:style/Widget.ProgressBar.Horizontal 水平进度条
+  @android:syle/Widget.ProgressBar.Inverse 普通大小的环形进度条
+  @android:style/Widget.ProgressBar.Large 大环形进度条
+  @android:style/Widget.ProgressBar.Small 小环形进度条
+  
+-自定义ProgressBar的样式
+   Android系统提供的进度条的样式，比如说进度颜色大多数时候不能满足我们的需求，我们可以自己定义ProgressBar的样式，
+  
+  1.自定义水平进度条的样式
+  
+  在系统提供的样式的基础上通过 progressDrawable属性来设置ProgressBar的进度的背景、颜色颜色。
+  在drawable资源目录下新建一个资源文件:progress.xml
+  <layer-list>
+  <item android:id="@android:id/background"
+         android:drawable="@color/progress_bg">
+  
+  <item android:id="@android:id/secondaryProgress">
+  <scale  android:drawable="@color/secondary_progress"
+          android:scaleWidth="100%"/>
+   </item>
+   
+   <item android:id="@android:id/progress">
+   <scale android:drawable="@color/progress"
+          android:scaleWidth="100%"/>
+   </item>
+  </layer-list>  
+  
+  使用：
+      <ProgressBar
+        android:id="@+id/progressBar"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:progressDrawable="@drawable/progress" />
+  
+ 第一个item定义的是进度条的背景，第二个item定义的是secondaryProgress的颜色,第三个item定义的是进度progress的颜色 
+ 定义progressDrawable的时候，必须要按照这个顺序(如果没有secondaryProgress可以去掉)来定义，并且secondaryProgress
+ 和progress定义drawable时都必须用<scale/>子项，否则进度条会一直显示满的状态。 
+ 
+ 2.自定义圆形进度条的样式
+    
+  (1)通过自定义颜色实现
+	在res/drawable中定义一个drawable资源文件,progress.xml
+	
+	<rotate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fromDegrees="0"
+    android:pivotX="50%"
+    android:pivotY="50%"
+    android:toDegrees="360" >
+    <shape
+        android:innerRadiusRatio="3"
+        android:shape="ring"
+        android:thicknessRatio="8"
+        android:useLevel="false" >
+        <gradient
+            android:centerColor="#FFDC35"
+            android:centerY="0.50"
+            android:endColor="#CE0000"
+            android:startColor="#FFFFFF"
+            android:type="sweep"
+            android:useLevel="false" />
+    </shape>
+</rotate>
+使用:
+      <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateDrawable="@drawable/progress" />
+
+  (2)使用一张图片自定义
+	同样是在res/drawable中定义一个资源文件:progress2.xml
+	<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+		<item>
+			<rotate
+            android:drawable="@drawable/ic_launcher"
+            android:fromDegrees="0"
+            android:pivotX="50%"
+            android:pivotY="50%"
+            android:toDegrees="360"></rotate>
+		</item>
+		</layer-list>
+	使用:
+		<ProgressBar
+			android:id="@+id/progressBar"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:indeterminateDrawable="@drawable/progress2" />
+
+
+	但是有一个缺点就是，这两种定义环形进度条的方式，都不能控制进度条旋转的速度。
+
+ 3.其实我们可以通过一个旋转动画来实现加载动画的效果。
+   用一个ImageView来显示一个旋转动画即可：
+	在res目录中新建一个anim目录，在anim目录中定义一个补间动画 progress3.xml
+	<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/linear_interpolator">
+    <rotate
+        android:duration="1500"
+        android:fromDegrees="0"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:repeatCount="-1"
+        android:toDegrees="359"></rotate>
+	</set>
+
+	这里定义这个旋转动画要注意三点，
+	一个是android:interpolator="@android:anim/linear_interpolator"
+	一个是android:toDegrees="359" 不是360
+	一个是android:repeatCount="-1"
+	这三点共同实现了无限旋转，没有停顿。
+
+	使用:我们就用一个ImageView来呈现动画：
+		<ImageView
+			android:id="@+id/progressBar2"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/progressBar1"
+			android:src="@drawable/ic_launcher"></ImageView>
+	程序中:
+	Animation animation=AnimationUtils.loadAnimation(this,R.anim.progress3.xml)
+	imageView.startAnimation(animation);
+
+	这样就利用旋转的补间动画实现了一个加载动画。
+
+-SeekBar(拖动条)
+ SeekBar是继承自ProgressBar的 ,SeekBar与ProgressBar非常相似，只不过拖动条有一个可拖动的滑块，通过拖动拖动条可以改变进度，所以拖动条通常被用于
+ 对系统某种数值的调节，比如音量等。
+ 
+ 自定义SeekBar的样式
+ 自定义SeekBar的样式的方式与自定义水平ProgressBar的样式的方式是一样的。
+ 在系统提供的样式的基础上通过 progressDrawable属性来设置ProgressBar的进度的背景、颜色颜色。
+  在drawable资源目录下新建一个资源文件:seekbar.xml
+  <layer-list>
+  <item android:id="@android:id/background"
+         android:drawable="@color/progress_bg">
+  
+  <item android:id="@android:id/secondaryProgress">
+  <scale  android:drawable="@color/secondary_progress"
+          android:scaleWidth="100%"/>
+   </item>
+   
+   <item android:id="@android:id/progress">
+   <scale android:drawable="@color/progress"
+          android:scaleWidth="100%"/>
+   </item>
+  </layer-list>  
+  
+  
+  可拖动的滑块也可以自己定义：在res/drawable中定义一个资源文件 thmub.xml
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <stroke
+
+        android:color="@color/colorAccent"></stroke>
+    <solid android:color="@color/colorAccent"></solid>
+    <size
+        android:width="10dp"
+        android:height="10dp"></size>
+</shape>
+  
+  使用：
+       <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="5dp"
+        android:minHeight="5dp"
+        android:progressDrawable="@drawable/seekbar"
+        android:thumb="@drawable/mythumb" />
+  
+  这里要注意的是设置了android:maxHeight和android:minHeight，用这两个属性来控制进度条的宽度，而layout_height
+  设置成wrap_content即可，不要把wrap_content设置成具体的值，否则，thumb滑块可能不在进度条的中间。
+  
+2.抽屉布局(滑动菜单) 
+  
+  
+  
+
+
+
+
+
+
+
+   
+   
+		
+    
+	
+    
+  
+

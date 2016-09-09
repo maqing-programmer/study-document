@@ -1,0 +1,47 @@
+面试：
+上海脉麟金融信息服务有限公司
+时间：9月2日 下午14:00
+
+1.断点下载
+  断点下载：在下载的过程中如果网络出现故障，或者是人为的停止了下载，下一次可以从上次下载的
+  位置接着下载，不用重新下载。
+  Android中实现断点下载：
+  通过RandomAccessFile(随机文件访问)和Http连接的的Range头字段共同实现断点下载。
+  -通过Http连接的Range头字段指定从文件的什么位置开始下载，下载到什么位置结束
+   URL url = new URL(REQUEST_URL);
+   HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+   conn.setRequestProperty("Range", "bytes=" + start + "-" + end);
+  
+  -通过RandomAccessFile从指定位置写入数据来实现文件的保存。
+   RandomAccessFile raf = new RandomAccessFile(file, "rwd");
+   raf.seek(start);
+   while ((len=in.read(buff)) != -1) {
+		raf.write(buff,0,len);
+	 }
+
+这里涉及到一个知识点：
+暂停下载，本质上也就是停止下载线程，那么怎么停止下载线程呢? 
+线程属于一次性消费品，线程执行完run方法之后，会自动结束，结束后就报废了，不能再次start,如果要使用，只能重新新建一个线程对象。
+虽然线程在执行完后会自动结束，但是有时候我们却需要在线程没有执行完就人为的结束线程，比如上面的暂停下载，就需要人为的结束下载线程。
+
+那么如何结束线程呢？
+（1）使用退出标志，使线程正常退出，也就是使run方法结束。
+这是结束线程最好的，最推荐的方式。
+还有两种方式 :thread.interrupt()和thread.stop(),这两种方式都是不推荐的。
+
+2.数据加密
+
+
+
+
+
+
+
+
+
+
+
+
+
+

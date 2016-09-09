@@ -1,0 +1,168 @@
+1.复习自定义View
+  -在res/values/下新建attrs目录，用于定义View的属性
+  -在View的构造方法中获取自定义的属性
+   TypeArray typeArray=context.getTheme().obtainStyleAttribute(attrs,R.styleable.MyView,defStyleAttr,0);
+   int n=typeArray.getIndexCount();
+   for(int i=0;i<n;i++){
+    int index=typeArray.getIndex(i);
+    switch(index){
+    case R.styleable.MyView_text:
+
+    break;
+    
+    case R.styleable.MyView_textSize:
+    
+    break;
+
+    case R.styleable.MyView.textColor:
+    
+    break;
+
+    }
+
+   }
+
+  -重写onMeasure()方法
+  -重写onDraw()方法
+
+ 在View的中心处绘制文本:
+ int x=getWidth()/2-mPaint.measureText(mText);
+ int y=getHeight()/2+(mFontMetrics.bottom-mFontMetrics.top)/2-mFontMetrice.bottom;
+ 
+ canvas.drawText(mText,x,y,mPaint);
+ 注意这里的y是文本的baseline的纵坐标
+
+ 2.Android内存管理优化
+
+
+ 3.XML文件的解析
+   
+   -简介：
+   XML(Extensible Markup Language)-可扩展的标记语言。
+   
+   -XML文件的解析:
+
+  (1)DOM(Document Object Model) 文档对象模型
+    优点：操作比较简单
+    缺点：需要一次性载入整个文档,非常占用内存。
+
+  (2) SAX(Simple API for XML);
+    优点：占用内存比较少
+    缺点：操作要比较复杂
+
+    原理：对文档进行顺序扫描，当扫描到文档(document)的开始与结束，元素的开始与结束等地方时通知
+    事件处理函数，由事件处理函数做相应动作，然后继续扫描，直至文档结束。
+
+    在文档开始和结束时触发文档处理事件
+    在文档内每一个XML元素接受解析的前后触发元事件
+
+    SAXParserFactory (SAX解析器工厂)
+
+    SAXParser(SAX解析器)  SAXReader逐行读取XML文档
+
+    XML
+
+    每次触发事件都会调用相应的函数，我们要做的就是实现这些方法。
+
+    ContentHandler接口：
+    ContentHandler接口是一个SAX接口，该接口封装了一些事件处理方法，当XML解析器
+    开始解析XML输入文档，它会遇到某些特殊的事件，比如文档的开头和结束，元素的开头和结束，
+    以及元素中的字符数据等事件，当遇到这些事件时，XML解析器会调用ContentHandler接口中的相应的
+    方法来响应该事件。
+
+    ContentHandler接口中有以下几个方法:
+    void startDocument()
+    void endDocument()
+    void startElement()
+    void endElement()
+   
+    使用SAX解析文档的步骤:
+
+    创建事件处理程序(就是实现接口中的事件处理方法，一般是定义一个类继承自DefaultHandler,实现我们需要实现的方法)。
+                       
+    创建SAX解析器
+    将事件处理程序分配给SAX解析器
+    对文档进行解析
+    
+    创建一个SAXParserFactory
+    SAXParserFactory factory=SAXParserFactory.newInstance();
+    XMLReader reader=factory.newSAXParder().getXMLReader();
+    //为XMLRaeder设置事件处理器
+    reader.setContentHandler(new MyContentHandler());
+    //开始解析文件
+    inputSource是一个InputSource对象，
+    new InputSource()
+    reader.parse(inputSource);
+  
+  (3)Pull解析
+  
+  Pull解析与SAX的解析模式是相类似的。
+  XmlPullParserFactory factory=XmlPullParserFactory.newInstance();
+  XmlPullParser parser=factory.newPullParser(); 
+  parser.setInput(is,encode);
+  //获取事件的类型
+  int eventType=parser.getEventType();
+  
+while(event!=XmlPullParser.END_DOUCMENT){
+    switch(eventType){
+         case XmlPullParser.STRAT_DOCUMENT:
+             personList=new ArrayList<Person>(); 
+          break;
+        
+         case XmlPullParser.START_TAG:
+            if(parser.getName().equals("person")){
+                  person=new Person();
+                 }else if(parser.getName().equals("id")){
+                      String id=parser.nextText();
+                       person.setName(id);
+                    }else if(parser.getName().equals("name")){
+                          String name=parser.nextText();
+                           person.setName(name);
+                        }else if(parser.getName().equals("age")){
+                              String age=parser.getAge();
+                              person.setAge(age);
+                            }
+              break;
+          case XmlPullParser.END_TAG:
+              if(person.getName().equals("person")){
+                    personList.add(person);
+                     person=null;
+                 }
+               break;
+        }
+
+          eventType=parser.next();
+      }
+        
+  START_DOCUMENT  
+  START_TAG
+  TEXT
+  END_TAG
+  END_DOCUMENT
+
+
+11.Android Studio移动光标到行首和行尾的快捷键
+   fn + 向左键  移到行首
+   fn + 向右键  移到行尾
+     
+    
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+   
+
+
+
+
+ 

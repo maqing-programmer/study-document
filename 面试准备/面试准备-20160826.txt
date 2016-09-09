@@ -1,0 +1,195 @@
+1.Android Studio每次创建新项目或者是重启时都有一个Indexing过程，比较慢
+
+2.手机注册的网络运营商所在国家的MCC+MNC
+  MCC:Mobile Country Code,移动国家码，国际电联（ITU）统一分配和管理，唯一识别移动用户所属的国家，共3位，中国为460;
+  MNC：Mobile Network Code,移动网络码，用于识别移动客户所属的移动网络。
+  
+  Android系统提供了获取获取手机服务信息的类 TelphonyManager,应用程序可以使用这个类中的方法来确定电话服务和状态，以及访问某些类型的用户信息。
+  TelphonyManager telphonyManager=context.getSystemService(Context.TELPHONY_SERVICE)
+  
+  请注意，访问一些电话信息是权限保护的。您的应用程序无法访问受保护的信息，除非它有在其清单文件中声明的适当权限。在权限适用的情况下，它们在您访问受保护的信息的方法中指出。
+  
+  // 返回当前手机注册的网络运营商所在国家的MCC+MNC. 如果没注册到网络就为空.
+     String networkOperator = telephonyManager.getNetworkOperator();
+  
+       if (!TextUtils.isEmpty(networkOperator)) {
+            return networkOperator;
+        }
+	 return  telephonyManager.getSimOperator(); //如果没有网络，就获取SIM卡提供的MCC+MNC
+
+3.TextUtils.isEmpty(str) 和str.isEmpyt()的区别 
+  这两个方法都是用来判断一个字符串是否为空的区别在于，如果str为null时，TextUtils.isEmpty(str)返回为true,
+  而str.isEmpty()怎会出现空指针异常。所以建议用TextUtils.isEmpty()
+
+4.Android Studio怎么进行单元测试
+  在Android开发中，当项目非常大的时候，运行一次项目可能需要很长时间，而我们在开发的过程中，需要测试一些操作的时候，
+  往往可能只是对某一个模块，某一个功能，或者是某一个逻辑操作进行测试，却需要运行整个项目，运行时间很长，这是很大的一个困扰。
+  如果不需要对视图进行操作，仅仅是对一些逻辑代码进行测试，比如说测试某个字符串函数，获取网络数据这些逻辑操作，我们可以借助于
+  Android Studio的单元测试。
+  
+  我们在Android Studio中创建一个项目后，一个module的java目录下有三个包目录，名字都是项目的包名，但是不同的是
+  一个包目录后面有(androidTest),还有一个包目录后面有(test),另外一个包目录什么都没有，我们的项目的源代码都是在
+  后面什么都没有的这个包目录，有androidTest和test的都是测试包目录。
+  androidTest是需要在Android设备上(虚拟机或真机)进行测试的，test是在本地环境下测试，不需要Android设备(虚拟机或真机)
+  
+  -我们来了解一下Android自带的junit单元测试的一些测试类（androidTest测试 需要运行在模拟机或真机上）
+   (1)InstrumentationTestCase
+      InstrumentationTestCase和Activity有点类似，只不过Activity需要一个界面，而InstrumentationTestCase是没有图形界面的，具有启动能力。
+	  
+	  使用举例：利用Instrumentation启动一个Activity:
+	  在前面所说的androidTest标识的包目录下新建一个Java类，继承自InstrumentationTestCase,然后在类中编写测试方法，
+	  
+	  测试方法必须都是以test开头的，且是public的， 否则无法识别,不会执行。
+	   
+      public class TestSubject extends InstrumentationTestCase {
+			public void testSubject() {
+				launchActivity("maqing.unittestdemo", MainActivity.class, null);
+			}
+		}
+		
+	右击这个类，点击Run 'TestSubject', 发现虚拟机中ManiActivity被启动了一下，但是启动后会自动关闭，其实代表启动成功了。
+    因为在logcat中打印出了MainActivity的所有周期函数中的日志: 	
+	  08-27 06:21:03.896 3948-3948/? I/MainActivity: onCreate
+	  08-27 06:21:03.896 3948-3948/? I/MainActivity: onStart
+	  08-27 06:21:03.896 3948-3948/? I/MainActivity: onResume
+	  
+	(2)ApplicationTestCase
+       ApplicationTestCase是用来测试整个应用程序的类，它允许你注入一个模拟的Context到应用程序中。
+       使用Context你可以浏览资源、文件、数据库等。
+       
+	   使用ApplicationTestCase测试：
+	   使用方法和Instrumentation是一样的，在androidTest标识的包目录下新建一个Java类，继承自ApplicationTestCase,
+       在类中编写测试方法，测试方法必须也是test开头的且是public的。	   
+	   并且需要提供一个无参构造方法。
+  
+		public class MyApplicationTest extends ApplicationTestCase<Application> {
+			public static final String TAG = "MyApplicationTest";
+
+			public MyApplicationTest() {
+				super(Application.class);
+					}
+
+			public MyApplicationTest(Class applicationClass) {
+					super(Application.class);
+					}
+
+				public void test() {
+					String name = getContext().getString(R.string.app_name);
+					Log.i(TAG, name);
+					}
+				}
+     右击这个，选择Run 'MyApplicationTest',信息打印如下：
+	 08-27 06:46:34.428 4329-4342/? I/MyApplicationTest: UnitTestDemo
+   (3)ActivityUnitTestCase
+      对单个Activity进行测试，使用它，你可以注入模拟的Context或Application，它用于对Activity进行单元测试。也就是说你可以用于测试单独的activity ，
+	  虽然也需要利用模拟机或真机启动，但你启动的只是你需要做测试的activity，于其他activity无关。
+	  
+	  使用举例：要测试的是我们的MainActivity,我们要对MainActivtiy进行单独测试
+	  MainActivtiy如下：
+	  public class MainActivity extends Activity {
+    private static final String TAG = "";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Log.i(TAG, "onCreate");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.i(TAG, "onStart");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i(TAG, "onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i(TAG, "onStop");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.i(TAG, "onRestart");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "onDestroy");
+    }
+}
+
+我们需要在androidTest标识的包目录下新建一个类，继承自ActivityUnitTest类，定义一个测试方法
+测试方法必须是以test开头且是public的。
+
+ public class TestActivity extends ActivityUnitTestCase<MainActivity> {
+
+    public TestActivity() {
+        super(MainActivity.class);
+    }
+
+    public TestActivity(Class<MainActivity> activityClass) {
+        super(MainActivity.class);
+    }
+
+
+    public void test() {
+        launchActivity("maqing.unittestdemo", MainActivity.class, null);
+    }
+}
+
+右击这个类,选择Run 'TestActivity'，MainActivity会被启动一下，但是会自动关闭，其实MainActivity是启动成功。
+打印信息如下：
+08-27 07:53:33.088 1342-1342/? I/MainActivity: onCreate
+08-27 07:53:33.088 1342-1342/? I/MainActivity: onStart
+08-27 07:53:33.088 1342-1342/? I/MainActivity: onResume
+
+(4)下面再来看一下test标识的包目录对应的测试，其实就是Java测试。
+   这个类是test标识的包目录下自动生成的，我在里面添加了一个测试方法：fun
+   这里的测试方法的名字不需要以test开头，但是必须要加上@Test注解，且必须是public的。
+    
+public class ExampleUnitTest {
+    @Test
+    public void addition_isCorrect() throws Exception {
+        assertEquals(4, 2 + 2);
+
+    }
+
+    @Test
+    public void fun() {
+        String str = "";
+        if (str.isEmpty()) {
+            System.out.println("ExampleUnitTest:" + "str为空");
+        }
+    }
+}
+右击这个类,选择Run ExampleUnitTest
+打印信息如下：
+ExampleUnitTest:str为空
+
+
+
+
+
+
+ 
+  
+  
+ 
+  
+		
+		

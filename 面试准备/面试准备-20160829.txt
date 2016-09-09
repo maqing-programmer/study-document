@@ -1,0 +1,44 @@
+1.代码review
+
+2.熟悉Android客户端基于RESTful API对服务器端访问的开发
+
+3.Android TextView设置Drawable的大小
+
+4.android中布局文件使用include标签载入定义的另一个layout文件
+使用实例：
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="maqing.uidemo.MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/UI1"
+        android:layout_width="50dp"
+        android:layout_height="52dp">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="2dp"
+            android:src="@drawable/icon"></ImageView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/hot_prompt_bg"
+            android:drawablePadding="0dp"
+            android:gravity="center"
+            android:text="hot"
+            android:textColor="#ffffff"
+            android:textSize="8sp"></TextView>
+    </RelativeLayout>
+
+  <include
+    layout="@layout/get_red_packets_layout"
+    android:layout_width="80dp"
+    android:layout_height="30dp"
+    android:layout_below="@id/UI1"></include>
+</RelativeLayout>
