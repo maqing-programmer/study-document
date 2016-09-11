@@ -285,14 +285,19 @@ const如果在 * 的右边 则表示 p(指针)是常量,指针不能改变指向
  返回类型 operator = (参数类型 参数){
           
 
+
   }
 
  上面是赋值函数的基本形式,
  一般写成这种:
 
  Student& operator =(const Student &stu){
+    
+    if(this！=&t){
       this->id=stu.id;
       return *this;
+    } 
+ 
  }
 
 
@@ -307,6 +312,399 @@ const如果在 * 的右边 则表示 p(指针)是常量,指针不能改变指向
  注意:下面这个不是赋值，而是对象的初始化(调用的是拷贝构造函数)
   Student stu1;
   Student stu2=stu1;
+
+-小结一下
+ 一般情况下， 对于一个类，即时我们没有提供任何的方法，系统也会为这个类
+ 提供四个默认的方法: 
+ 即默认的构造函数，默认的拷贝构造函数，默认的析构函数，默认的赋值函数。
+ 但是实际上不只是上面这四个默认的函数，而是六个默认的方法，其余的两个分别是
+ 对普通对象取地址，对常对象取地址函数
+
+ 对普通对象取地址函数：
+  Student stu1;
+  Student *p=&stu1;  //这里对stu1对象取地址，实际上会调用一个系统提供的默认的取普通对象地址的函数
+
+  Student* operator &(){
+    return this;
+  }
+
+  对常对象取地址函数：
+  const Student stu1;
+  const Student *p=&stu1;//这里是对一个常对象stu1取地址，也会调用一个默认的取常对象地址的函数
+
+  const Student * operator&() const{
+     
+  }
+
+6.浅拷贝，深拷贝
+public :
+Student{
+  char *name;
+
+
+};
+
+当一个类中有指针型成员变量的时候，当我们用一个用象初始化另一个对象的时候，
+会调用系统提供的默认拷贝构造函数。
+默认的拷贝构造函数只是让name指针指向了同一块内存地址，这就是浅拷贝
+public:
+  Student(const Student &stu) {
+   this->name=stu.name;
+  }
+Student stu1;
+Student stu2(stu1);  //这样调用的是系统默认的拷贝构造函数,stu2的name和stu1的name指向的是同一块内存空间。
+
+深拷贝：
+深拷贝是如果类中有指针型成员变量的时候，我们需要自己写拷贝构造函数，拷贝构造函数不能是指针型成员的简单赋值，
+而是先为拷贝对象的指针型成员开辟一个内存空间，然后再把参数对象的指针成员指向的内容赋值给拷贝对象的内容。
+
+  public :
+  Student(const Student &stu){
+   name=(char *)malloc(sizeof(char)*(strlen(stu.name)+1));
+   strcpy(name,stu.name);
+  }
+
+ 这就是深拷贝
+
+7.运算符重载
+  
+ 返回类型 operator 运算符(参数){
+
+ }
+ 
+ C++中基本上所有的运算符都可以重载，只有极少数运算符不能重载
+
+ 以下五种运算符是不能重载的
+  (1) ?:    (三目条件运算符)
+  (2) . 和.* (成员操作符)
+  (4) ::  (作用域操作符)
+  (5)sizeof (字符长度操作符)
+
+  运算符重载有以下几种限制:
+  (1)不可臆造新的运算符
+  (2)不能改变运算符原有的优先级
+  (3)不能改变运算符原有的操作数的个数
+  (4)重载运算符含义必须清楚，不能有二义性
+
+ 8.友元
+
+ 友元函数：
+ 现在我们可以通过将一个函数声明为一个类的友元函数，来在这个函数中
+ 访问类的私有成员。 
+  
+ class Student; //声明类
+ void show(Student &stu);//声明方法    
+ //这里要注意的，如果引用的是<iostream>头文件，则需要声明类和函数，如果引用的是<iostream.h>,则不需要声明类和函数。
+ 
+ class Student{
+
+  friend void show(Student &stu);//声明show()方法为Stduent的友元函数
+ 
+ public:
+ Student(int id){
+ this->id=id;
+ }
+
+  private:
+  int id;
+ };
+
+ void show(Student &stu){
+         
+   cout<<stu.id<<endl; //因为show()是Student的友元函数，所以在show()方法中可以直接访问Student的私有成员。
+ }
+  
+int main(){
+  Student stu(1);
+  show(stu);  //直接调用友元函数
+}
+
+ 友元函数要用 friend 关键字在类中声明，可以在类里面实现，也可以在类外实现(一般在类外实现，避免认为是成员函数)，
+ 在类外实现的时候可以不用加friend关键字, 并且注意友元函数不是类的成员函数，所以不需要用对象来调用，直接调用接口。
+  
+
+ 友元类：
+ 一个类可以是另外一个类的友元类，友元类的每个成员函数都是另外一个类的友元函数，都可以访问另外一个类中成员。
+ 
+ class A{
+  
+ };
+
+class B{
+  friend class A; //A被声明为B的友元类
+ };
+
+A被声明为B的友元类，A中的所有方法都是B的友元函数，
+那么A中的所有成员函数都可以访问B中的私有成员。
+
+9.输入,输出运算符的重载
+  
+  class Complex{
+  
+  private:
+  int real;
+  int imag;
+
+  public:
+  Complex(int real,int image){
+    this->real=real;
+    this->image=image;
+  }  
+}; 
+Complex complxe(1,2);
+对于上面这个复数对象,如果我们直接输出这个对象cout<<complex;是不可以的，
+因为系统无法识别这个自定义类的输出，但是我们可以重载输出运算符(<<)函数，
+并且把重载的运算符函数声明为Complex的友元函数来实现cout<<complex;
+
+#include<iostream>//引用头文件
+using namespace std;//使用标准命名空间
+class Complex; //声明Complex类
+ostream& operator<<(ostream& out,Complex complex);//声明输出运算符重载函数
+class Complex{
+friend ostream& operator<<(ostream& out,Complex complex);//声明类的友元函数
+private:
+  int real;
+  int image;
+public:
+  Complex(int real,int image){
+  this->real=real;
+  this->image=image;
+}
+};
+//实现运算符重载函数
+ostream& operator<<(ostream& out,Complex complex){
+   out<<complex.real<<","<<complex.image;
+}
+int main(){
+Complex complex(1,2);
+cout<<complex<<endl;
+return 0;
+}
+
+输出运算符的重载是类似的。
+
+10.static和const
+  
+  -static:
+
+  使用关键字static修饰的成员称之为静态成员，静态成员是类级别的成员，
+  是类的所有对象所共有的。
+  我们可以通过 类名::静态成员名 来直接访问静态成员,当然通过对象来访问也是可以的。
+  当然要保证是公有的静态成员变量，或者是在成员函数内部或者是友元函数中。
+  
+  静态成员的初始化要在类外
+  静态成员函数中只能访问静态成员，不能访问非静态成员,原因就是静态成员函数中是类级别的函数
+  ，不存在this指针(this是当前对象的地址，这是类级别函数没有当前对象的概念，所以也就没有this指针)。
+
+
+class Student;
+void printCount();
+class Student{
+friend void printCount();
+private :
+int id;
+static int count;
+};
+int Student::count=1; //初始化
+
+void printCount(){
+cout<<Student::count<<endl;
+}
+
+int main(){
+printCount();
+}
+
+-const:
+class Student{
+ public:
+ void fun()const{
+
+ }
+ }
+使用const修饰的方法是常方法，常方法中不能修改数据成员变量。
+原因：我们知道每一个类的成员函数都有一个隐含的参数 Student * const this
+上面的 void fun()const方法实际上是：
+ void fun(Student * const this)const{
+
+ }
+
+ 而常方法的const实际上就是修饰这个this参数的，
+ 即本质上是
+ void fun(const Student * const this){
+  
+ } 
+
+ const在*的左边表明不能通过指针来改变指向的内容，所以在常成员方法中是不能修改
+ 成员变量的。
+
+普通方法可以调用常方法，常方法不可以调用普通方法。
+
+总结：如果我们不希望成员方法改变成员变量，就可以把这方法定义为常方法(在参数列表后加上const)。
+     
+11.模板
+C++中的模板与Java中的类型参数化是相类似的
+
+ int Max(int a,int b){  
+  return a>b?a:b;
+ }
+
+ float Max(float a,float b){
+  return a>b?a:b;
+ }
+
+ double Max(double a,double b){
+  return a>b?a:b;
+ }
+
+上面的代码就显得非常冗余，所以C++中引入了模板的概念，数据类型参数化
+
+(1)函数模板：
+
+下面就是一个函数模板：
+template <typename Type>
+Type Max(Type a,Type b){
+  return a>b?a:b;
+}
+在比较老的语法里也会这样写：
+template <class Type> //这里用class,注意这里的class就是typename,就表示是类型名关键字(而不是类的概念，不要混淆)
+Type Max(Type a,Type b){
+  return a>b?a:b;
+}
+一般都是用typename关键字，而不再用class关键字了。
+
+template <typename Type> 
+Type Max(Type a,Type b){
+  return a>b?a:b;
+}
+ 
+ Max(1,1);
+ Max(1, (int)1.1);
+ Max((double)1, 1.1);
+ Max<int>(1,1.1);
+ Max<double>(1,1);
+
+template<typename Type1,typename Type2>
+Type2 Max(Type1 a,Type2 b){
+  return a>b?a:b;
+}
+
+(2)类模板
+ 模板类中的所有函数(构造函数，成员函数)都是模板函数，所在如果是在类外
+ 实现类的成员函数，要注意函数必须声明为模板函数，要加上 template <typename type>
+
+ template <typename type>
+ class Student{
+  public:
+  Student(type id);
+   private:
+   int id;
+ };
+
+template <typename type>
+ Student<type>::Student(type id){
+       this->id=id;
+ }
+
+ 模板类的声明： (也要加上模板声明)
+ template <typename type>
+ class Student;
+
+
+ C++中不支持模板的分离编译，即在一个文件中声明实现模板函数和模板类
+ 在另外一个文件中使用该模板函数和模板类
+
+ 12.动态内存分配
+
+  静态内存分配，动态内存分配。
+  
+  int a=1; 
+  Student stu;
+  int a[10];
+  上面都是由系统分配内存空间，属于静态内存分配，都是栈内存的分配,静态分配的内存空间
+  由系统自动释放回收。
+
+  而动态内存的分配是使用malloc和new关健字来动态分配内存空间，是堆内存空间的分配,需要手动释放回收。 
+ 
+  C语言中动态开辟和释放内存空间
+  
+  int *p=(int *)malloc(sizeof(int));//开辟一个整型空间
+  free(p);  //释放内存空间
+
+  int *arr=(int *)malloc(sizeof(int)*n);//为数组开辟内存空间
+  free(arr); //释放内存空间
+
+
+  C++中可以使用new和delete来开辟和释放内存空间
+  (当然C++中也可以使用malloc和free来申请和释放内存空间,因为C++是完全兼容C语言的)
+
+  int *p=new int(0);//使用new开辟了一个整型空间，并且初始化内容为0
+  delete p;//释放内存空间
+
+  int *arr=new int[10];//这是为数组开辟了10个整型空间
+  delete []arr;  //释放数组的内存空间 前面要加上 []
+
+  
+  
+  为自定义类类型的对象分配内存空间
+
+  class Student{
+     public :
+      Student(int id){
+         this->id=id;
+      }
+       int getId(){
+        return id;
+       }
+     private :
+     int id;
+     };
+  
+  void use_malloc_free(){
+   Student *stu=(Student *)malloc(sizeof(Student));
+    cout<<stu->getId()<<endl;
+    free(stu);
+  }
+
+  void use_new_delete(){
+    Student *stu=new Student(10);//  这要保证Student有一个Student(int)的构造函数
+    cout<<stu->getId()<<endl;
+    delete stu;
+  }
+ 
+  对于简单的数据类型的空间的分配，malloc和new没有什么区别，
+  而对于类类型的对象的空间的分配 ，malloc和new就有区别了。 
+  
+  使用new分配一个Student内存空间，会调用Student的构造方法，delete的时候会调用Student的析构函数
+  而使用malloc分配一个Student内存空间，就不会调用Student的构造方法,free的时候也不会调用Student的析构函数
+
+  
+  使用new为自定义类类型的对象数组分配内存空间。
+  Student *stuArray=new Student[10]; //这里要保证数组有无参构造函数，或者是构造函数有参数，但是所有的参数都有默认值,否则无法分配内存空间。
+  //分配了几个对象内存空间，会调用几次构造函数。
+  delete []stuAtrray;//如果开辟的是数组空间，释放的时候要加上 [],释放了几个对象内存空间，就会调用几次析构函数。
+
+
+  Java有垃圾回收器，会自动回收垃圾内存空间，我们只管分配开辟内存空间即可。
+  而C/C++中必须手动释放动态分配的内存空间。
+
+  但是各有利弊: Java有垃圾回收器，会自动回收垃圾内存，C/C++必须手动释放不用的动态分配的内存空间。
+                但是Java中垃圾回收必须满足一定要求后才会回收垃圾内存，而C/C++中只要在不用的时候，
+                我们就可以手动释放内存空间，所以C/C++中效率要高一点。
+
+13.new的三种情况
+
+  
+
+
+
+
+
+
+
+  
+
+
 
 
 

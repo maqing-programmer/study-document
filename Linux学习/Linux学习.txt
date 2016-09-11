@@ -65,7 +65,10 @@ Linux的文件系统采用的是层级式的树状目录机构。
   cp  a.txt /home/maqing/mydir/  (复制文件)
   cp -r dir1 dir2 (递归复制目录)
   mv a.txt /home/maqing/mydir  (把文件移动到另外一个地方)
-  grep 123 /home/maqing/a.txt  在文件中查找内容,在a.txt中查找123
+  grep 123 /home/maqing/a.txt  (在文件中查找内容,在a.txt中查找123)
+
+  mv a.txt b.txt (文件重命名)
+  mv a.txt a.html(这是文件的重命名，只不过是修改了后缀名)
   
   如果我们不知道某个命令的用法，可以使用
    man 命令 
