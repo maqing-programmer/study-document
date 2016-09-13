@@ -1,0 +1,448 @@
+
+1.JNI
+JNI-Java Native Interface(Java本地接口)
+
+JNI是Java调用其它语言(如C/C++)的一个非常重要的桥梁
+
+通过JNI可以做到:
+(1)Java程序中的函数调用Native语言(C/C++)写的函数
+
+(2)Native程序(C/C++)调用Java层的函数
+
+Java程序是无法直接访问底层硬件设备的，而下层的硬件设备使用C/C++程序控制的，而Java程序想要访问
+底层硬件，一般都是要通过调用C/C++程序来实现对底层硬件的访问。
+
+
+JNI语法和调用规则:
+(1)Java语言的数据类型转成底层语言(C/C++)数据类型
+
+(2)将Java语言的方法的调用转换为调用底层语言方法(函数)
+
+
+JNI首先要做是的就是统一两种语言之间的数据类型:
+
+Java Language  Data Type         JNI Data Type
+     
+     boolean 						jboolean
+
+     byte							jbyte
+
+     char 							jchar
+
+     short							jshort
+
+     int 							jint
+
+     long 							jlong
+
+     float 							jfloat
+
+     double 						jdouble
+
+  
+  然后要做的就是函数的统一：
+  
+  数据类型(函数的返回类型)的签名
+
+  类型签名  Java类型                                   类型签名  Java类型
+    Z		boolean	                                     [          []
+
+    B        byte                                        [I         int[]
+
+    C        char                                        [F         float[]
+
+    S        short                                       [B         byte[]
+    
+    I        int                                         [C         char[]
+
+    J        long                                        [S         short[] 
+
+    F        float                                       [D         double[]
+
+    L      fully-qualified-class(全限定的类)		     [Z          		
+
+   
+   函数格式的统一:
+   
+   函数签名格式                       Java函数格式:  
+   (参数1参数2参数3)返回值            返回值 fun(参数1,参数2,参数3);
+
+   分析一下上面函数格式的统一：
+   (1)函数名:在JNI中没有函数名
+   (2)参数：在JNI中参数紧挨着，没有逗号，没有空格
+   (3)返回值在参数列表后面  
+   (4)如果参数是引用类型，那么参数应该为: L类型；
+
+   举例说明：
+     Java函数                                          JNI
+  
+   boolean isLedOn(void);                               ()Z
+   
+   void setLedOn(int ledNo)                             (I)
+
+   String substr(String str,inr idx,int count);         (Ljava/lang/String;II)Ljava/lang/String
+     
+   char fun(int n，String s,int[] value);               (ILjava/lang/String;[I)C
+
+
+JNI实现的步骤：
+(1)Java代码加载JNI的库。
+如果Java要调用native函数，就必须通过一个位于JNI层的动态库来实现。
+通常的做法是在类的static语句中加载，调用System.loadlibrary方法加载动态库。
+Native函数需要在java中以关键字native声明。
+
+(2)注册JNI函数签名
+JNI函数的“注册”之意就是将Java层的native方法和JNI层的对应的实现方法关联起来，有了这种关联，
+调用Java层的函数就会转到JNI层对应的函数执行了。JNI函数注册有两种方式：
+1)静态注册
+2)动态注册
+
+   
+2.JNI使用实例的HelloWorld程序
+ (1)首先搭建JNI开发环境(Android开发环境已搭建好)
+    Windows下搭建JNI开发环境非常简单,只要下载windows版本的NDK即可。
+    我这里以实例为例:
+
+    -我在www.androiddevtools.cn这个Android开发工具网站下载了NDK:android-ndk-r12b-windows-x86_64.zip  
+    -把这个NDK压缩包解压到F盘(注意NDK存放目录路径不要有中文，否则后来可能会出问题)
+    -然后配置环境变量： 在系统环境变量的path下添加ndk路径。 
+     
+     到此NDK就安装和配置好了,JNI开发环境的搭建也就完成了。
+ 
+ (2)在Eclipse中新建一个Android项目JNIDemo
+    
+    先说明一下这个JNIDemo要实现的效果，点击一个按钮调用C/C++中的方法返回一个字符串，显示出这个C/C++返回的字符串即可。
+
+    在MainActivtiy中声明一个native方法:  public native String sayHello();
+    
+    然后在Android应用目录下新建一个jni目录,新建一个C/C++源文件 Hello.c
+    在Hello.c中给出MainActivtiy中定义的native方法sayHello的实现:
+    #include<stdio.h>
+    #include<stdlib.h>
+    #include<jni.h>
+
+/**
+  Java中的方法:  public native String sayHello();
+  在C/C++语言中编写对应的实现方法 :
+
+  (1) jstring 返回类型，相当于Java中的String
+
+  (2)方法名
+   C/C++中的方法名：改为 Java_全类名_方法名
+   其中全类名中点"."全都改成下划线 "_"。
+   Java_com_jnidemo_MainActivity_sayHello
+   
+   注意:
+   如果Java中的方法名中含有下划线，那么C/C++中方法名中的所有下滑线后都要加一个1
+   比如说：Java中的方法不是sayHello而是 say_Hello，这个时候C/C++中方法名就应该是
+   Java_com_jnidemo_MainActivity_say_1Hello
+
+  (3)一定要添加两个参数:   
+
+     JNIEnv* env 
+
+     jobject jobj 谁调用这个方法就是谁的实例 当前是 MainActivtiy.this  
+  */
+
+  jstring Java_com_jnidemo_MainActivity_sayHello(JNIEnv* env,jobject jobj){
+
+  char* text="你好我是C/C++";
+
+    return  (*env)->NewStringUTF(env,text) ; //或者写成(**env).NewStringUTF(end,text);
+
+}
+
+这样Java中定义的native方法在C/C++中的实现就完成了。
+
+(3)把C/C++源程序编译成动态链接库(.so文件) 
+  在JNI目录中新建一个Android.mk文件，Android官方文档NDK说明已经给出了这个
+  Android.mk文件要写的内容:
+  LOCAL_PATH := $(call my-dir) 
+  include $(CLEAR_VARS)
+  LOCAL_MODULE :=atguigu      //这个名字是你在加载动态链接库时要用到的参数
+  LOCAL_SRC_FILES :=Hello.c  //只要把这里改成你写的C/C++程序源文件名(带后缀)即可
+  include $(BUILD_SHARED_LIBRARY)
+
+  然后打开cmd命令行，进入这个JNIDemo项目的根目录：
+  使用命令: ndk-build
+  就会开始编译，编译完成后，在JNIDemo项目目录的libs目录下就会生成相应的动态链接库文件(.so文件)
+
+  (生成.so文件后，如果我们修改了C/C++代码，需要重新编译)
+  
+(4)在Android程序中加载动态链接库文件  
+   要在调用native方法前加载动态链接库
+   System.loadLibrary("atguigu");  
+   //这里要注意"atguigu"不是生成动态链接库文件(.so)的名字，是你在Android.mk文件中LOCAL_MODULE :=atguigu
+   中配置的名字
+  
+
+(5)在按钮的点击事件里调用声明的native方法
+  
+   javaCallCBtn.setOnClickListener(new OnClickListener() {
+
+      @Override
+      public void onClick(View v) {
+        // TODO Auto-generated method stub
+        System.loadLibrary("atguigu");
+        String result = sayHello();
+        Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT).show();
+      }
+    });
+
+(6)运行Android程序，点击按钮，成功显示:"你好我是C/C++"
+
+
+  这里给出代码：
+  public class MainActivity extends Activity {
+
+  Button javaCallCBtn;
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+    // 初始化视图
+    initView();
+  }
+
+  /**
+   * 初始化视图
+   */
+  public void initView() {
+    javaCallCBtn = (Button) findViewById(R.id.javacallc);
+    javaCallCBtn.setOnClickListener(new OnClickListener() {
+
+      @Override
+      public void onClick(View v) {
+        // TODO Auto-generated method stub
+
+        System.loadLibrary("atguigu"); //加载动态链接库文件
+
+        String result = sayHello(); //调用native方法
+        
+        Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT).show();
+      }
+    });
+  }
+
+  public native String sayHello();声明native函数
+
+}
+
+3.javah生成头文件
+  上面我们是在C/C++中按照规则自己定义与Java中对应的方法，然后实现，但是我们发现，在C/C++中按照规则定义Java中对应的方法比较繁琐，很容易写错，从而导致C/C++中方法与Java中方法不对应。
+
+  实际上我们只要在Java中声明了了native方法后，是可以自动生成对应的C/C++方法名的，就是这里所说的
+  通过javah生成头文件。
+  
+  生成头文件步骤：
+  
+  (1)打开cmd
+  
+  (2)如果是java1.6 
+     
+     如果是java1.7 
+     -进入Android项目的src目录
+     -输入命令:javah (native方法所在的类的全类名)
+      以上面JNIDemo为例应该是: javah com.jnidemo.MainActivity   (native方法所在的类中最好不要有中文，否则生成头文件可能会报错)
+     -输入命令后在src目录下就会生成一个.h文件
+      我们要把它移到 jni目录中。
+     -.h头文件中就有Java方法对应的C/C++方法，自动生成的C/C++方法参数只给了类型，没有给出变量，
+       我们把方法的参数变量加上即可。
+     -然后我们就可以把这个.h中自动生成的对应C/C++方法复制到我们
+      写的C/C++源文件中，写出我们自己的实现即可。
+     
+      这样就不需要我们自己来按照规写出Java中native方法在C/C++对应的方法，避免出错。
+   
+
+   下面我们再以实例为例：
+   -在JNIDemo的基础上，我们在MainActivity上再定义另外一个native方法
+    public native String sayGoodBye();
+   -打开cmd
+   -进入JNIDemo的src目录
+   -输入命令 javah com.jnidemo.MainActivity  (native方法所在的类中最好不要有中文，否则生成头文件可能会报错)
+   -输入命令后在src目录下生成了一个  com_jnidemo_MainActivity.h文件，
+    在Eclipse中刷新项目，就可以看到com_jnidemo_MainActivity.h文件，把这个文件移到jni目录。
+   
+    查看这个.h文件:
+
+    /* DO NOT EDIT THIS FILE - it is machine generated */
+    #include <jni.h>
+   /* Header for class com_jnidemo_MainActivity */
+
+　　　#ifndef _Included_com_jnidemo_MainActivity
+    　#define _Included_com_jnidemo_MainActivity
+　　　#ifdef __cplusplus
+　　　　extern "C" {
+　　　　extern#endif
+　　　/*　　　
+ 　　* Cla　ss:     com_jnidemo_MainActivity
+ 　　　* Method:    sayHello
+      * Signature: ()Ljava/lang/String;
+      */
+
+
+JNIEXPORT jstring JNICALL Java_com_jnidemo_MainActivity_sayHello(JNIEnv *, jobject);
+
+    /*
+    * Class:     com_jnidemo_MainActivity
+    * Method:    sayGoodBye
+    * Signature: ()Ljava/lang/String;
+    */
+JNIEXPORT jstring JNICALL Java_com_jnidemo_MainActivity_sayGoodBye(JNIEnv *, jobject);
+
+          #ifdef __cplusplus
+          }
+        #endif
+        #endif
+
+其它的我们不用看，我们只需要看自动生成的两个方法：
+
+JNIEXPORT jstring JNICALL Java_com_jnidemo_MainActivity_sayHello(JNIEnv *, jobject);
+
+JNIEXPORT jstring JNICALL Java_com_jnidemo_MainActivity_sayGoodBye(JNIEnv *, jobject);
+
+这两个方法就是对应的Java中的两个native方法，前面我们说过，参数只会给出类型，没有给出变量，
+我们也看到了生成的方法参数(JNIEnv *, jobject)确实没有给出变量，只给出了类型，我们在实现的
+时候加上变量即可。
+
+sayHello方法我们已经在Hello.c中实现了，就不再实现了，现在我们在另外一个C/C++文件中实现
+sayGoodBye()方法。
+在jni目录中新建一个Hello2.c文件，然后复制sayGoodBye方法到Hello2.c中，添加参数变量，添加方法体
+给出实现。
+#include<stdio.h>
+
+#include<stdlib.h>
+
+#include<jni.h>
+
+JNIEXPORT jstring JNICALL Java_com_jnidemo_MainActivity_sayGoodBye(JNIEnv* env, jobject jobj){
+  char* str="GoodBye";
+
+      return (*env)->NewStringUTF(env,str);
+  }
+
+-然后我们需要重新编译C/C++原文件，生成动态链接库，由于我们新添加了一个Hello2.c文件，所以要在
+  Android.mk文件中也添加上该文件
+
+ LOCAL_PATH := $(call my-dir) 
+ include $(CLEAR_VARS)
+ LOCAL_MODULE :=atguigu
+ LOCAL_SRC_FILES :=Hello.c Hello2.c   //在Helloc.c后添加空格后，再添加上Hello2.c
+ include $(BUILD_SHARED_LIBRARY)
+
+-然后再打开cmd
+
+-进入JNIDemo的根目录
+
+-输入ndk-build
+
+-编译完成
+
+-将MainActivity中的点击调用的方法改成 sayGoodBye();
+javaCallCBtn.setOnClickListener(new OnClickListener() {
+
+      @Override
+      public void onClick(View v) {
+        // TODO Auto-generated method stub
+        System.loadLibrary("atguigu");
+        String result = sayGoodBye();
+        Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT).show();
+      }
+    });
+
+-运行程序，点击按钮，成功显示"GoodBye"
+
+总结：通过javah命令生成头文件，能够极大地方便我们在C/C++中实现Java中native方法，
+  
+      尽量避免了C/C++和Java中方法不一致导致的错误。
+
+
+4.JNI开发常见错误
+  (1)缺少Android.mk文件
+     使用ndk-build编译C/C++生成动态链接库文件之前不要忘了
+     添加配置Android.mk文件。
+  (2)使用javah生成的头文件中自动生成的函数，只给了参数类型，没有给参数变量，
+     所以我们在把函数复制到C/C++源文件中的时候，不要忘了添加参数变量,然后再去实现
+     函数。
+  (3)加载动态链接库的时候一定要注意加载的动态链接库的名字，不是你
+      libs你生成的.so文件的名字，而是你在Android.mk中LOCAL_MODULE:=atguigu
+      这里配置的名字"atguigu"
+
+      LOCAL_PATH := $(call my-dir) 
+      include $(CLEAR_VARS)
+      LOCAL_MODULE :=atguigu      //这个名字是你在加载动态链接库时要用到的参数
+      LOCAL_SRC_FILES :=Hello.c  //只要把这里改成你写的C/C++程序源文件名(带后缀)即可
+      include $(BUILD_SHARED_LIBRARY)
+
+       Sysytem.loadLibrary("atguigu");
+
+  (4)还有一个比较致命的错误，就是可能我们的手机或者模拟器是x86架构的CPU，而我们编译
+     生成的动态链接库可能只是针对ARM架构的，如果在X86架构的模拟器或者是手机上运行就会报错了。
+     
+     我们可以查看编译C/C++代码后lib文件夹下除了arm目录，是否还有x86目录(有的还会有mip目录)，
+     如果没有，那就要进行配置，使得编译生成对应x86架构下的动态链接库文件。
+     
+     配置方法:在JNI目录下新建Application.mk文件，在文件中添加：
+     APP_ABI := armeabi armeabi-v7a x86 
+     然后再编译C/C++代码，就会生成上面配置的所有架构的动态链接库文件。
+
+5.Android.mk文件详解 
+  在编译C/C++代码之前，我们在jni目录中新建了一个Android.mk文件，在里面进行了一些
+  配置，那么就来分析一下这个文件中的配置:
+  LOCAL_PATH := $(call my-dir)         //初始化工具链的函数，当前的作用是得到当前文件目录(固定配置，我们不用动)
+  include $(CLEAR_VARS)                //清空和初始化工具链  (固定配置，我们不用动)
+  LOCAL_MODULE :=atguigu               //配置动态链接库的名字  (可以改成我们想要的名字)
+  LOCAL_SRC_FILES :=Hello.c Hello2.c   //配置要编译的源文件，如果是多个源文件，源文件之间用空格分开(改成我们要编译的源文件)
+  include $(BUILD_SHARED_LIBRARY)    /*配置动态链接库文件格式:
+                                      如果配置的是BUILD_SHARED_LIBRARY:则生成的是.so格式的动态链接库文件 文件体积小 
+                                      如果配置的是BUILD_STATIC_LIBRARY:则生成的是.a格式的动态链接库文件,文件体积大  
+                                      所以我们一般配置成 BUILD_SHARED_LIBRARY  */
+
+6.Eclipse通过配置NDK来简便JNI开发流程
+  
+  -前言:在上面的JNI开发步骤中，我们虽然下载了NDK(Native Development Kit),但是我们是通过
+  在Android目录下手动新建jni目录，然后在jni目录中手动添加C/C++源文件，然后再手动添加
+  Android.mk文件。  
+  但是实际上我们可以在Eclipse中通过配置NDK，然后让Ecipse来帮助我们完成上述步骤：
+
+  -配置步骤:
+   在Eclipse中 Window--->Preferences--->Android--->NDK  
+   中配置NDK的路径。  
+   这就完成了Eclipse中NDK的配置了。
+
+   注意:
+   这里要注意的是,我们在配置NDK路径的时候，在NDK Location中配置到NDk的根目录即可。
+   但是Eclipse可能会提示 Not a valid NDK Directory
+   这个时候我们需要在NDK目录下新建一个build-ndk(无后缀名)空文件,然后再重新打开Eclipse
+   中的NDK配置对话框配置就可以了。
+
+  -简便开发：
+
+  然后我们在Android程序中声明native方法 
+  例:public native String sayHello();
+
+  然后我们编译C/C++代码的步骤就不用按照之前的手动添加的步骤，
+  而是右击Android项目--->Android Tools--->Add Native Support,然后在弹出的对话框中配置
+  动态链接库的文件的名字(默认的是Android项目的名字)。
+  完成后配置后，在Android项目的目录下就会生成jni目录，并且jni目录下会帮我们自动创建
+  Android.mk文件和一个C/C++源文件,然后我们就可以在这个C/C++源文件中实现我们的方法，
+  然后步骤就是和之前一样了。
+  
+  注意：这里我们在Eclipse中的的C/C++源文件中编辑代码可能会报错，正确的代码也会报错，
+  这个时候我们需要关联一下C/C++的库文件。
+
+  关联C/C++库文件的步骤: 右击项目--->Properties--->C/C++ General--->Path and Symbols
+  在右边配置对话框中--->Add--->File system---找到NDK目录/platform/选择一个Android版本/arch-arm/usr/include(关联到include目录)--->Apply--->OK
+  关联C/C++的库文件后，在Eclipse中编辑C/C++正确代码就不会报错了。
+
+
+
+
+
+ 
+
+  
+  
+
+  
