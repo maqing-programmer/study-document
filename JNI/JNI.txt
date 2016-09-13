@@ -427,7 +427,9 @@ javaCallCBtn.setOnClickListener(new OnClickListener() {
   动态链接库的文件的名字(默认的是Android项目的名字)。
   完成后配置后，在Android项目的目录下就会生成jni目录，并且jni目录下会帮我们自动创建
   Android.mk文件和一个C/C++源文件,然后我们就可以在这个C/C++源文件中实现我们的方法，
-  然后步骤就是和之前一样了。
+  然后步骤就是和之前一样了。并且配置了NDK工具后，即时我们修改了C/C++源代码。也不需要
+  在cmd中使用ndk-bulild手动编译了，直接运行项目，Eclipse会帮我们重新编译C/C++代码。
+
   
   注意：这里我们在Eclipse中的的C/C++源文件中编辑代码可能会报错，正确的代码也会报错，
   这个时候我们需要关联一下C/C++的库文件。
@@ -435,9 +437,39 @@ javaCallCBtn.setOnClickListener(new OnClickListener() {
   关联C/C++库文件的步骤: 右击项目--->Properties--->C/C++ General--->Path and Symbols
   在右边配置对话框中--->Add--->File system---找到NDK目录/platform/选择一个Android版本/arch-arm/usr/include(关联到include目录)--->Apply--->OK
   关联C/C++的库文件后，在Eclipse中编辑C/C++正确代码就不会报错了。
+  如果关联库文件后还是报错，则clean一下项目，如果还是报错直接运行项目。
+
+7.在C/C++代码中打印日志
+   在JNI开发中，为了方便调试，我们可能会在C/C++中打印信息，但是在JNI开发中，使用C/C++
+   原有的打印语句打印是无效的,如:printf("你好\n");是打印不出来的。
+   
+   下面就配置一下C/C++打印日志:
+    在C/C++中使用 logcat-9库 进行打印 
+   (1)在Android.mk文件中增加以下内容
+       LOCAL_LDLIBS+=-llog
+   (2)在C/C++源文件中加以下内容
+    #include <android/log.h>
+    #define LOG_TAG "System.out"
+    #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
+    #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
+   
+   (3)然后就可以在C/C++中使用LOGD,LOGI进行打印
+      如果希望有LOGE,可以自己添加上:
+      #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+
+      使用实例:
+      int a=1;
+      LOGE("--->%d\n",a)//这里与C语言一样输出要使用占位符(%d,%s,%c等);
 
 
+9.使用JNI实现C调用Java中的方法
+  我们知道JNI是用来实现Java和其它语言(主要是C/C++）之间交互的，前面我们主要是使用JNI来实现
+  Java中调用C/C++中的方法，实际上通过JNI也能实现在C/C++来调用Java中的方法。这里就不再说明
+  如何实现在C/C++中调用Java中的方法。
 
+  具体的学习可以观看杨光福的Android JNI教学视频中C中调用Java方法部分
+  (搜索关键字: Android JNI 杨光福)
+ 
 
 
  
