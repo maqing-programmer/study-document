@@ -1,0 +1,148 @@
+1.Git
+
+-分支管理
+
+主分支(master分支),用来部署生产环境的
+
+-开发分支
+
+在Git中每一个分支都代表一个独立的项目，有着各自的版本管理。
+
+代码在开发过程中根据需要创建的分支称之为开发分支。
+
+开发分支是并发的，独立互不影响的。
+
+开发完成后，开发分支单独测试，测试通过后，合并到主分支。
+
+-Git常用命令：
+
+
+
+git config --global user.name ""
+
+git config --global user.email ""
+
+配置用户名和邮箱
+
+
+
+-git clone <url>
+
+把远程仓库克隆到本地
+
+
+
+-git branch 
+
+查看本地有哪些分支
+
+git branch -v
+
+查看当前处于哪个分支
+
+git branch -a
+
+查看远程有哪些分支，会列出本地以及远程仓库分支，绿色为本地分支,红色的为远程分支。
+
+
+
+-git status
+
+查看本地文件的修改情况
+
+如果你没有修改过文件，你什么也看不到
+
+如果你修改过文件，修改的文件会被列出，并且显示为红色。
+
+
+
+-git diff
+
+查看文件具体的修改情况，做了哪些修改。
+
+git diff查看的是没有添加到暂存区的文件的修改情况，如果文件已经被添加暂存区了，
+
+想要查看文件具体的修改情况的话，可以使用 git diff --cached命令。
+
+
+
+-git add
+
+把修改的文件添加到暂存区
+
+修改的文件只有添加到了暂存区后，才能够提交
+
+
+
+-git reset
+
+是git add的可逆操作,
+
+如果把文件添加到暂存区之后，又不想提交文件，但是已经git add了，就可以使用git reset来撤销git add
+
+
+
+-git commit
+
+提交修改的文件
+
+git commit -m "提交描述"
+
+
+
+如果我们不小心提交了一个不需要提交的文件，可以使用如下命令来撤销提交。
+
+git reset -soft :取消了commit  
+git reset -mixed（默认） :取消了commit ，取消了add
+git reset -hard :取消了commit ，取消了add，取消源文件修改
+
+
+-git checkout 
+
+-切换分支
+
+git checkout branchName
+
+-撤销对文件的修改
+
+如果我们对文件进行了修改,但是不打算提交它，想撤销对该文件的修改
+
+git checkout a.txt,文件就回到了修改前的状态。
+
+
+
+-git push
+
+把分支推到仓库
+
+git push origin story6335
+
+
+
+-git branch -D branchName
+
+删除一个本地分支，如果某个分支正在被使用，是删除不掉的，只有某个分支没有在使用才能够被删除。
+
+
+
+删除远程分支
+
+git push origin --delete branchName
+
+
+
+-origin
+
+ origin就是默认的远程版本库名称,origin指向的就是本地的代码在git服务器上的版本 
+
+-git fetch 
+
+ 就是获取最新远程版本库到本地
+
+ git fetch origin 
+
+
+
+-git pull
+
+ 获取最新的远程版本库到本地并且merge到本地
