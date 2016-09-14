@@ -1,0 +1,75 @@
+1.获取经纬度(应用关闭了也继续获取)
+
+2.FrameAnimation毫无疑问是针对图片的
+  TweenAniamtion是针对组件的。
+  PropertyAniamtion也是针对组件的,并且对组件的属性做了改变。
+
+  为什么会引入属性动画?
+  TweenAnimation改变的只是View的显示效果，并没有改变View的属性。
+  有的时候我们需要View的属性发生改变。
+
+ 3.PropertyAnimation的机制
+   就是不断的对View的属性值进行操作的机制。
+
+4.ContentValues
+  ContentValues是Android中com.content.ContentValues类,
+  ContentValues也是以键值对的形式来存放数据,键只能是String类型,值只能是基本数据类型和String类型。
+  值不能是对象类型数据。那么键和值自然也都不能为null
+
+
+  HashMap和HashTable都是java.utils包中的:
+
+  HashMap中键可以是任意数据类型，值也可以是任意数据类型,键和值都可以为null。
+  HashMap<Object,Object> map=new HashMap<Object,Object>();
+     map.put(null,null);
+
+  HashTable中键可以任意数据类型，值也可以是任意数据类型，但是键和值都不能为空。
+  Hashtable hashTable=new HashTable();
+
+
+
+  
+5.ArrayMap
+  ArrayMap也是Map的实现类，是Android中android.util.ArrayMap。
+
+  ArrayMap键值也都可以是任意数据类型，都能为null。
+  相比HashMap而言，ArrayMap占用内存更少，但是操作性能要低，在大数据量的
+  情况下，操作性能要低50%。
+  所以如果数据量不是很大，考虑内存优化的问题，可以使用ArrayMap。
+  但是在大数据量的情况下还是建议使用HashMap;
+
+6.char ch[]={'a','b','c'};
+
+  System.out.println(ch);
+
+  打印结果:abc
+  
+  char数组比较特殊
+  
+  但是如果是其他类型的数组，输出数组名，输出的结果就是数组的首地址。
+  
+  int a[]={1,2,3};
+  System.out.println(a);
+  
+  打印结果:
+  [I@139a55
+ 
+
+
+7.
+  5.SQLite数据库支持分页查询
+
+    select * from user limit 0,5; 
+
+    select * from user limit 5 offset 0; 
+   
+   上面是SQLite数据库支持的两种分页查询语句，查询的是从第一行开始的5行数据,
+   注意:
+   第一条查询语句： limit 0,5 表示的是从第一行开始的5条数据
+   第二条查询语句:  limit 5 offset 0, limit后跟的是查询的记录数，offset后跟的是从第几条记录之后开始查询
+
+
+8.通过GPS获取地理位置   
+  LocationManager(地理管理类),LocationProvider(地理位置的提供者),Location(地理位置)
+ 
+  locationManager.requestLocationUpdates() (添加地理位置发生改变的监听器)
