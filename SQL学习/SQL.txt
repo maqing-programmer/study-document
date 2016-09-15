@@ -164,7 +164,10 @@ SQL(Structured Query Language)-结构化查询语言,用于访问和处理数据
       create table user(id int not null,name varchar(20), primary key (id)); 
 
      foreign key
-     -外键是指一个表中的某个属性的取值是来自另外一个表中的主键的取值
+     -外键是指一个表中的某个属性的取值是来自另外一个表中的某个属性的值,一般一个表中的外键
+      是取自另外一个表中的主键，但也可以取自另外一个表的非主键。
+
+
 
 
 
