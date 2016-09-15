@@ -56,8 +56,7 @@
  
 
 
-7.
-  5.SQLite数据库支持分页查询
+7.SQLite数据库支持分页查询
 
     select * from user limit 0,5; 
 
@@ -73,3 +72,12 @@
   LocationManager(地理管理类),LocationProvider(地理位置的提供者),Location(地理位置)
  
   locationManager.requestLocationUpdates() (添加地理位置发生改变的监听器)
+
+  权限:  ACCESS_FINE_LOCATION    ACCESS_COARSE_LOCATION
+
+9.SQlite数据库id设置为自增长,则默认是从1开始自增长。
+  并且自增长的id只能是Integer类型的。 
+  create table user(id Integer primary key AUTOINCREMENT,name varchar(20)); 
+
+
+

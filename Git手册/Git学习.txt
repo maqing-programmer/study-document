@@ -92,9 +92,21 @@ git commit -m "提交描述"
 
 如果我们不小心提交了一个不需要提交的文件，可以使用如下命令来撤销提交。
 
-git reset -soft :取消了commit  
-git reset -mixed（默认） :取消了commit ，取消了add
-git reset -hard :取消了commit ，取消了add，取消源文件修改
+git reset --soft :取消了commit  
+git reset --mixed（默认） :取消了commit ，取消了add
+git reset --hard :取消了commit ，取消了add，取消源文件修改
+
+这些命令后面还要跟参数,表明取消的是哪次提交。
+
+
+HEAD代表当前提交,可以写成(HEAD^0)
+HEAD^代表前一次提交,可以写成(HEAD^1)
+HEAD^^代表倒数第二次提交,可以写成(HEAD^2)
+依次类推
+
+使用:
+git reset --soft HEAD^  撤销了最近的一次提交(也即回到了上一次的提交)
+
 
 
 -git checkout 

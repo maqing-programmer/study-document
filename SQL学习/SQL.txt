@@ -1,0 +1,290 @@
+1.SQL
+SQL(Structured Query Language)-结构化查询语言,用于访问和处理数据库的标准的计算机语言
+
+2.SQL语法
+  重要：
+  -SQL语句对大小写是不敏感的
+
+3.SQL语句概述
+  我们主要学习SQL中的这两部分:
+  DML(Data Language)-数据操作语言 和 DDL(Data Definition Language)-数据定义语言
+   
+  -DML部分: 
+  SELECT -从数据库表中查询数据
+  UPDATE -更新数据库表中的数据
+  DELETE -删除数据库表中的数据
+  INSERT INTO-向数据库表中插入数据
+  
+  -DDL部分
+   数据定义语言部分主要是用于创建数据库,创建表,删除表等
+   CREATE DATABASE -创建数据库
+   CREATE TABLE -创建表
+   DROP TABLE -删除表
+
+4.SQL语句详解   　
+  这里一些基本的SQL语法及语句就不再学习了，主要是对一些遗忘了的语法熟悉一下。  
+
+  (1)SQL SELECT DISTINCT语句:除去重复值
+  
+  select distinct 列名 from 表名
+
+  select distinct name from user(查询user表中的名字，除去重复值)
+  
+  (2)and和or
+   and和or可以把where子句中的两个以及多个条件结合起来
+
+   select * from user where id>5 and name!='张三'(两个条件要同时满足)
+
+   select * from user where id>5 or name!='张三'(满足两个条件中的一个)
+
+  (3)order by 语句用于对结果集进行排序 
+     
+     select 列名 from 表名 order by 列名 ASC  (对查询的结果集按照某个字段升序排序)
+     select 列名 from 表名 order by 列名 DESC (对查询的结果集按照某字段降序排)
+
+     select 列名 from 表名 order by 列名 (默认的是升序排序)
+
+     select * from user order by name (查询user表中的记录按照name排序)
+      
+  (4)insert into  语句  (用于向表中插入记录)
+     insert into tableName(列名1,列名2，列名3...) values(值1,值2,值3...);
+     insert into tableName(id,name) values(1,'张三');  
+  
+  (5)upadte 语句  (更新记录)
+     update  tableName set 列名=值  where ...
+
+     update user set score=score+10 where name='张三' (把user表中张三的分数加上10)
+
+  (6)delete from (删除记录)
+     delete from user where name='张三'
+
+  (7)limit 限制返回的记录的数目
+    
+     select 列名 from 表名 where 子句 limit 记录数
+
+     select * from user where id>0 limit 5 //返回user表中id>5的记录，且最多返回5条记录
+
+  (8)limit 实现分页查询
+     
+     select 列名 from 表名 where 子句 limit num1,num2;
+
+     表示查询user表中的数据，从num1记录后后，一共num2条数据
+
+     select * from user limit 0,5; //返回user表中从第1条记录开始的5条记录
+
+     select * from user limit 2,5;//返回的是user表中从第二条记录开始的5条记录
+
+
+(10) SQL中的通配符 
+     SQL中的通配符可以代表一个或者多个字符
+     通配符必须与 like运算符一起使用
+    
+     SQL中有以下通配符
+     
+     通配符                           意义
+
+     %                                代表一个或者是多个字符
+
+     _                                代表一个字符
+
+     [charlist]                       字符列表中的任意单一字符
+
+     [^charlist]或者 [!charlist]      不在字符列表中的任意单一字符
+
+ 
+(11) 模糊查询 like
+
+      select * from user where name like '张三' // 返回user表中名字是张三的记录
+
+      select * from user where name like '张%'  //返回user表中名字以张开始的记录
+
+      select * from user where name like '%三' //返回user表中名字以三结束的记录
+
+      select * from user where name like '%小%'//返回user表中名字包含‘小’字的记录
+
+      select * from user where name like '_三'  //返回user表中名字是两个字符，且第二个字符是'三'的记录
+
+      select * from user where name like  '[赵钱孙]%' 
+      //返回user表中名字以 '赵','钱','孙'开始的记录。
+      
+      select * from user wheer name like '[!赵钱孙]%' //返回user表中名字不是以'赵','钱','孙'开始的记录
+
+  注意:
+   
+   虽然SQL对大小写是不敏感的，那是对于SQL语句的，对于条件值那是敏感的。
+   所以 like 'A' 和 like 'a' 还是不一样的 。
+
+   (12) in 操作符
+   
+   select 列名 from 表名 where id in (值1,值2,值3...)
+
+   select * from user where id in(1,2,3); //返回user表中id为1,2,3的记录
+
+   select * from user where name in('张三','李四'); //返回user表中名字是'张三'或'李四'的记录
+
+   (12)between value1 and value2操作符  介于两个值之间的数据范围,这些值可以是数值，文本或者日期。
+       包括 value1,value2
+
+   select 列名 from user where 列名 between value1 and value2
+  
+   select 列名 from user where 列名 not between value1 and value2
+   
+   查询的是不介于value1和value2之间的记录。
+
+   select * from user where name between 'Bob' and 'Eson'  
+   返回user表中名字名字在 Bob Eson之间的记录   (就是按照字母表的顺序,同一个字母的大小写顺序是一样的)
+
+  (13)数据库的创建和删除
+      
+      创建数据库语句
+      create database dbname  
+      
+      删除数据库
+      drop database dbname 
+
+
+  (14)创建表的语句
+      create table tablename(列名1 数据类型,列名 数据类型,列名 数据类型...)
+
+   
+  (15)primary key ,foreign key
+      
+      primary key 
+      -主键是表中用来唯一识别一条记录的
+      -主键的值是唯一的,在表中不能存在两个一样的主键值
+      -主键的值不能为NULL
+      -每个表只能有一个主键
+
+    
+      主键是在创建表的时候声明的,可以在定义字段的时候声明，也可以在所有字段定义结束后声明：
+      create table user(id int not null primary key,name varchar(20));
+      
+      或者:
+
+      create table user(id int not null,name varchar(20), primary key (id)); 
+
+     foreign key
+     -外键是指一个表中的某个属性的取值是来自另外一个表中的主键的取值
+
+
+
+
+       
+ (16) 删除表的语句
+      drop table tablename 
+
+ (17) alter table 修改表的语句
+      
+      -向表中添加一列
+        alter table 表名 add 列名 数据类型
+
+        alter table user add score int //为user表添加一个字段score
+      
+      -删除表中的一列  
+       
+       alter table 表名 drop column 列名
+
+       alter table user drop column score//删除user表中score字段
+
+ (18) SQL中的函数
+      
+      -平均数函数,avg函数返回数值列的平均值 
+
+      select avg(数值列名) from 表名
+
+      select avg(score) from user //求user表中的score字段的平均数
+
+      -求记录数函数 count()
+
+       //返回指定列的数目(只要该列有值，就作为计算，没值，就不算)
+       select count(列名)  from 表名
+
+       select count(score) from user
+
+      //返回表中的记录数
+        select count(*) from 表名
+
+        select count(*) from user
+
+      //返回表中指定列不同值的数目
+
+      select count(distinct 列名) from 表名
+
+      select count(distinct name) from user
+
+(19)max 函数返回一列中的最大值
+   
+    select max(列名) from 表名
+
+    select max(score) from user
+(20)min 函数返回一列中的最小值
+   
+    select min(列名) from 表名
+
+    select min(score) from user
+
+(21)sum 函数 返回数值列的和
+
+    select sum(列名) from 表名
+
+    select sum(score) from user
+
+(22)group by (分组查询)
+    group by  语句用于结合合计函数(sum)，根据一个或多个列对结果集进行分组 
+
+     sale表(商品销售表) 
+     id     name    price   
+
+     1       a       5.0
+
+     2       b       3.0
+
+     3       a       5.0   
+
+     4       b       3.0
+
+     5       b       3.0  
+
+     6       c       4.0    
+
+    比如我想查询出销售表中每一种商品卖出去的总钱数
+
+    select name from sale ,sum(price) from goods group by name
+
+    结果集:  name    total
+             a        10
+
+             b         9
+
+             c         4
+
+(23) having  
+    在 sql 中增加 having 子句原因是，WHERE 关键字无法与合计函数一起使用
+
+
+(24) left join
+left join 关键字会从左表 (table_name1) 那里返回所有的行，即使在右表 (table_name2) 中没有匹配的行
+
+select student.id,st_course.c_id,st_course.cname  from student left join st_course on student.id=st_course.stu_id 
+
+(25) right join
+right join 关键字会从右表(table_name2)那里返回所有的行,即时在左表(table_name1)中没有匹配的行。
+
+select st_course.c_id,st_course.cname ,st_course.stu_id,student.name from student right join st_course on student.id=st_course.stu_id
+
+ 
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
