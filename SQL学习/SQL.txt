@@ -50,7 +50,7 @@ SQL(Structured Query Language)-结构化查询语言,用于访问和处理数据
      insert into tableName(列名1,列名2，列名3...) values(值1,值2,值3...);
      insert into tableName(id,name) values(1,'张三');  
   
-  (5)upadte 语句  (更新记录)
+  (5)update 语句  (更新记录)
      update  tableName set 列名=值  where ...
 
      update user set score=score+10 where name='张三' (把user表中张三的分数加上10)
@@ -167,11 +167,9 @@ SQL(Structured Query Language)-结构化查询语言,用于访问和处理数据
      -外键是指一个表中的某个属性的取值是来自另外一个表中的某个属性的值,一般一个表中的外键
       是取自另外一个表中的主键，但也可以取自另外一个表的非主键。
 
-
-
-
-
-
+      create table st_course(stu_id int,c_id int,primary key(stu_id,c_id),foreign key(stu_id) references student(id),foreign key(c_id) references course(id))
+   
+      创建了一个st_course表，表中有两列 stu_id,c_id。 stu_id是外键，取自student表的主键id,c_id也是外键，取自course表的主键id,且stu_id和c_id合起来构成st_course表的主键,
        
  (16) 删除表的语句
       drop table tablename 
