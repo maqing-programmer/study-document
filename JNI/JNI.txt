@@ -23,29 +23,29 @@ JNI首先要做是的就是统一两种语言之间的数据类型:
 
 Java Language  Data Type         JNI Data Type
      
-     boolean 						jboolean
+     boolean 					          	jboolean
 
-     byte							jbyte
+     byte							            jbyte
 
-     char 							jchar
+     char 							          jchar
 
-     short							jshort
+     short						          	jshort
 
-     int 							jint
+     int 							            jint
 
-     long 							jlong
+     long 							          jlong
 
-     float 							jfloat
+     float 							          jfloat
 
-     double 						jdouble
+     double 						          jdouble
 
   
   然后要做的就是函数的统一：
   
   数据类型(函数的返回类型)的签名
 
-  类型签名  Java类型                                   类型签名  Java类型
-    Z		boolean	                                     [          []
+  类型签名  Java类型                                   类型签名   Java类型
+    Z		    boolean	                                     [          []
 
     B        byte                                        [I         int[]
 
@@ -59,7 +59,7 @@ Java Language  Data Type         JNI Data Type
 
     F        float                                       [D         double[]
 
-    L      fully-qualified-class(全限定的类)		     [Z          		
+    L      fully-qualified-class(全限定的类)		         [Z          		
 
    
    函数格式的统一:

@@ -1,0 +1,95 @@
+1.OkHttp网络请求框架
+官网地址：
+http://square.github.io/okhttp
+GitHub地址:
+https://github.com/square/okhttp
+
+-简介：
+ OkHttp是一个高效的Http请求框架,使用也比较简单，下面就来分析一下
+ OkHttp的使用。
+
+-添加OkHttp的支持
+ 对于Android Studio，我们可以在项目的module的build.gradle的dependencies中添加OkHttp的依赖
+ compile  'com.squareup.okhttp3:okhttp:3.4.1'
+ 
+ 如果是使用Eclipse,可以下载OkHttp的jar包来使用,当然Android Studio也可以使用jar包。
+
+ 最新的依赖，或者是jar包可以到OkHttp的官网或者是GitHub上查看和下载，前面已经给出了OkHttp
+ 的官网地址和GitHub地址。
+
+-OkHttp的基本使用
+ (1)Get请求
+ (2)Post请求
+ (3)基于Http的文件上传
+ (4)基于Http为文件下载
+ (5)图片加载
+ (6)支持请求回调
+ (5)支持Session的保持
+
+-Get请求
+ OkHttpClient     新建一个OkHttpClient的实例
+ Request          构建一个请求，可以设置url,请求方式，请求参数等。 
+ Call             通过Request创建一个Call实例，相当于将请求封装成了任务。
+ call.execute()   同步请求,会阻塞线程，等待返回结果。
+ call.enqueue(Callback) 异步请求。
+
+使用：
+  String url = "http://192.168.0.102:8080/HttpServer/TestServlet";
+  OkHttpClient okHttpClient = new OkHttpClient();      
+  Request request = new Request.Builder().url(url).build();
+  Call call = okHttpClient.newCall(request);
+  call.enqueue(new Callback() {
+
+      @Override
+      public void onFailure(Call call, IOException e) {
+
+          
+     }
+      @Override
+      public void onResponse(Call call, Response response) throws IOException {
+            
+                    
+      }
+    }
+
+onFailure() 
+是请求失败的回调
+
+onResponse() 
+是请求成功的回调,response是响应对象,通过response.body().byteStream()可以拿到返回的InputStream。
+
+注意:onFailure()和onResponse()这两个回调方法都是运行在非主线程里，所以不能在这两个方法里面对UI进行操作。
+
+-Post请求
+ Post请求和Get请求基本相同,但是需要增加RequestBody来设置请求参数,在Request中增加post(RequestBody)表明是
+ Post请求。
+
+  String url = "http://192.168.0.102:8080/HttpServer/TestServlet";
+  OkHttpClient okHttpClient = new OkHttpClient();
+
+  RequestBody requestBody = new FormBody.Builder().add("key", "value").build();//添加请求参数
+
+  Request request = new Request.Builder().post(requestBody).url(url).build();//注意添加post(requestBody)
+
+  Call call = okHttpClient.newCall(request);
+  call.enqueue(new Callback() {
+       
+       @Override
+        public void onFailure(Call call, IOException e) {
+
+         } 
+   
+       @Override
+       public void onResponse(Call call, Response response) throws IOException {
+          
+       }
+     }
+
+2.之前做过拍照上传,图片是使用Base64编码后上传到服务器，服务器端再使用Base64解码，得到图片。
+
+  为什么上传图片要使用Base64编码？
+
+  Base64是网络上最常见的用于传输8Bit字节代码的编码方式之一。Base64 主要不是加密，它主要的用途是把一些二进制数转成普通字符用于网络传输。由于一些二进制字符在传输协议中属于控制字符，不能直接传送需要转换一下。
+
+
+

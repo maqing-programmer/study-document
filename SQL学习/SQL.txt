@@ -186,6 +186,18 @@ SQL(Structured Query Language)-结构化查询语言,用于访问和处理数据
        alter table 表名 drop column 列名
 
        alter table user drop column score//删除user表中score字段
+      
+      -修改列的数据类型
+       alter table 表名 modify 列名 数据类型
+        
+       alter table user modify age int //把user表中的age字段的数据类型改为int 
+     
+      -修改列的名字和类型
+       alter table  表名 change 原列名 改后列名 数据类型 
+
+       alter table user change age s_age int //把user表中的age字段名字改成s_age,数据类型变为int
+
+       (注意这里不论你是否想要修改数据类型，数据类型都要给上)   
 
  (18) SQL中的函数
       
@@ -272,6 +284,12 @@ select student.id,st_course.c_id,st_course.cname  from student left join st_cour
 right join 关键字会从右表(table_name2)那里返回所有的行,即时在左表(table_name1)中没有匹配的行。
 
 select st_course.c_id,st_course.cname ,st_course.stu_id,student.name from student right join st_course on student.id=st_course.stu_id
+
+(26)char 和 varchar的区别
+    char是固定长度的,varchar是不固定长度。
+    例如 char(10) 和varchar(10)
+    char(10) :存储的字段值无论是否有10个字符，都占用10个字符的空间。
+    varchar(10):存储的字段值有几个字符，就占用几个字符的空间。
 
  
 

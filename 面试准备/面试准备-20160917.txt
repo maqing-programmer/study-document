@@ -1,0 +1,202 @@
+1.Volley
+Volley是在2013年Google I/O大会上推出的一个网络通信框架,能够让我们的网络请求变得更加容易和快速。
+Volley具有以下优点：
+-网络请求的自动调度
+-多并发网络连接
+-透明的磁盘缓存和内存缓存
+-支持请求优先级
+-有取消请求的接口,你可以取消一个请求，也可以设置请求取消的块或范围
+-很容易定制，如重试，退避
+-强大的排序，能够很容易的将从网络中异步请求的数据正确的显示在用户界面。
+-具有调试和跟踪工具
+
+Volley适用于通信比较频繁，但是数据量不大的网络请求,而对于数据量大的网络操作，如文件下载，流媒体等操作不适用。
+
+2.Volley的使用
+(1)获取Volley的支持
+   clone Volley的源码到你的电脑:
+
+   git clone https://android.googlesource.com/platform/frameworks/volley
+
+   将下载的Volley源码作为Android Library 导入到你的项目中。
+
+(2)开始使用
+ 
+-创建RequestQueue
+ 首先需要创建一个RequestQueue请求队列对象,RequestQueue对象用来管理网络操作的工作线程,读取和写入缓存,解析响应。
+ 我们不需要为每一次Http请求都创建一个RequestQeueue,基本上每一个需要和网络交互的Activtiy创建一个RequestQueue对象
+ 就可以了。
+
+ RequestQueue requestQueue=Volley.newRequestQueue(context);
+
+-创建Request请求对象
+ 请求对象有StringRequest,JsonObjectRequest,JsonArrayRequest分别用于请求字符串数据,JSON对象数据,JSON数组数据。
+
+ 这里以StringRequest为例,创建一个请求对象,以Get方式为例:
+ 请求方式同样Get和Post两种，对应参数: Request.Method.Get 和 Request.Method.Post;
+
+ String url = "http://www.baidu.com";
+ StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            
+            @Override
+            public void onResponse(String s) {
+
+                Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
+            
+            }
+        }, new Response.ErrorListener() {
+            @Override
+           
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.i(TAG, volleyError.getMessage());
+            }
+        });
+
+-将请求对象添加到请求队列RequesrQueue中
+ requestQueuee.add(stringRequest);
+
+这样就完成了一个StringRequest的请求,请求成功会回调onResponse()方法，请求失败会回调onErrorResponse()方法。
+这两个方法都是工作在主线程中，可以在这两个方法里直接对UI做更新。
+
+
+上面由于使用的是Get请求，所以没有携带请求参数,如果是Post请求，需要携带请求参数，需要重写
+StringRequest的getParams()方法，如下：
+
+ String url = "http://192.168.0.102:8080/HttpServer/TestServlet";
+
+  StringRequest stringRequest = new StringRequest(Request.Method.POST, url, listener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("a", "a");  //携带的请求参数
+                return map;
+            }
+        };
+   
+   requestQueue.add(stringRequest);
+          
+为了代码的美观，listener和errorListener都在外面定义实现。
+  Response.Listener<String> listener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String s) {
+            Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    Response.ErrorListener errorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError volleyError) {
+            Log.i(TAG, volleyError.getMessage());
+        }
+    };
+
+这就是StringRequest的Get和Post请求的实现。
+
+
+-JsonRequest
+介绍了StringRequest,再来介绍一下JsonRequest,请求的是Json数据,JsonRequest也是继承自Request的,
+不过JsonRequest是一个抽象类,我们使用的是它的两个实现类,JsonObjectRequest和JsonArrayRequest,
+使用和StringRequest是相类似的，如下:
+
+    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.Get, url, null,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject jsonObject) {
+
+                        Toast.makeText(MainActivity.this, jsonObject.toString(), Toast.LENGTH_SHORT).show();
+                    
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        Log.i(TAG, volleyError.getMessage());
+                    }
+                }
+
+        );
+        requestQueue.add(jsonObjectRequest);
+
+ 这个时候，服务器端返回的直接是一个JSONObject数据，服务器返回如下
+        PrintWriter out = response.getWriter();
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("result", "欢迎访问服务器");
+		out.println(jsonObject);
+		out.flush();
+		out.close();
+
+请求成功后onResponse()中Toast出 {"result","欢迎访问服务器"};
+
+至于JsonArrayRequest的用法也是相类似的。
+
+2.把下载的Volley源码编译成jar包
+  因为之前的Volley版本都是用ant构建的，现在都是用gradle构建了,所以我们
+  应该用gradle编译Volley的jar包。
+   
+  (1)准备gradle
+   因为已经下载了Android Studio,Android Studio就已经包含了gradle，所以无需下载。
+   配置gardle的环境变量。 Android Studio默认使用的gradle是在Android Studio的gradle目录
+
+   -于是我在系统的Path环境变量中添加了Android Studio下gradle目录的bin路径。//注意要配置到gradle的bin路径   
+   -然后在cmd中输入 gradle -v 命令 成功显示了gradle版本信息，表示gradle环境变量配置成功。
+    这个Android Studio默认的使用的是gralde-2.10 版
+
+   -然后在cmd中进入下载的Volley源码根目录即volley-master目录,
+    然后输入命令gradle build , 但是编译报错了。报错信息显示是
+    gradle request 2.2 ,current version is 2.10,说明需要gradle-2.2的版本,
+
+    我们知道Android Studio的目录下的gradle目录中的gradle,只是Android Studio默认使用的gradle版本,
+    我们在使用Android Studio的时候，如果导入的项目要求不同的gradle版本的话,Android Studio
+    会帮我们下载对应的gradle版本。
+    而下载后的路径默认是在:C:\Users\Home-Pc\.gradle\wrapper\dists中
+    C:\Users\Home-Pc\.gradle 目录也是其它gradle依赖如 使用到的recycleview等gradle依赖都是下载到这个目录下的。
+
+    于是我到C:\Users\Home-Pc\.gradle\wrapper\dists查看是否有 gradle-2.2版本的gradle,查看果然有gradle-2.2-all
+
+    于是重新配置gradle的环境变量,在path中除去之前配置的gradle-2.10,重新添加这个gradle-2,2-all的bin路径
+
+    再重新打开cmd,输入 gradle -v ,成功显示 gardle的版本信息为 gradle 2.2
+   
+  -然后在cmd中再进入 volley-master 目录,输入命令 gradle build,这次不再报gradle的版本的错了，但是又出现
+
+   SDK location not found 错误。
+
+   经过上网查找解决办法，有两种解决办法:
+   1)第一种是在volley-master目录下新建一个local.properties文件,在里面配置sdk的路径:
+   sdk.dir=你的sdk路径
+   2)第二种是配置一个ANDROID_HOME系统环境变量,环境变量值为你的SDK路径
+ 
+   我选择了第二种方法,在系统的环境变量中新建了ANDROID_HOME环境变量，值配置为我的SDK路径。
+
+   然后关闭cmd重新打开cmd进入volley-master目录，输入命令 gradle build,
+   这一次编译了一会儿时间，但是又显示Execution failed for task ':javadoc'，
+   javadoc generation failed,但是这应该是与javadoc文档相关的错误，这个时候
+   volley-master下已经多出了.gradle和build目录,根据网上的资料，如果jar编译成功的话，
+   在build\intermediates\bundles\release中会有classes.jar,这个classes.jar就是volley的jar包，
+   于是我进入生成的build目录下的intermediates\bundles\release中，果然有classes.jar，我把这个
+   classes.jar包拷贝出来重命名为volley.jar,
+
+-然后将volley.jar放到新建Androidv Studio项目的libs目录，在libs目录下右击这个volley.jar--->add as library
+ 后，就在程序中使用volley成功了。
+
+说明这个编译的volley的jar包是可以使用的。
+
+总结：虽然在编译Volley的jar包时，报了Execution failed for task ':javadoc' ,javadoc generation failed....
+      的错误,但是volley-master目录下生成了build目录,build\intermediates\bundles\release中有classes.jar
+      就表明 volley的jar包编译成功,可以使用。
+
+
+
+
+
+
+
+
+   
+
+
+
+
+
+
