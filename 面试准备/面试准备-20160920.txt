@@ -1,0 +1,46 @@
+1.RxJava
+RxJava的本质就是一个实现“异步”操作的库。
+
+同样是做异步，为什么人们用它，而不用现成的 AsyncTask，Handler
+一个词：简洁。
+RxJava的GitHub地址
+https://github.com/ReactiveX/RxJava 
+https://github.com/ReactiveX/RxAndroid 
+
+
+
+
+2.Scheduler 线程控制
+在不指定线程的情况下，RxJava遵循的是线程不变的原则，即：在哪个线程中调用subscribe(),就在
+哪个线程中生产事件;在哪个线程中生产事件，就在哪个线程中消费事件，如果需要切换线程，就需要用到
+Scheduler
+
+-Scheduler的API
+ 在RxJava中,scheduler相当于线程调度器，RxJava通过它来指定每一段代码应该运行在什么样的线程中。
+ RxJava已经内置了几个Scheduler,它们适合于大多数的使用场景：
+
+ (1)Schedulers.immediate() 直接在当前线程运行，相当于不指定线程，这就是默认的Scheduler
+ (2)Scheduler.newThread() 总是启用新线程，并在新线程中执行操作
+ (3)Scheduler.io() I/O操作(读写文件，读写数据库，网络信息交互等)所使用的Scheduler,行为模式
+    和newThread()差不多，区别在于io()的内部实现是用一个无数量上限的线程池，可以重用空闲的线程
+    因此在多数情况下io()比newThread()更有效率
+ (4)Scheduler.computation() 计算所使用的Scheduler 
+    这个计算指的是 CPU 密集型计算，即不会被 I/O 等操作限制性能的操作，例如图形的计算。这个 Scheduler 使用的固定的线程池，大小为 CPU 核数。不要把 I/O 操作放在 computation() 中，否则 I/O 操作的等待时间会浪费 CPU。
+ (5)AndroidSchedulers.mainThread() 指定操作在Android主线程中执行
+
+ 有了这几个Scheduler，就可以使用subscribeOn()和observeOn()这两个方法来对线程进行控制，
+ subscribeOn()指定subscribe()所发生的线程，即Observable的onSubscribe被激活时所处的线程，
+ observeOn()指定Subscriber所运行在的线程，或者叫事件消费的线程。
+
+Observable.just(1,2,3,4)
+.subscribeOn(Scheduler.io())  //指定事件发送发生在IO线程
+.observerOn(AndroidSchedulers.mainTHread())  //指定事件消费发生在主线程
+.subscribe(new Action1(Integer){
+	public void call(Integer number){
+	Log.i(TAG,"number="+number);
+	}
+});
+
+上面代码指定事件发送发生在IO线程，所以 1,2,3,4,内容发送发生在IO线程,
+指定事件消费发生在主线程。
+

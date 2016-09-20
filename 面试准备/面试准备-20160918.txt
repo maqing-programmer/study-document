@@ -33,7 +33,7 @@
    
    代表的非对称加密算法:RSA   RSA加密速度慢,适合少量数据加密
 
-   基于上面的几种代表性算法的特点，一般使用RAS+AES混合加密
+   基于上面的几种代表性算法的特点，一般使用RSA+AES混合加密
    
    RSA+AES混合加密过程:
    客户端：
@@ -1134,3 +1134,4 @@ String decrypt = AES.decrypt(content, decryptAesKey);
     
     这个时候在OpenSSL目录的bin目录下又会生成一个pkcs8_rsa_private_key.pem文件，这个就是
     我们最终要用的私钥文件。
+
