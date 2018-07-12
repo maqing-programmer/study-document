@@ -44,6 +44,9 @@ git branch -a
 
 查看远程有哪些分支，会列出本地以及远程仓库分支，绿色为本地分支,红色的为远程分支。
 
+但是有时候，git branch -a 查看不到远程所有分支
+
+可以通过 git fetch 将本地远程跟踪分支进行更新，与远程分支保持一致
 
 
 -git status
@@ -113,7 +116,11 @@ git reset --soft HEAD^  撤销了最近的一次提交(也即回到了上一次�
 
 -切换分支
 
-git checkout branchName
+git checkout branchName 切换到本地的branchName分支
+
+git checkout -b branchName origin/branchName 作用是克隆远程的branchName分支，在本地起名为branchName分支，并切换到本地的branchName分支
+
+
 
 -撤销对文件的修改
 
@@ -140,7 +147,8 @@ git push origin story6335
 删除远程分支
 
 git push origin --delete branchName
-
+或
+git push origin :branch-name
 
 
 -origin
@@ -158,3 +166,5 @@ git push origin --delete branchName
 -git pull
 
  获取最新的远程版本库到本地并且merge到本地
+ 
+ 
