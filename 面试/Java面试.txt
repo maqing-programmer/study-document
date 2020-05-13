@@ -1,0 +1,2130 @@
+-1.HashMap
+
+  -是Java中的集合的一种
+
+  -用于以键值对的形式存放取数据
+
+  -键值都都可以为null
+
+  -HashMap是非线程安全的
+
+  问题：
+
+     数组+链表
+
+  (2)HashMap的存取原理
+
+     以Java7源码为例
+  
+     存：HashMap是以键值对的形式存放数据
+
+         HashMap一开始是维护了一个数组，默认长度是16
+
+         但我们传入Key时，根据Key的hash值与数组默认容量计算出
+
+         一个下标 index=hash(key) & (Length-1) 计算出下标
+
+         然后在数组该位置处存放一个Node(节点) (包括了key、value,以及下一个节点)
+
+         如果两个不同的Key值，经过哈希算法之后得到的值一样
+
+         就出现了哈希冲突了，就需要在该下标位置处生成一个链表
+
+     取：也是根据Key值，经过哈希算法，得到下标，如果
+     
+         数组该位置处是一个链表，再查询链表
+  
+  （3） Java7和Java8的区别？
+
+       我们在讲HashMap存取原理的时候，讲到了哈希冲突，是以链表来解决的
+
+       那么在Java7,出现哈希冲突时，往链表中插入元素是采用的头插法，即
+
+       新来的元素放在链表的头部。
+
+       Java8采用尾插法
+
+   (4) 为啥会线程不安全？
+       
+       HashpMap的put和get方法都没有加同步锁，多线程环境下，无法保证上一秒
+
+       put的值，和下一秒get的时候的值一样，所以不是线程安全的
+
+   (5) 有什么线程安全的类代替么? 
+   
+       ConcurrentHashMap 
+
+   (6) 默认初始化大小是多少？为啥是这么多？为啥大小都是2的幂？
+   
+       HashMap默认的初始容量是 16
+
+       至于为什么是2的幂，是因为根据Key计算下标时采用的是 位&运算
+
+       这样可以保证位与运算刚好是取模的效果，以保证得到的下标是在
+
+       容量范围内。
+
+       使用位与运算达到取模的效果是因为，位运算效率高
+
+       至于为什么是16 应该是Sun的Java工程师自己的经验
+
+   (7)HashMap的扩容方式？负载因子是多少？为什是这么多？
+
+      -HashMap的扩容方式，是在HashMap中元素的个数大于
+
+      initCapacity*loadFactor进行扩容，创建一个新的数组
+
+      长度是原来的2倍，把原来数组中的Entry重新哈希之后存到
+
+      新的数组中区。
+
+      -负载因子 (loadFactor) 0.75f
+
+      -至于负载因子为什么是0.75，如果负载因子较小，则会频繁扩容,效率低耗时
+
+       如果较大，则内存利用率又比较低。0.75应该是时间和空间上权衡的一个值
+
+   (8) HashMap是怎么处理hash碰撞的？    
+
+       哈希碰撞是指两个不同的对象通过哈希算法得出的在数组中的
+
+       下标值是一样的。
+
+       这个时候就需要在该下标位置，生成一个链表。然后把元素插入的链表中
+
+   (9) hash的计算规则？
+       
+       所谓哈希的计算规则就是指根据键值计算下标的规则
+
+       下标index=(n - 1) & hash(key)
+
+       n是当前容量capacity key就是键值
+
+       实际上就是一种取模，是使用位运算实现的取模 效率高 
+
+2.HashMap使用
+
+  最常用的使用网络请求中,请求参数就是使用HashMap
+
+  塞到请求中
+
+  在移动设备上，内存是非常有限的，
+
+3.ConcurrentHashMap & Hashtable
+
+  前面我们已经说过HashMap是非线程安全的，那么我们一般都是怎么处理这种情况的
+
+  多线程下不使用HashMap，而使用其他的方式去替代
+
+  -Collection.synchronizedMap(map) 创建线程安全的Map
+
+  -HashTable
+
+  -ConcurrentHashMap 
+
+ (1)Collection.synchronizedMap(map)
+ 
+    SynchronizedMap  会在内部维护一个普通对象 
+
+    如果不传，则普通对象就是自身，调用方法进行
+
+    操作时，都会对方法上锁。
+
+ (2) HashTable
+
+    HashTable 是线程安全的,因为HashTable在每一个操作方法前面都加了锁(synchronized)
+
+    但是这样也就导致了HashTable的效率比较低
+
+    HashTable的键值都不能为null
+
+ (3)ConcurrentHashMap
+
+     Segment数组 + HashEntry数组 +链表
+
+4.LinkedHashMap
+
+-LinkedHashMap继承自HashMap，拥有HashMap所有的特性
+
+-但是与HashMap不同的是,HashpMap输出顺序是无序的，
+
+ 而LinkedHashMap输出是有序的
+
+-LinkedHashMap内部维护了一个双向链表，在每次插入，删除，修改，和
+
+ 访问数据时都会调整节点的顺序，以决定迭代时输出的顺序。
+
+ LinkedHashMap内部有一个accessOrder参数，默认是false,迭代的输出顺序
+
+ 和节点插入的顺序一致，如果为true,则迭代的输出顺序按照访问的顺序。
+
+ 按照访问的顺序是指，如果accessOrder为true，调用get方法访问某个元素时
+
+ 该元素会被移动到链表的尾部。
+
+ 5.ArrayMap SparseArray LongSparseArray
+   
+   我们知道移动设备上内存始终是一个问题，而HashMap虽然操作效率较高，但是内存效率并不高，所以Google工程师
+
+   专门设计了ArrayMap，内存效率较高的键值对存储结构。
+
+   ArrayMap底层数据结构是维护两个数组  一个用来存放key的hashCode值，一个用来存放key-value
+
+   为什么ArrayMap的内存效率要比HashMap的内存效率要高。
+
+   -HashMap有一个默认的初始化容量 16,那么即使没有存放数据，也是要占内存的。
+
+    而ArrayMap没有添加元素的时候是不占内存的，只有添加第一个元素的时候才扩容到4
+
+   -HashMap 
+
+   为了提高存取效率，在元素数量达到0.75的时候就开始扩容，并且扩容到原来的两倍,
+
+    势必会造成内存的浪费。 
+
+    而ArrayMap 是在容量大于等于8的时候才扩容到原来的1.5倍，大于等于4的时候扩容到8，
+
+    小于4的时候扩容到4
+
+    但是也正是因为ArrayMap的扩容方式，当数据量较大的时候，ArrayMap的扩容肯定比较频繁，操作效率也就
+
+    会越来越低，当数据量非常大的时候，效率会退化50%，所以当数据量在千级以内可以使用ArrayMap,数据量
+
+    很多的情况下还是应该选择HashMap。
+
+    SparseArray 
+
+    -是专门用来存放键值是int类型的键值对，这样就避免了自动装箱
+
+    内部维护了两个数组，一个整型数组用于存放key,另外一个数组用于存放value
+
+   -key数组是一个有序的int数组，查找key是采用二分查找法。
+
+   -使用数组就会面临增加、删除元素，需要移动元素，SparseArray引入了DELETE标记
+
+    在删除元素的时候，对应的key数组不做变动，而在value数组相应位置添加DELETE标记
+
+    这样删除就不用移动元素了。
+
+    LongSpareArray和SparseArray一样，只不过键值是long类型的
+
+ 5.ArrayList
+
+-ArrayList是Java集合中的一种,将元素以固定的顺序存放
+
+元素可以是null,可以重复。
+
+ArrayList底层数据结构是数组,查询效率高，增删效率低
+
+非线程安全的
+
+-ArrayList的数据结构
+
+ArrayList底层的数据结构是数组
+
+我们知道数组是定长的，那么ArrayList是如何做到不断往里面添加元素的
+
+是通过扩容的方式实现不断往里面添加元素的。一旦元素个数达到数组的总
+
+容量，就进行扩容，先增加容量的一半，如果还不够，则扩容到目标容量
+
+-ArrayList是非线程安全的
+
+那么可以使用Vector或者Collections.synchronizedList
+
+来替代。 
+
+-LinkedList与ArrayList的比较
+
+ (1) ArrayList的底层数据结构是数组
+
+ LinkedList底层数据结构是双向链表
+
+（2）ArrayList随机访问效率比较高，插入，删除效率比较低
+
+    LinkedList 随机访问效率比较低，插入，删除效率比较高
+
+（3）ArrayList和LinkedList 都是非线程安全的
+
+
+6. 线程
+
+-什么是线程
+
+ 线程是比进程更小的执行单位，是操作系统能够进行运算调度的最小单位。  
+
+-创建线程的方法
+
+(1) 继承自Thread类，重写run方法
+
+(2) 实现Runnable接口,实现run方法
+
+(3) 实现Callable接口，使用FutureTask封装交由Thread
+
+-线程的终止
+
+(1) 定义一个退出标志变量，当不满足条件时，线程的run方法结束
+
+    线程终止
+
+
+    
+-线程的生命周期
+
+(1) NEW(新建状态)
+
+使用new 关键字创建了一个线程，还没有调用start方法启动线程,
+
+此时属于新建状态
+
+Thread thread=new Thread(){
+  pubic void run(){
+   ...
+  }
+}  
+
+(2)RUNNABLE（可运行状态）
+
+调用了start方法，启动了线程，此时线程就处于可运行状态，可运行状态
+
+又分为两种状态
+
+-ready(状态) 就绪状态
+
+ 调用了start方法等待调度 ，此时线程并没有运行
+
+-running(运行状态)
+
+调用了start方法 ,被JVM调度 ，开始运行
+
+线程的start方法只能调用一次 
+
+(3)BLOCKED(阻塞状态)
+
+正在运行的线程由于某些原因放弃CPU，暂时停止运行，就会处于阻塞状态，
+
+此时JVM不会为该线程分配CPU，知道线程重新进入就绪状态，才有机会转到运行状态
+
+阻塞状态只能先重新进入就绪状态，不能跳过就绪状态直接进入运行状态
+
+线程进入阻塞状态的常见情况：
+
+1.线程属于运行状态，尝试获取同步锁，但是同步锁正在被另外一个线程占用
+
+则线程会进入阻塞状态，等待获取对象的同步锁。
+
+2.线程处于运行状态，发出了IO请求 
+
+(4)WAITING（等待状态）
+
+正在运行的线程，调用了无参数的wait方法，JVM会把线程放入对象的等待队列中
+
+此时线程进入等待状态，等待的线程只能被其他线程唤醒，否则不会进入运行状态。
+
+使线程进入等待状态的方法：
+
+-调用无参数的Object.wait()方法，只能通过另外一个线程调用同一对象的
+
+notify或者notifyAll方法重新进入运行状态
+
+-调用Thread的无参数的join()方法
+
+只能等待被调用线程执行结束后，才能重新进入运行状态
+
+(5)TIMED WATING(计时等待状态)
+
+正在运行的线程调用了有参数的Object.wait(long millis)等方法,
+
+JVM会把线程放入对象的等待队列中，此时线程进入计时状态，时间结束后
+
+又会重新进入运行状态。
+
+-调用Thread的有参数的join(long millis) 方法一样使线程进入
+
+计时等待状态
+
+
+-sleep、wait、join、yield的区别
+
+ sleep是Thread的静态方法，使当前线程进入阻塞状态，不会释放资源锁
+
+ yield也是Thread的静态方法，使当前线程进入就绪状态，使得具有相同级别，或者更高级别
+
+ 的线程获得CPU，当然也有可能当前线程进图就绪状态后，又立即进入运行状态。
+
+ wait方法是所有对象都有的方法，  在某个线程中调用某个对象的wait方法，会使得该线程进入等待状态
+
+       会释放拥有的对象锁，wait方法调用必须要使用synchronized关键字
+
+       同步wait方法代码块，否则抛出异常
+
+       synchronized(object){
+         object.wait()
+       } 
+
+  join方法是Thread的实例方法在A线程中调用B线程的join方法,会使得A线程进入等待状态，
+  
+            等待B线程执行完毕后，A线程才会继续运行                 
+
+-synchronized关键字
+
+ (1)synchronized关键字的作用
+
+ synchronized 关键字是用来解决多线程访问资源的同步性,使用synchronized
+
+ 关键字修饰的方法或者代码块在同一时刻只能被一线程执行
+
+ (2)synchronized使用方式
+
+  -修饰实例方法 作用于当前实例的方法，进入同步代码块要获取当前实例的锁
+
+  -修饰静态方法，由于静态方法是类级别的，所以是对类加锁
+  
+   如果一个线程A访问一个类的实例的非静态synchronized方法
+   
+   另外一个线程访问这个类的静态synchronized方法,
+
+   是不会发生互斥的，因为A访问非静态synchronized方法,需要占用
+
+   当前实例的锁，而B访问的是静态synchronized方法，占用的是当前类
+
+   的锁。
+
+ -修饰代码块 指定加锁对象，对给定对象加锁，进入同步代码块前需要获取指定
+ 
+  对象的锁
+
+ -线程池
+
+  每当有任务来的时候，创建线程，执行任务，销毁线程，并发操作的时候，如果有
+
+  大量的任务需要并发执行，就需要进行大量的线程创建，任务执行完之后又要进行
+
+  大量的线程的销毁，都会占用CPU的资源，导致应用响应速度较慢，卡顿。
+  
+  于是就出现了线程池，也就是将线程放在一个“池子”中进行管理，当任务来的时候就可以
+
+  从池子中拿出一个已经创建好的线程进行执行任务，执行结束后将线程放回“池子”，待线程池
+
+  销毁的时候，对“池子”中的线程进行统一销毁。
+
+  -使用线程池的好处
+
+  通过上面对线程池的基本定义我们可以知道
+
+  (1)使用线程池可以重复使用已经创建好的线程，这样可以降低创建和销毁线程带来的CPU的资源消耗
+
+  (2)提高线程的可管理性 ，使用线程池可以对线程进行统一管理
+
+  -ThreadPoolExecutor
+
+  使用线程池，就必须要用到ThreadPoolExecutor这个类,我们看一下ThreadPoolExecutor的参数
+
+  最多的一个构造函数中，各参数分别代表什么意思
+
+   ThreadPoolExecutor(int corePoolSize,
+                              int maximumPoolSize,
+                              long keepAliveTime,
+                              TimeUnit unit,
+                              BlockingQueue<Runnable> workQueue,
+                              ThreadFactory threadFactory,
+                              RejectedExecutionHandler handler) 
+
+  (1)corePoolSize:核心线程数
+
+  每当接收到一个任务的时候，线程池会创建一个新的线程来执行任务，直到当前
+
+  线程池中的线程数等于corePoolSize,当任务大于corePoolSize时，会将任务
+
+  放到阻塞队列中
+
+  (2)maximumPoolSize :线程池中最大线程数
+
+  如果阻塞队列满了，这个时候有新的任务，线程池就会创建新的线程执行，直到线程池中
+
+  线程数量等于maximumPoolSize
+
+  (3)keepAliveTime 线程空闲存活时间
+
+  当线程池中线程数大于任务数的时候，并且线程数大于corePoolSize时，如果空闲线程
+
+  存活时间达到keepAliveTime,空闲线程就会被回收。
+
+  (4)TimeUnit unit keepAliveTime的单位
+
+  (5) BlockingQueue<Runnable> workQueue 阻塞队列
+     
+      当线程池中线程数等于corePoolSize的时候，如果有新的任务，任务会被放到阻塞队列中 
+
+  (6) ThreadFactory threadFactory 创建线程的工厂
+
+      通过自定义的线程工厂，可以给每一个线程设置一个具有识别度的线程名，Executors
+
+      里面默认的工厂，线程的命名规则是"pool-数字-thread-数字"
+
+  (7) RejectedExecutionHandler handler  饱和策略
+
+      如果任务特别多，阻塞队列已经满了，线程池中的线程数已经达到最大线程数了
+
+      这个时候又有新的任务，只能执行饱和策略来处理该任务。
+
+  -创建线程池
+  
+   (1)通过ThreadPoolExecutor的构造方法来进行创建      
+
+   (2)Executors中提供的的静态方法来创建线程池
+
+    当然本质也是调用ThreadPoolExecutor进行创建，只不过针对不同放入需求，设置了对应的参数而已
+
+    -FixedThreadPool
+
+    public static ExecutorService newFixedThreadPool(int nThreads) {
+        return new ThreadPoolExecutor(nThreads, nThreads,
+                                      0L, TimeUnit.MILLISECONDS,
+                                      new LinkedBlockingQueue<Runnable>());
+    }
+
+
+  int corePoolSize： nThreads             
+  int maximumPoolSize：  nThreads                     
+  long keepAliveTime：0L                        
+  TimeUnit unit：TimeUnit.MILLISECONDS                      
+  BlockingQueue workQueue：new LinkedBlockingQueue()
+
+  核心线程数和最大线程数一致，这样就不会创建非核心线程，也就不会
+
+  涉及到空闲线程的回收。 线程数超过 corePoolSize 
+
+  就进入阻塞队列，当有空闲线程的时候，再在阻塞队列中去任务执行。
+
+  使用场景：线程池线程数固定，且不会回收，线程生命后期与线程池生命周期同步
+
+  适合任务量比较固定，且耗时长的任务。
+
+  -SingleThreadExecutor  
+
+   public static ExecutorService newSingleThreadExecutor() {
+        return new FinalizableDelegatedExecutorService
+            (new ThreadPoolExecutor(1, 1,
+                                    0L, TimeUnit.MILLISECONDS,
+                                    new LinkedBlockingQueue<Runnable>()));
+    }
+
+  int corePoolSize： 1
+  int maximumPoolSize：  1
+  long keepAliveTime：0L                        
+  TimeUnit unit：TimeUnit.MILLISECONDS                      
+  BlockingQueue workQueue：new LinkedBlockingQueue()
+  
+  线程池中只有一个线程，确保所有的任务都只在一个线程中顺序执行，不需要
+
+  处理线程同步问题，适用于多任务顺序执行
+
+ -CachedThreadPool
+ 
+  public static ExecutorService newCachedThreadPool() {
+        return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                                      60L, TimeUnit.SECONDS,
+                                      new SynchronousQueue<Runnable>());
+    }
+
+  int corePoolSize： 0
+  int maximumPoolSize：  Integer.MAX_VALUE
+  long keepAliveTime：60L                       
+  TimeUnit unit：TimeUnit.SECONDS--
+  BlockingQueue workQueue：new SynchronousQueue()
+
+  无核心线程，非核心线程数量 Integer.MAX_VALU 可以无限创建，空闲线程存活时间
+
+  60s会被回收,任务队列采用的是SynchoronousQueue,这个队列是无法插入任务的，
+
+  一有任务立即执行。
+
+  使用场景：适用于任务量大，且耗时少的任务
+
+  -ScheduledThreadPool
+
+     public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize) {
+        return new ScheduledThreadPoolExecutor(corePoolSize);
+     }
+
+    public ScheduledThreadPoolExecutor(int corePoolSize) {
+        super(corePoolSize, Integer.MAX_VALUE,
+              DEFAULT_KEEPALIVE_MILLIS, MILLISECONDS,
+              new DelayedWorkQueue());
+    }
+
+  int corePoolSize： corePoolSize （设定）
+  int maximumPoolSize：  Integer.MAX_VALUE
+  long keepAliveTime：0                
+  TimeUnit unit：NANOSECONDS
+  BlockingQueue workQueue：new DelayedWorkQueue()
+  
+  核心线程数固定(设置),最大线程数无限，空间存活时间10s
+
+  DelayedWorkQueue() 无界队列会将任务进行排序，延时执行队列任务。
+
+  使用场景：newScheduleThreadPool是唯一一个具有定时定期执行任务功能
+
+  的线程池，适合执行一些周期性任务或者延时任务，可以通过 
+
+  schecule(Runnable command,long delay,TimeUnit unit)方法实现
+
+  -线程池的执行
+
+  线程池提供了execute和submit两个方法来执行
+
+  submit也是调用了execute()方法，只不过在调用之前将Runnable对象封装成
+
+  FutureTask对象，再返回Future<T> ，通过Future的get方法拿到任务执行结束
+
+  后的返回值。
+
+  总结：通常情况下我们不需要获取线程执行的结果，可以直接使用execute
+
+  如果需要获取任务执行的结果，或者想对任务进行取消等操作，就是用submit
+
+  -线程池的关闭
+
+  (1)shutdown() 不会立即终止线程池，而是要等多有任务队列中的任务都执行
+
+     完成后才终止，但也不会接受新的任务
+
+  (2)shutdownNow() 立即终止线程池，并且尝试打断正在执行的任务，并且清空任务
+
+     队列，返回尚未执行的任务
+
+  7.Java中的泛型
+
+    -泛型
+
+     泛型的本质就是参数化类型，就是将操作数据的类型也指定为一个参数,这种参数类型
+
+     可以用在类，接口和方法中，分别称为泛型类，泛型接口，泛型方法
+
+   -泛型的类型擦除
+
+   Java中的泛型就是一种代码规范，是一种语法限制，只存在编译阶段，生成字节码文件之后
+   
+   字节码中是不包含泛型类型信息的，使用泛型的时候加上的类型参数，会在编译器编译的时候
+
+   去掉，如果泛型没有指定上限，如<T>,会被转成Object类型，如果指定了上限<T extends 
+
+   String> 则类型参数就会被替换成类型上限。 这个过程就被称之为类型擦除。
+
+   泛型的类型只能是类类型，不能是基本数据类型 
+
+ -泛型类，泛型接口，泛型方法
+ 
+  (1)泛型类
+
+  class A<T>{
+    
+    private T a;
+
+    public T getA() {
+            return a;
+        }
+
+        public void setA(T a) {
+            this.a = a;
+        }
+
+  }
+
+  A<Integer> a=new A<Integer>()
+
+
+(2)泛型接口
+
+   interface MyInterface<T>{
+      public T getData();
+   }
+
+   -如果一个类实现一个泛型接口，如果没有传入泛型实参，则声明的类，也要
+
+   将泛型的声明加入到类中
+
+    class D<T> implements MyInterface<T>{
+
+        @Override
+        public T getData() {
+            return null;
+        }
+        
+    }
+
+    -当一个类实现泛型接口时，传入了泛型实参，则类的声明中不用再加泛型的声明
+
+     ，但是所有使用泛型的地方都要替换成传入的实参类型。
+
+        class D implements MyInterface<String> {
+
+        @Override
+        public String getData() {
+            return "测试";
+        }
+
+    } 
+
+(3)泛型方法
+
+   public <T> T getData(T num){
+    
+     return num;
+
+   }
+
+   泛型方法要使用<T>进行声明，表示是一个泛型方法，随后就可以使用T类型了
+
+   注意泛型方法与普通方法的区别
+
+   前面我们在进行泛型类的声明的时候
+
+   class A<T>{
+   
+   private T a;
+
+   public T getA(){
+
+     return a;
+   } 
+
+   public void setA(T a){
+    
+    this.a=a;
+
+   }
+
+   }
+
+   这个泛型类中的方法setA getA都不是泛型方法，虽然方法中使用了泛型
+
+   泛型方法必须要使用 <T> 进行标识
+
+   泛型方法是在调用方法时，传入指定的类型，而上面的泛型类中的setA getA
+
+   方法虽然使用了泛型，但是在泛型类实例化的过程中就指定了类型，而不是在
+
+   调用方法的时候指定类型的。
+
+  -泛型中的通配符
+   
+   泛型中的通配符是在使用泛型的过程中用到的，而不是在声明泛型的过程中使用到的。
+
+   通配符实际上是泛型类型的实参,代表的是一种参数类型，只不过这种类型是未知的任意
+
+   类型。
+
+   泛型的通配符分为限定通配符和非限定通配符
+
+   非限定通配符: <?>
+
+   限定通配符:  <? extends 某一特定类类型>  <? super 某一特定类类型>  
+  
+
+   8.Java反射机制
+
+   -Java反射机制是指在运行过程中
+
+   对于任意一个类，都能知道这个类的所有属性和方法
+
+   对于任意一个对象，都能够调用它的任意一个属性和方法
+
+   -Java程序的运行
+
+    Java程序的运行主要分为编译和运行两步
+
+    编译：源文件被编译器编译成.class字节码文件
+
+    运行：运行过程又分为：类的加载，执行两步
+
+   -类的加载
+    
+    源文件被编译器编译成.class字节码文件，类加载器将字节码文件加载入JVM内存中
+
+    这个过程就是类的加载
+
+   -字节码文件对象 Class
+
+    要想实现反射，就必须拿到类的字节码文件对象，每个类都对应着一个字节码文件
+
+    也对应着一个Class类型的对象,也就是字节码文件对象
+
+    获取字节码文件对象Class的方式：
+
+    (1) 通过对象的getClass方法来获取字节码对象
+
+        A a=new A()；
+
+        Class class=a.getClass()；
+
+    (2) 通过 类名.class 来直接获取字节码对象
+    
+        Class classA=A.class;    
+
+    (3) 通过Class的forName(完整类名参数) 这个静态方法来获取字节码对象
+        
+         Class classA = Class.forName("com.nado.javademo.A");
+
+     一个类在JVM只会有一个字节码文件对象实例，所以上面三种方式获取的Class实例
+
+     实际上是同一个实例    
+
+   -使用反射创建实例
+
+    之前我们都是使用new关键字来创建实例，我们来对比一下使用反射创建实例和使用new关键字
+
+    创建实例有什么不同
+
+    -使用new关键字创建对象
+
+    A a=new A()
+
+    new一个类的实例的时候，是根据new的类名寻找字节码文件，加载进入内存，
+
+    创建Class对象，然后创建对应的A对象
+
+    -通过反射创建对象
+     
+     (1)使用Class实例的newInstance方法，但前提是类要有可以访问的默认构造方法
+
+     //通过反射创建A这个类的的字节码文件对象
+     Class class=Class.forName("com.nado.javademo.A");
+     //通过class的newInstance()方法创建类的对象 
+     Object object=class.newInstance()；
+
+    (2)获取类的构造方法，然后创建实例
+
+       //根据指定的参数获取public构造方法 
+       Construcuor getConstructor(Class[] params)
+       
+       //获取所有public构造方法
+       Constructor[] getConstructors() 
+
+       //根据指定参数获取public和非public构造方法 
+       Constructor getDeclaredConstructor(Class[] params)
+       
+       //获取所有的public和非public构造方法   
+       Constructor[] getDeclaredConstructors()  
+       
+       
+       public class A {
+
+       private int a;
+
+       private A(){
+
+       }
+
+       public A(int a) {
+          this.a = a;
+       }
+
+      }
+
+
+      Constructor constructor=classA.getConstructor(Integer.class);
+      Object object2=constructor.newInstance(1);
+
+      Constructor constructor=classA.getDeclaredConstructor(); //获取无参构造方法(因为是私有的，所以只能通过getDeclaredConstuctor来获取)
+      constructor.setAccessible(true); (因为无参构造方法是私有的，所以必须设置可以访问)
+      Object object2=constructor.newInstance(); 
+
+    -获取类的方法
+
+     //根据方法名和指定的参数获取类的指定public方法，包括父类方法
+     Method getMethod(String name,Class[] params) 
+     
+     //获取所有的public方法 ,包括父类方法
+     Method[] getMethods()
+
+     //根据方法名和指定的参数获取所有的public和非public方法,不包括父类方法
+     Method getDeclaredMethod(String name,Class[] params)
+        
+     //获取所有的public和非public方法,不包括父类方法
+     Method[] getDeclaredMethods()  
+
+      Class classA = Class.forName("com.nado.javademo.A");
+      Constructor constructor=classA.getConstructor(  Integer.class);
+      Object object2=constructor.newInstance(1);
+
+      Method method = classA.getMethod("setA",int.class);
+      method.invoke(object2, 2);
+
+      Method methos1=classA.getMethod("getA");
+      Object object=methos1.invoke(object2);
+      Log.e(TAG, "onCreate: getA" + object);
+            
+
+    -获取类的属性
+
+     //根据属性名获得指定的public属性,包括父类属性
+     Field getField(String name)
+     
+     //获取所有的public属性，包括父类属性
+     Field[] getFields()
+
+     //根据属性名获取指定的public或者非public属性,不包括父类属性
+     Field getDeclaredField(String name)
+
+     //获取所有的public和非public属性,不包括父类属性
+     Field[] getDeclaredField()
+
+     Field field=classA.getDeclaredField("a");
+     field.setAccessible(true);
+     Object a=field.getInt(object2);
+     Log.e(TAG, "onCreate: a" + a);
+
+9.枚举
+
+ -枚举Enum 是JDK 1.5出现的一种新的定义常量的方式
+
+ 在此之前我们都使用public static final 来定义常量
+
+ 而枚举有他的优势，保证了类型安全
+
+ -枚举的本质
+
+  枚举类型的本质就是一个继承了java.lang.Enum类的一个
+  普通类，其中定义的枚举常量实际上就是public static final
+
+  的常量，并且定义的常量对象都是在静态代码块中实例化的,所以是
+
+  单例的
+
+  枚举为每一个类型都提供了name和ordinal这两个字段
+
+  name 是枚举对象的名字
+
+  ordinal 是一个序号
+
+  compareTo方法比较的就是ordinal
+
+  switch可以比较枚举，本质上也是比较整型的的ordinal值
+
+  枚举类型不能被继承，也不能继承其它的类，定义一个枚举类型
+
+  查看字节码文件，实际是一个final类型的继承了Enum的类，所以不能
+
+  被继承，因为Java是单继承的，已经继承了Enum，多以不能再继承其它
+
+  的类了
+
+-枚举是如何保证线程安全的
+
+ 前面已经说过，定义的枚举常量都是在静态代码块中记性初始化的，而静
+
+ 态代码块是在类加载时记性初始化完成的，而Java类加载初始化是JVM保
+
+ 证线程安全的
+
+10.注解
+
+   -什么是注解
+
+   -JDK自带的注解
+
+    @Override  用来标识方法的重写
+
+    @Deprecated 用来标记过时的元素 方法，类或属性
+
+    @SuppressWarnings 用来阻止警告
+
+  -注解的本质
+  
+    查看注解生成的字节码,你就会发现注解实际上就是一个继承了
+
+    Annotation接口的接口
+
+  -元注解
+  
+   元注解就是对注解的注解
+   
+   (1) @Target 表明注解可以应用的Java元素类型
+
+   ElementType.TYPE 应用于类，接口，枚举
+
+   ElementType.FIELD 应用于属性(包括枚举中的变量)
+
+   ElementType.METHOD 应用于方法
+
+   ElementType.PARAMETER 应用于方法中的形参
+
+   ElementType.CONSTRUCTOR 应用于构造方法
+
+   ElementType.LOCAL_VARIABLE 应用于局部变量
+
+   ElementType.ANNOTATION_TYPE 应用于注解类型
+
+   ElementType.PACKAGE 应用于包
+
+   (2)@Retention
+
+    表明注解的生命周期
+
+    RetentionPolicy.SOURCE 即在源文件中保留,编译之后就没有了
+
+    RetentionPolicy.CLASS  保留到编译后的字节码文件中
+
+    RetentionPolicy.RUNTIME 保留到程序运行时
+
+  (3)@Document
+  
+    表明该注解标记的元素可以被JavaDoc或类似工具文档化
+
+  (4)Inherited
+
+    表明使用Inherited标记的注解，所标记的类的子类也会拥有该注解
+
+ -自定义注解
+ 
+  public @interface CustomAnnotation{
+
+  }     
+
+7.树
+
+树：由顶点和边组成，不存在环的一种数据结构
+
+二叉树：树的所有结点度不超过2
+
+二叉查找树： 
+
+树的任一节点，如果左子树不为空，则左子树所有节点的值小于根节点的值
+
+树的任一节点，如果右子树不为空，则右子树所有节点的值大于根节点的值
+
+树的任一节点左右子树都是二叉查找树
+
+二叉查找树这种数据结构的查询效率很高,但是在数据是有序的情况下，
+
+就会和线性表一样，查找效率变得很低
+
+所以又出现了平衡二叉树,就是带有平衡条件的二叉树
+
+平衡二叉树主要有ALV树和红黑树
+
+-ALV树
+
+ 就是所有节点左子树和右子树的高度差不大于1的二叉查找树
+
+-红黑树
+
+ 首先是一个二叉查找树
+
+ 根节点是黑色
+
+ 叶子节点是黑色
+
+ 如果一个节点是红色，它的左右两个子节点必须是黑色
+
+ 所有节点到其叶子节点的所有路径上黑色节点数一样
+
+ 在插入删除的时候，通过左旋右旋和变色实现自平衡
+
+8.值传递和引用传递
+
+  形参如果是基本数据类型，则传参是值传递
+
+  形参如果是对象类型或者数组，则是传参是内存地址传递也就是引用传递
+
+  注意String类型作为形参的情况:
+
+    String str = "123"; //str是对象类型的，传递的是引用
+    change(str);
+    System.out.println(str);  //打印的结果还是123
+
+    public void change(String str) {
+        str = "测试";//创建一个新的对象
+    }
+
+   虽然String是对象类型，但是内部是一个final类型的char数组实现的,所以
+
+   是不可变的，每次操作str都是重新创建一个新的对象，所以上面的这个change
+
+   方法 str="测试"是创建了一个新的对象，局部变量对象str指向了一个新的内存
+
+   地址，之前的变量是不会改变的。 
+
+ 9.JVM类的加载机制，以及Java内存模型
+
+   -什么是类的加载？
+
+    类的加载就是将类的字节码文件(.class文件)的二进制数据读取到内存中；
+
+    然后生成一个java.lang.Class对象;这个Class对象就代表这个类，并且
+
+    这个Class对象只会有一个。
+
+    类的加载过程:
+     
+    加载，连接(验证，准备，解析), 初始化 五个阶段
+
+    (1)加载
+
+    加载阶段主要做三件事：
+
+    -通过一个全限定名来获取该类的字节码的二进制数据
+
+    -将字节码的二进制数据所代表的静态存储结构转化为方法区的运行时数据结构
+
+    -在堆中生成一个代表这个类的Class对象，作为方法区中这些数据的访问入口
+
+    (2)验证
+
+    验证的主要作用就是确保被加载的类的正确性,也就是加载的.class文件的正确性
+
+    (3)准备
+
+    准备阶段主要就是为类变量(静态变量)分配内存并设置默认的初始值
+
+    -为类变量(静态变量)分配内存，但是实例变量不会,实例变量是随着类实例化
+
+    一起分配到Java堆中的
+
+    -注意这里为类变量设置初始值是数据类型的默认值，而不是代码中被显示赋予的值
+
+    如：public static int value=1; 在准备阶段过后value的值得0,而不会是1,赋值为
+
+    1的动作实在初始化阶段
+
+    但是如果是同时被static final  修饰，准备阶段之后就是1了，我们可以理解为static
+
+    final 在编译器就将结果放入调用它的类的常量池中
+
+    (4)解析
+
+    解析阶段主要是虚拟机将常量池中的符号引用转换为直接引用的过程
+
+    (5)初始化
+
+    初始化是类加载机制的最后一步,在这个阶段Java代码才开始真正执行,
+
+    我们知道在准备阶段已经为类变量(静态变量)赋过一次值了，在初始化阶段
+
+    程序员可以根据自己的需求来进行赋值了，初始化阶段就是执行类构造器
+
+    <clinit>()方法的过程
+
+    在初始化阶段，主要为类的静态变量赋予正确的初始值，JVM负责对类进行初始化，主要对类变量进行初始化。
+
+    在Java中为类变量(静态变量)设置初始值有两种方式
+
+    -声明类变量时指定初始值  
+
+    -在静态代码块中为类变量指定初始值 {静态代码块是在类的初始化时才会进行执行的}
+
+    JVM初始化一个类主要为以下几个步骤：
+
+    1.如果这个类还没有被加载和连接，程序先加载和连接(验证，准备，解析)
+
+    2.如果这个类的直接父类还没有被初始化，则先初始化其直接父类
+
+    3.假如类中有初始化语句，则系统依次执行这些初始化语句
+
+    当执行第二步时，系统对直接父类的初始化也遵循此1、2、3步骤，如果该直接父类又有直接父类，系统再次重
+
+    复这三步，所以JVM最先初始化的总是java.lang.Object类。
+
+    
+    -类的初始化时机
+
+     只有当对类的主动使用时才会导致类的初始化
+
+     Java程序对类的使用方式：有主动使用和被动使用
+     
+     主动使用方式有六种：
+
+     (1)创建类的实例 使用new关键字实例化类
+
+     (2)访问某个类或者接口的静态变量，或者对该静态变量赋值 
+
+        要注意final static是在编译期间值就确定了，所以调用staic final
+
+        静态变量不会导致类的初始化
+
+     (3)调用类的静态方法
+
+     只有当访问的静态变量或静态方法确实在当前类或当前接口中定义时，才可以认
+
+     为是对类和接口的主动使用，
+    
+     (4)反射(如：Class.forName("com.nado.Test"))
+
+     (5)初始化某个类的子类其父类也会被初始化
+
+     (6)Java虚拟机启动时被标明为启动类的类
+
+       启动程序的类,包含main方法的类
+
+     被动使用方式：
+     
+     调用ClassLoader类的loadClass方法加载一个类并不是对类的主动使用,不会导致类的初始化
+
+     调用ClassLoader类的loadClass方法只是执行了加载操作。
+
+     -双亲委派机制
+
+     双亲委派机制是指，对于一个特定类加载器接收到类的加载请求，首先委托给它的父类加载器，依次递归
+
+     如果父类加载器可以完成加载，则成功返回，如果父类加载器不能成功加载，再由自己的加载器进行加载
+
+     之所以要使用双亲委派机制主要有以下两点：
+
+     (1)避免已经被加载的类，还被加载一遍
+
+     (2)防止系统的API被随意篡改
+
+  10.Java 设计模式之单例模式
+
+     -什么是单例模式？
+
+     单例模式就是保证一个类只会存在一个实例；
+
+     -为什么要使用单例模式？
+
+     对于一些重量级（创建比较耗时，比较消耗资源）的类,或者是频繁需要使用实
+
+     例对象的类最好使用单例类; 
+
+     重量级的类创建实例是比较耗时和耗资源的；需要频繁使用实例的类，需要
+
+     频繁创建很多实例，比较消耗内存，也会给GC带来压力；
+
+     所以以上两种情况，可以的话，最好使用单例模式,提高程序运行的效率；
+
+     -单例模式的实现方式
+
+      饿汉式，懒汉式，双重检验锁式，静态内部类式，枚举类式
+
+      (1)饿汉式
+
+      public class A{
+
+        private static A mInstance=new A()；
+
+        private A(){
+
+
+        }
+
+        public static A getInstance(){
+              
+          return mInstance;
+
+        }
+
+      }
+
+    饿汉式的优点：线程安全,调用效率高(获取实例的方法不用加synchronized
+
+    ，就可以实现线程安全,因为是类加载的时候生成实例，类加载由JVM保证
+
+    线程安全,所以调用效率高)
+    
+    缺点：没法延时生成实例，类加载的时候就会生成实例,没法使用时再生成实例
+
+
+    (2)懒汉式
+
+    public class A{
+
+      private static A mInstance;
+
+      private A(){
+
+      }
+
+      public static A getInstance(){
+        
+        if(mInstance==null){
+
+            mInstance=new A()；
+
+        }
+
+        return mInstance;
+
+      }
+
+    } 
+
+    懒汉式的优点：可以延时生成实例
+
+    缺点： 非线程安全
+
+  (3)双重检验锁
+  
+  public class A{
+
+   private static A mInstance;
+
+   private A(){
+
+
+   }
+
+   public static A getInstance(){
+       
+       if(mInstance==null){
+
+          synchronized(A.class){
+
+             if(mInstance==null){
+
+                 mInstance=new A()；
+
+             }
+
+          }
+
+       }
+
+
+      return mInstance；
+
+   }
+
+  }   
+
+
+ 这种双重检验锁实际上也不是线程安全的，因为Java中会出现指定重排
+
+ mInstance=new A()； 
+
+ new 一个实例实际上经过三步：
+
+ 1.在Java堆中为实例对象分配内存空间
+
+ 2.执行构造方法语句，初始化实例对象
+
+ 3.将实例的引用(对象)指向Java堆中分配的内存空间
+
+ 在多线程下，可能会执行指令重排，2,3两步可能顺序会反过来
+
+ 如果是1,3,2，线程A执行3之后，虽然对象不为null，但是实际
+
+ 上还没有初始化，这个时候线程B执行到这里,拿到的如果是一个未经
+
+ 初始化的实例，使用时可能就会出问题了。
+
+ 所以我们可以给实例加上volatile,来保证指令不会重排
+
+
+ public class A{
+
+   private volatile static A mInstance;
+
+   private A(){
+
+
+   }
+
+   public static A getInstance(){
+       
+       if(mInstance==null){
+
+          synchronized(A.class){
+
+             if(mInstance==null){
+
+                 mInstance=new A()；
+
+             }
+
+          }
+
+       }
+
+      return mInstance；
+
+   }
+
+  }   
+
+(4)静态内部类
+
+public class A{
+  
+  
+
+  private A(){
+
+
+  }
+
+
+  public static A getInstance(){
+
+     return B.mInstance;
+
+  }
+ 
+
+public static class B{  //可保证延时生成实例
+   public static A mInstance=new A();  //可保证线程安全
+ }
+
+}
+
+静态内部类可以保证线程安全，也可以延时生成实例,
+
+这种方式的实例是比较完美的
+
+(5)枚举
+
+public enum MyEnum{
+  
+   INSTANCE;
+
+   public void fun(){
+     
+     ....
+   }
+
+}
+
+使用：MyEnum.INSTANCE.fun()；
+
+枚举方式的单例，实际上就是在静态代码块中去实例化INSTANCE；
+
+Andorid中使用的单例：LayoutInflater ，使用的第三方库 EventBus实例等
+
+11.Java设计模式之建造者(Builder)模式
+
+将一个复杂对象的构建与它的表示分离，使得同样的构建过程可以创建不同的表示。建
+
+造者模式是一种对象创建型模式。
+
+所谓复杂对象是指成员属性较多的对象;
+
+public Class A{
+  private int mX;
+  privte int mY;
+  private int mZ;
+
+  public int getX() {
+        return mX;
+    }
+
+    public void setX(int x) {
+        mX = x;
+    }
+
+    public int getY() {
+        return mY;
+    }
+
+    public void setY(int y) {
+        mY = y;
+    }
+
+    public int getZ() {
+        return mZ;
+    }
+
+    public void setZ(int z) {
+        mZ = z;
+    }
+
+    public static class Builder{
+
+       private A mA;
+
+       public Builder(){
+
+         mA=new A();
+
+       }
+
+       public Builder setX(int x){
+
+          mA.setX(x);
+
+          return this;
+       }
+
+       public Builder setY(int y){
+           mA.setY(y)；
+           return this；
+       }
+
+
+       public Builder setZ(int z){
+
+         mA.setZ(z);
+
+         return this;
+
+       }
+
+       public A build(){
+
+         return mA；
+
+       }
+
+    }
+
+}
+
+A a=new A.Builder()
+        .setX(1)
+        .setY(2)
+        .setZ(3)
+        .build();   
+
+使得对象的创建变得更加简洁清晰;
+
+Android中 AlertDialog就使用了建造者模式
+
+12.Java设计模式之工厂模式
+
+工厂模式(Factory)主要是为了统一管理对象的创建，实现方式就是使用
+
+工厂类来创建对象，而不是直接使用new关键字来创建对象;
+
+工厂模式主要有：简单工厂,工厂方法，抽象工厂
+
+(1) 简单工厂模式                                                                            
+简单工厂有三种角色:
+
+具体的工厂:创建具体具体产品的工厂类
+                                
+抽象产品: 描述产品的接口
+
+具体产品:具体的产品类
+
+(2)工厂方法模式
+
+工厂方法模式有四种角色
+
+抽象工厂：描述工厂的接口
+
+具体工厂：实现抽象工厂的具体类
+
+抽象产品：描述产品的接口
+
+具体产品：具体的产品类
+
+(3)抽象工厂模式
+
+抽象工厂模式有五种角色
+
+抽象工厂：描述工厂的接口
+
+具体工厂：实现抽象工厂的具体类
+
+抽象产品族：描述抽象产品的接口
+
+抽象产品：描述具体的产品的接口
+
+具体产品：具体的产品类
+
+Android中Bitmap的创建使用了简单工厂模式(BitmapFactory)
+
+13.Java设计模式之观察者模式
+
+
+-观察者模式又称之为"发布-订阅者模式",定义了一种一对多的依赖关系,
+
+一个被观察者持有多个观察者的引用,当被观察者状态发生改变的时候，
+
+通知所有的观察者进行更新
+
+观察者的核心：用一个List把观察者保存起来，并提供add和remove观察者，在被观
+
+察者变化的时候就遍历并调用List里观察者的方法。核心就是一个List遍历;
+
+
+-观察者模式的作用：
+
+观察者模式的作用就是将观察者和被观察者隔离，实现解耦；
+
+缺点：没有彻底解耦，被观察者还是要依赖观察者的抽象
+
+-Android中的观察者模式：
+
+ View设置点击事件就是使用的观察者模式(setOnClickListener)
+
+ Android中的广播就是使用了观察者模式
+
+ 第三方库EventBus也是使用了观察者模式
+
+14.Java设计模式之适配器模式
+   
+   适配器模式：
+
+   将一个类的接口变换成客户端所期待的另一种接口，从而使原本因接口不匹配而无法在一起工作的两个类能够在
+
+   一起工作。
+
+   生活中的手机充电器就是一个适配器的例子，手机一般都是在5V的电压下进行充电，但是外部的电压都是220V，那怎么办，这
+
+   就需要充电器去适配了，将220V的电压转换为5V。
+
+   适配器中有三种角色：
+
+   源角色：一般是已经存在的类，需要适配新的接口
+
+   目标角色:需要转成的目标接口
+   
+   适配器: 把源接口转成目标接口
+
+
+   源接口：一般是固定的类
+
+   public class Adaptee220V{
+     
+      public void chong220V(){
+
+
+      }
+
+   }
+
+  目标接口：
+
+  public interface Target5V{
+    
+    void chong5V();
+
+  }
+
+  适配器：
+
+  (类适配器)
+
+  public class Adapter extend Adaptee220V implements Targer5V{
+
+    @Override
+    publiv void chong5V(){
+    
+      
+    }
+
+  }
+
+  使用：
+
+  Adapter adapter=new Adapter();
+  adapter.chong5V(); 
+  adapter.chong220V();
+
+
+  上面是类适配器,是通过继承源接口的方式，还有一种对象适配器,是通过组合的方式
+
+  public class Adapter implements Target5V{
+
+   private Adaptee220V mAdaptee220V;
+
+   public Adapter(Adaptee220V adaptee220V){
+
+      mAdaptee220V=adaptee220V;
+
+   }
+
+   public void chong220V(){
+    
+     mAdaptee220V.chong220V();
+
+   }
+
+    @Override
+    public void chong5V(){
+
+    }
+
+  }
+
+  使用：
+
+  Adaptee220V adaptee220V=new Adapter();
+
+  Adapter  adapter=new Adapter(adaptee220V);
+
+  adapter.chong5V();
+
+  adapter.chong220V();
+
+  Android中使用到的适配器模式：
+
+  ListView,RecycleView，ViewPager都是使用到了适配器模式
+
+
+15.数据加密算法
+  
+   一个APP,与服务器端的数据通信安全是非常重要的,这就涉及到了数据加密;
+
+   APP与服务器之间的数据加密通信的情况主要有两种：
+
+   (1)只有创建者才能知道的数据，比如用户密码,这类数据加密后必须是不可逆的
+
+      也就是说数据加密后传到服务器，服务器端无需解密，也不能解密，直接存进数据库
+
+   (2)也是比较重要的数据，但是服务器端可能是需要知道的，也就是加密后是可以解密的
+
+   于是根据加密后是否可以解密，可以将加密算法分为:
+
+   不可逆加密算法:代表性算法 MD5加密
+
+   可逆加密算法:分为对称加密，非对称加密
+
+   -对称加密:加密秘钥和解密秘钥使用同一个秘钥
+
+   代表性加密算法：AES/DES加密算法;AES/DES加密算法加密速度快，适合大量数据
+
+   -非对称加密
+
+    使用一对秘钥：公钥和私钥
+
+    使用公钥加密之后，只能私钥解密，使用私钥加密之后，只能公钥解密
+
+    一般公钥是公开的，谁都可以知道，私钥需要保存好;
+
+    代表性加密算法：RSA加密; RSA加密速度慢,适合少量数据加密； 
+
+ 16.反射为什么效率低?
+ 
+
+ 17.动态代理
+
+    -代理存在的意义与本质
+
+    在不修改被代理对象的源码基础上，进行功能的增强。
+
+    -代理模式
+
+    动态代理是代理模式的一种，代理模式分为静态代理,动态代理;
+
+    -静态代理
+
+     我们还是要牢牢记住，代理的本质：在不修改被代理对象源码的基础上，进行功能的增强；
+
+     我们以代购为例子；
+
+     public interface IPurchaser{
+         
+         void buy();
+
+     } 
+
+     这是一个代购者的接口，有一个buy方法;
+
+     public class Purcharser implements IPurchaser{
+
+       public void buy(){
+          System.out.print("购买化妆品");
+          //
+       }
+
+     }
+
+     现在我们希望这个代购不仅可以购买化妆品，还希望它能购买点国外水果;
+
+     但是我们又不希望去直接改变Purcharser这个类中的buy方法；这个时候
+
+     我们该怎么实现Purcharser可以购买国外水果呢；
+
+     public class PurcharserProxy implements IPurcharser{
+           
+           private Purcharser mPurcharser;
+
+           public PurcharserProxy(Purcharser purcharser){
+
+             this.mPurcharser=purcharser;
+
+           }
+
+            @Override
+            public void buy() {
+                 mPurcharser.buy();
+                 System.out.println("购买外国水果");
+            }
+
+     }
+
+     我们定义了一个代购的代理类PurcharserProxy也是实现了IPurcharser接口，
+
+     并且有一个Purcharser成员,重写buy方法，先调用Purcharser的buy方法，并且增加购买外国水果操作；
+
+     这样就实现了在不改变原来的Purcharser的源码的基础上，增加了购买外国水果操作；
+
+     这就是静态代理:需要编写需要改变(增强）的类的对应的代理类；
+
+     -静态代理缺点：
+
+     如果有很多类都需要改变(增强)，那每一个类我都需要编写对应的代理类
+
+     类一多，工作量就大了；
+
+     比如现在有一个需求，就是在每一个类中的每一个方法执行前后添加日志打印，记录方法
+
+     执行前后时间；
+
+     对于这个需求，如果不做任何考虑，我们可能需要修改所有类的所有方法，在所有方法执行
+
+     前后都添加日志打印的代码；但是很明显这是一个不好的选择；
+
+     我们也可以使用静态代理，为每一个需要改变的类编写一个代理类，在代理类中去给对应的方法
+
+     添加日志打印，但是这里静态代理除了没有改变原有代码，好像没有什么其他好处，需要写很多
+
+     代理类；于是就出现了动态代理；
+     
+     -动态代理
+
+     所谓动态代理，就是不用编写代理类，是在程序运行过程中动态生成代理类，修改执行的方法；
+
+     动态代理我们首先要了解一下：
+
+     Proxy 类
+
+     Proxy.newProxyInstance(ClassLoader loader,
+                                          Class<?>[] interfaces,
+                                          InvocationHandler h) 方法
+
+     newProxyInstance中的InvocationHandler参数
+
+      
+     Proxy就是Java提供的一个代理类
+
+     newProxyInstance就是用来生成一个代理对象,这个代理对象实际上是
+
+     被代理类的接口类型;
+
+     这里我们举例，
+
+       final Purcharser purcharser = new Purcharser();
+
+        IPurcharser iPurcharser = (IPurcharser) Proxy.newProxyInstance(Purcharser.class.getClassLoader(),
+                purcharser.getClass().getInterfaces(),
+                new InvocationHandler() {
+                    @Override
+                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                        Log.e(TAG, "invoke: " + method.getName());
+                        method.invoke(purcharser, args);
+                        System.out.println("购买外国水果");
+                        return null;
+                    }
+                }
+        );
+
+        iPurcharser.buy();
+
+        newProxyInstance生成的代理对象实际上是Purcharser实现的接口类型，也就是IPurcharser类型
+        
+        当调用iPurcharser的所有方法时，都会经过InvocationHandler中的invoke方法处理;这里我们
+
+        在invoke方法先让purcharser执行对应方法，然后增加购买外国水果操作；
+
+        也就实现了给Purcharser的buy方法增加购买外国水果操作；
+
+        并且我们没有编写对应的代理类，对于任意一个类的任意一个方法，我们都可以通过动态代理
+
+        来改变方法中操作；
+
+
+  -注意:动态代理只能代理接口，或者实现了某个接口的类，
+
+  不能代理没有实现接口的类；
+
+18.final,finally, finalize
+
+    -final
+
+    final 修饰的属性 是常量,常量的值声明的时候赋值之后，就不能再修改了;
+
+    final 修饰的方法 是最终方法，是不能被被重写的 ;
+
+    final 修饰的类是最终类,最终类是不能被继承的
+
+   -finally
+   
+    finally是try-catch异常捕获的一部分,try-catch语句块执行后,最终一定会执行finally
+    
+    这里要注意的是如果try-catch中try语句块中如果有return,finally也是会执行的,只不过
+
+    是先执行return 的语句，但是不返回，然后再执行fianlly语句块，然后再返回;
+
+   -finalize
+
+    finalize是Object的方法,是在对象被GC回收的时候,调用的;
+
+    通过重写该方法，在对象被回收的时候进行一些资源释放等操作;
+
+    但是，最好是不要重写finalize方法，因为对象在进行创建的时候，会
+
+    判断是否重写了finalize方法，如果重写了，就把当前对象注册到FinalizerThread
+
+    的ReferenceQueue队列中，这个注册的对象就叫做Finalizer对象；所以GC在进行垃圾
+
+    回收的时候，发现这个对象有被其他对象引用，所以就不再进行回收，FinalizerThread
+
+    线程负责从ReferenceQueue中取出Finalizer对象执行finalize方法,执行完毕后从ReferenceQueue
+
+    移除对象，JVM发现对象没有引用了，才会进行回收；
+
+    所以重写finalize方法对对象的GC回收是有影响的；
+
+19.Exception 和 Error
+
+   -Exception和Error都是Java异常机制中的类 
+
+    Exception和Error都是Throwable的子类,都是可以被try-catch捕获的;
+
+   -Error是指程序无法处理的错误,表示应用程序中比较严重的问题，
+
+    如OutOfMemoryError，NoClassDefFoundError等
+
+   -Exception 是程序本身可以处理的异常 
+   
+    Exception有一个比较重要的子类RuntimeException  
+
+    如ArrayIndexOutOfBoundException，ArithmeticException等    
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+    
+
+
+
+
+
+ 
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+     
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+       
+
+       
+ 
+
+
+
+       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+           
+

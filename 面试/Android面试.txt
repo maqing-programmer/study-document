@@ -1,0 +1,1489 @@
+1.Activity的启动模式
+
+  (1)standard 启动模式
+
+     以该种方式启动Activity，无论该Activtiy实例是否在任务栈中存在一定会创建Activity的实例
+
+  (2)singleTop启动模式
+
+     以该种方式启动的Activity，如果该Activtiy实例不存在，或者实例存在但是不是位于任务栈的
+
+     栈顶，则创建Activity的实例，
+
+     如果Activity的实例已经存在并且是位于任务栈的栈顶，则直接复用即可,复用时会回调
+
+     onNewIntent方法
+
+   (3)SingleTask 启动模式
+
+      以该种方式启动的Activity，如果Activity的实例不存在，则会创建Activity的实例
+
+      如果Activity的实例已经存在，则移除任务栈中处于Activity之上的其它Activtiy，使
+
+      目标Activity位于栈顶,复用该Activity，复用时会回调onNewIntent方法
+
+   (4)SingleInstance启动模式
+   
+      以该种方式启动的Activity，如果该Activity实例不存在，则首先创建一个新的任务栈，
+
+      然后创建Activity的实例，放入该栈中
+
+      如果该Activity的实例已经存在，则将Activity的栈移到前台即可,复用该Activity，
+
+      复用时会回调onNewIntent方法 
+
+  
+  -与启动模式相关Intent的FLAG
+
+   (1)FLAG_ACTIVITY_NEW_TASK  
+     
+      -如果在非Activity中启动Activity，Intent必须要设置FLAG_ACTIVITY_NEW_TASK
+
+      否则启动会报错
+
+      -FLAG_ACTIVITY_NEW_TASK标签必须配合taskAffinity属性使用，如果不设置taskAffinity属
+
+      性值，将不会生成新task
+      
+     -taskAffinity 表示Activity所在的任务栈
+
+      默认情况下，应用中所有的Activity具有相同的taskAffinity,即应用程序的包名
+      
+      taskAffinity可以影响当Activitt是以FLAG_ACTIVITY_NEW_TASK这个FLAG标志
+
+      启动时被放到哪个栈中
+    
+   (2)FLAG_ACTIVITY_SINGLE_TOP
+
+     使用这种FLAG启动Activity，和启动模式SingleTop效果完全一样 
+       
+     如果该Activtiy实例不存在，或者实例存在但是不是位于任务栈的
+
+     栈顶，则创建Activity的实例，
+
+     如果Activity的实例已经存在并且是位于任务栈的栈顶，则直接复用即可,复用时会回调
+
+     onNewIntent方法
+
+   (3)FLAG_ACTIVITY_CLEAR_TASK
+
+      必须和FLAG_ACTIVITY_NEW_TASK配合使用，否则没有效果，配合使用的效果是
+      
+      启动Activity时，如果同时使用这两个标记，则会清空目标Activity处于同一个
+
+      栈中的所有Activity(这里要注意的时，但是我们
+     
+      知道默认情况下Activity的taskAffinity,即处于同一个栈中，所以即使目标Activity实例不存
+
+      在也会清空和目标Activity taskAffinity一样的栈的所有Activity
+
+      )，然后创建目标Activity实例放入栈中
+
+   (4)FLAG_ACTIVITY_CLEAR_TOP
+
+       使用该FLAG启动Activity，如果目标Activity实例已经存在,则会移除栈中目标Activity
+
+       之上的所有Activity，但是对于目标Activity，是复用，还是先删除再重建,有以下规则：
+
+      -如果是单独使用FLAG_ACTIVITY_CLEAR_TOP 
+
+       如果目标Activity使用的是非standard启动模式，则会复用目标Activity
+      
+       实例,复用会回调onNewIntent方法，否则都是先删除再重建   
+
+      -若是使用 FLAG_ACTIVITY_SINGLE_TOP 和 FLAG_ACTIVITY_CLEAR_TOP 
+
+       标志位组合，那么不管目标 Activity 是什么启动模式，都会被复用，复用会
+
+       回调onNewIntent方法
+
+  特殊情况： 
+
+  (1)使用SingleInstance模式启动某Activity，
+
+  然后按Home键退出到后台，然后再点击应用图标回到应用中，发现该Activity被关闭了，显示的是
+
+  上一个Activity，但是如果是从后台任务进程中重新回到应用则还是在该Activity
+
+  (2)使用FLAG_ACTIVITY_NEW_TASK的FLAG启动Activity
+
+     如果是startActivityForResult方式启动，会立即回调 onActivityResult
+
+     并且resultCode为Activity.RESULT_CANCELED
+
+2.Service
+
+  -Service中可以直接执行耗时操作吗？
+
+  Service是运行在主线程中的，所以不能在Service中的某个生命周期函数中
+
+  执行耗时操作，因为会阻塞UI，可以开启一个子线程来执行耗时操作。
+
+  也可以使用IntentService,IntentService是继承自Service的,
+
+  IntentService中的onHandleIntent方法是工作在子线程中的，可以执行耗时操作
+
+  在onHandleIntent方法执行完之后，IntentService会自动销毁
+
+  -Service根据优先级进行分类
+
+3.BroadCastReceiver
+
+4.怎么判断一个Activity是否还在运行
+
+  if(activity==null||activity.isFinishing（）||activity.isDestored()）{
+  
+     //Activity的实例为null，activity.isFinishing()返回true,或者 //activity.isDestored()返回true 都表明Activtiy不再运行
+
+  }  
+
+  public boolean isFinishing() {
+        return mFinished;
+    }
+
+  isFinishing方法返回的的mFinished字段是在finish() 中进行赋值的 
+
+  所以只有Activity调用finish()方法关闭，才会置为true。
+
+  但是在内存紧张时，Activity被回收，isFinishing就会判断不准了
+
+  所以我们还加了isDestored方法来判断
+
+5.自定义View的状态的是如何保存的
+
+  我们知道Activity在屏幕发生旋转时，如果不做任何设置会发生销毁和重建
+
+  销毁之前会回调onSaveInstanceState用于保存状态
+
+  在重新创建的时候会回调 onRestoreInstanceState 方法可以拿到之前保存的状态
+
+  Activity的onSaveInstanceState方法默认实现会调用其中所有View的onSaveInstanceState
+
+  方法,Activity重建时会调用onRestoreInstanceState方法，默认实现会调用所有View的
+
+  onRestoreInstanceState方法
+
+  所以上面的问题：我们只需要重写View的onSaveInstanceState和onRestoreInstanceState
+
+                 方法，在里面进行状态的保存和恢复即可
+
+   具体实现我们可以参照TextView，首先定义一个类继承自BaseSavedState
+   
+   定义需要保存的状态属性，在onSaveInstanceState把属性保存到BaseSavedState中
+
+   然后在onRestoreInstanceState中拿到保存的BaseSavedState,拿到保存的属性即可
+
+     @Nullable
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        super.onSaveInstanceState();
+        Log.e(TAG, "onSaveInstanceState: ");
+        SavedState savedState = new SavedState(AbsSavedState.EMPTY_STATE);
+        savedState.mColor = mColor;
+        return savedState;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        Log.e(TAG, "onRestoreInstanceState: ");
+        super.onRestoreInstanceState(state);
+        mColor = ((SavedState) state).mColor;
+    }
+
+    public static class SavedState extends BaseSavedState {
+        int mColor;
+
+        public SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+    }
+
+    要注意的是：必须在布局中为View设置一个唯一的ID，或者在代码中动态设置ID
+
+    否则View的onSaveInstanceState不会被调用，这是因为所有View的状态都是
+
+    被保存在SparseArray数组中的键就是View的ID。
+           
+6.Android系统中的Handler
+
+  -Handler的作用
+
+  Handler是Android系统中的消息处理机制
+
+  Handler 实现线程之间的通信 主线程与子线程 子线程与子线程之间的通信
+  
+  Handler 也可以用来实现定时器操作
+
+  -Handler消息处理机制中涉及的对象及其工作原理
+
+  Handler Message MessageQuque Looper 
+
+  MessageQuque 是用来存放消息的  先进先出
+
+  Message 消息对象 消息对象被Handler对象发送，发送到MessageQuque中
+
+  Looper 对象  是一个无限循环 不断的从消息队列中MessageQueue中取出消息Message
+
+  Handler Looper取出消息后，交由Handler进行处理,交由发送该消息的Handler对象处理
+  
+  对于Handler属于哪个线程  创建Handler时传入的传入的是哪个线程中Looper对象，
+
+  那么Handler就是属于哪个线程, 
+
+  Handler默认的构造方法，无参构造方法中Looper对象是当前线程的Looper对象
+
+  如果是子线程中创建Handler对象，需要手动调用Looper.prepare()方法创建
+
+  Looper对象，一个线程只允许执行一次该方法，因为一个线程只能有一个Looper对象
+
+  然后调用Looper.myLooper()方法可以获取到Looper对象，可以实例化Handler时传进去
+
+  然后调用Looper.loop()方法开启循环，不断的从消息队列中取出消息处理
+
+  -HandlerThread 
+
+   上面说到，在子线程中使用Handler,还需要调用Looper.parpare()方法创建对象 HandlerThread 
+
+   然后实例化Handler时可以Looper.myLooper()获取到Looper对象传入进去，当然也可以
+
+   不传，默认是获取当前线程已经创建好的Looper对象，然后调用Looper.loop()方法开启
+
+   循环读取消息，这样使用起来比较麻烦
+
+   而HandlerThread就是一个线程，并且已经创建好了Looper对象，开启了Looper循环
+
+   HandlerThread handlerThread=new HandlerThread()；
+   handlerThread.start()；
+   
+   Handler handler=new Handler(handlerThread.getLooper())；
+
+
+   然后通过handle的sendMessage相关的API发送消息去在子线程中执行操作
+
+   这里有个问题，上面我说的是要通过handle的sendMessage相关的API发送消息去在子线程中执行操
+
+   作，一般情况下我们创建一个子线程，都是重写run方法，然后在run方法红执行耗时操作,那我们能
+
+   不能也重写HandlerThread的run方法，在里面执行耗时操作呢,答案是不能
+
+   HandlerThread handlerThread=new HandlerThread(""){
+            @Override
+            public void run() {
+                super.run();
+                //如果执行操作 其实是无法执行到的
+            }
+      
+
+   因为HandlerThread的run方法里面的操作是创建Looper对象，Looper.prepare()
+
+   开启Looper循环 Looper.loop() ，首先我们肯定是要保留HandlerThread里面run方法的操作
+
+   的，但是Looper.loop()是一个无限循环操作，后面的操作都是无法执行的，所以我们在其
+
+   之后操作是无法执行到的。
+
+   注意使用HandlerThread时，如果相关组件被销毁了，我们需要调用handlerThread.quit()
+
+   或者handlerThread的quitSafely()方法来及时的退出子线程中Looper循环，避免造内存泄漏
+
+   quit和quitSafely的区别 实际上HandlerThread的quit和quitSafely方法就是调用Looper的
+
+   quit和quitSafely方法
+
+   quit 是执行了 MessageQueue中的removeAllMessagesLocked(); 清空了MessageQueue中的
+
+   所有消息，包括延迟消息和非延迟消息 
+
+   延迟消息就是指通过sendMessageDelayed或者postDelayed等方法发送的需要延迟执行的消息
+
+   quitSafely 执行的是MessageQueue中的removeAllFutureMessagesLocked方法，清空的只是
+
+   MessageQueue中的延迟消失,而非延迟消息会继续交给Handler进行处理
+
+-ThreadLocal
+
+  ThreadLocal是用来在线程中创建局部变量的;
+
+  ThreadLocal的set方法用来存入数据; get方法用来获取保存的数据
+
+  在哪个线程中调用set方法保存数据，只能在哪个线程中get到该数据
+
+  Looper中就使用了ThreadLocal,来保证一个线程对应一个Looper,
+
+  不同的线程中的Looper互不干扰;
+
+7.Parcelable与Serializable
+   
+  Parcelable与Serializable都是用于实现对象的序列化的
+  
+  Parcelable是Android中的API，专门设计出来用于Android应用中的数据的序列化的
+
+  Serializable是Java中的API;
+
+  Serializable 会使用反射，序列化和反序列化过程需要大量 I/O 操作， Parcelable 自已实现封送和解封（marshalled 
+
+  &unmarshalled）操作不需要用反射，数据也存放在 Native 内存中，效率要快很多
+
+  如果是应用内数据传输，如果需要传递自定义对象时，对象应该实现Parcelable
+
+  如果是对象数据持久化保存或者是网络对象数据传输，应该使用Serializable
+
+8.SharedPreference
+ 
+  -SharedPreference是Android中提供用来存储数据的一种方式
+  
+  可以用来存放一些数据量不大的基本类型数据以及String类型的数据
+
+  其本质是将数据存储在xml文件中。
+
+  SharedPreference是一个接口，通过Context的getSharedPreference(String name, int mode)来获取实例
+
+  并且是单例的。
+
+  虽然数据是保存在XML文件中，但是不是每次读取都是从文件中读取的，只有第一次
+
+  是需要加载文件，以后都是从内存中进行读取数据,这样可以提高效率。
+  
+  -多进程下使用SharedPreference问题
+
+   Context里提供了一个Mode.MODE_MULTI_PROCESS 这种模式用于
+
+   在多进程下使用SharedPreference,如果不使用这种模式，我么可以想一下，
+
+   如果进程A往SharedPreference中存入了一个key-value,
+
+   进程B之前已经获取了SharedPreference实例,这个时候进程B如果
+
+   去读取这个key对应的value,是从内存中去读取的，实际上是获取不到的（如果之前没有存过key），或者
+
+   获取的是旧的数据(如果之前存过key)，因为进程间是不能共享内存的，所以进程A的操作，进程B的内存是不会
+
+   有变化的。
+
+   而Mode.MODE_MULTI_PROCESS这种模式，每次读取都会重新加载一遍文件，不是从内存中读取，
+
+   所以就保证了多进程使用SharedPreference不会出问题。
+
+   但是Android2.3之后，Mode.MODE_MULTI_PROCESS这种模式没废弃了，Google建议多进程数据共享
+
+   使用ContentProvider。
+
+   当然如果觉得使用ContentProvider比较繁琐，我们可以使用腾讯开源的MMKV,
+
+   可以在多进程下安全的使用。
+
+  -MMKV
+
+   基于 mmap(内存映射文件) 的高性能通用 key-value 组件
+
+   MMKV原理:
+   
+   (1)内存准备
+
+   通过mmap内存映射文件，提供一段可供随时写入的内存块，APP只管往里面写数据
+   
+   ，由操作系统负责将内存写回到文件，不必担心crash导致数据丢失
+
+   (2)数据组织
+
+   数据序列化方面使用protobuf协议，protobuf在性能和空间上有不错的表现
+   
+   key限定是 string 字符串类型，value 则多种多样（int/bool/double 
+
+   等）。要做到通用的话，考虑将 value 通过 protobuf 
+
+   协议序列化成统一的内存块（buffer），然后就可以将这些 KV 
+
+   对象序列化到内存中。 
+
+   (3)写入优化
+
+    标准的protobuf不提供增量更新的能力，每次写入都必须全量写入，考虑到主要使用
+
+    场景是频繁的进行写入更新，提供增量更新的能力，将key-value序列化之后，直接
+
+    append到内存末尾，这样同一个key会有新旧若干份数据，最新的数据在最后，那么
+
+    只需要在程序启动第一次打开MMKV时，不断用后读入的value替换之前的值，就可以
+
+    保证数据是最新有效的
+   
+   (3)空间增长
+
+   使用append实现增量更新带来一个问题，就是不断append的话，文件大小会增长的不
+
+   可控，我们需要在性能和空间上做一个折中，以内存pagesize为单位申请空间，在空
+
+   间用尽之前都是append模式，当append到文件末尾时，进行文件重整，key排重,尝试
+
+   序列化保存排重结果，排重后空间还是不够用的话，将文件扩大一倍，直到空间够用
+
+   9.Android 内存优化之图片内存优化
+
+     -Android中图片的内存优化是非常重要的,因为加载图片往往会导致OOM
+
+     -Android中支持的图片格式： JPEG，PNG，GIF(需要第三方库来显示),WEBP,BMP;
+
+     不论是什么格式的图片，在Android系统中最终都是以位图Bitmap的形式来进行操作
+     
+     -Android中图片所占的内存大小：
+
+      图片内存大小=图片的宽(像素)*图片的高(像素)*每个像素所占的字节大小
+
+      图片的宽和高也就是图片的大小，每个像素多占的字节大小就是图片的质量
+
+      所以在Android系统中，图片在内存中占用的大小，只与图片的大小和质量有关。
+
+      所以进行图片占用的内存的优化的时候，我们只需要从图片的大小和质量两方面
+
+      来进行考虑。
+
+      (1)缩小图片的大小
+
+      (2)降低图片的质量
+       
+      -缩小图片的大小
+
+      通过设置BitmapFactory.Option中inSampleSize，可以缩小图片加载到内存中
+
+      的宽和高，inSampleSize设置大于0时，图片的宽和高加载时均会缩小inSampleSize倍
+
+      如：inSampleSize=2，则宽高各缩小2倍，图片占用的内存大小缩小4倍。
+
+      -降低图片的质量
+
+      
+      可以通过BitmapFactory.Options中的inPreferredConfig来设置色彩
+
+      模式；
+
+      ARGB_8888:
+
+      Android系统将图片解码成位图时，默认使用的ARGB_8888这种色彩模式，
+
+      每个通道占用8位一共32位，即一个像素占用4个字节(byte)大小，也即32位(
+
+      bit)的内存空间
+
+      ARGB_4444:
+
+      这种色彩模式每个通道占用4位，一共16位，即一个像素占用2个字节大小
+
+      此字段在API级别29中已弃用。由于此配置的质量较差，建议改用ARGB_8888;
+
+      RGB_565：
+
+      R通道占用5位，G通道占用6位，B通道占用5位，一共16位
+
+      即一个像素占用2个字节，只有颜色信息，没有透明度信息
+
+      ALPHA_8:
+
+      Alpha通道，占用8位，一个字节，只有透明度信息，没有颜色信息
+
+      注意：
+
+      但是要注意的是，我们设置指定的色彩模式来解码图片，系统并不一定
+
+      就会使用该种模式来进行解码
+
+      如果inPreferredConfig不为null，解码器会尝试使用此参数指定的颜色模式
+
+      来对图片进行解码，如果inPreferredConfig为null或者在解码时无法满足此
+
+      参数指定的颜色模式，解码器会自动根据原始图片的特征以及当前设备的屏幕位
+
+      深，选取合适的颜色模式来解码，例如，如果图片中包含透明度，那么对该图片
+
+      解码时使用的配置就需要支持透明度，默认会使用ARGB_8888来解码。
+
+
+      其实大多数情况下非ARGB_8888色彩模式指定都是无效的,具体如下:
+
+      所有情况下ARGB_8888配置都可以满足
+
+      所有情况下ALPHA_8配置都不满足
+
+      绝大多数情况下RGB565选项都不满足
+
+    -除了从图片大小和图片质量两方面来优化之外，对于超大图片的加载
+    
+     如果我们不想改变图片的大小和质量，我们可以使用BitmapRegionDecoder
+
+     来加载图片的部分区域。
+
+   -BitmapFactory.Options详解
+    
+    BitmapFactory.Options中各个参数设置，都会影响图片解码成Bitmap的表现，所以很有必要
+
+    了解一下个参数
+
+    (1)inJustDecodeBounds
+
+      设置为true时，解码时，不会将图片加载到内存中，返回的Bitmap为null,使用场景：只希望获取
+
+      Bitmap的宽高，又不会将其加载到内存中 
+
+    (2)inSampleSize
+
+      是用来对图片的宽高进行缩放的,  
+
+   10.Android中Java和JavaScript如何交互？
+   
+      Android中Java与JS交互是通过WebView来进行交互的;
+
+      所谓交互，也就是：
+
+      -Android调用JS方法
+
+       要想Android可以调用JS的方法，首先WebView得要支持JS
+       
+       WebSettings webSettings = mWebView.getSettings();
+       
+       webSettings.setJavaScriptEnabled(true);
+
+       另外必须要设置WebChromClient
+
+        mWebView.setWebChromeClient(new WebChromeClient(){
+
+        });  
+
+        (1)然后使用loadUrl方法执行JS代码
+
+        mWebView.loadUrl("javascript:alert('你好')");
+
+        (2)调用evaluateJavascript方法直接执行JS代码
+
+         mWebView.evaluateJavascript("javascript:alert('你好')", new ValueCallback<String>() {
+                @Override
+                public void onReceiveValue(String value) {
+
+                }
+            });
+
+
+        特别注意：JS代码调用一定要在 onPageFinished（） 回调之后才能调用，否则不会调用。
+
+      -JS调用Android中的方法
+
+      (1)通过WebView的addJavascriptInterface（）进行对象映射
+
+      -定义一个与JS对象映射关系的Android类：AndroidToJs
+
+      public class AndrodidToJs{
+
+         // 定义JS需要调用的方法
+         // 被JS调用的方法必须加入@JavascriptInterface注解
+
+        @JavascriptInterface
+        public void hello(String msg) {
+
+        System.out.println("JS调用了Android的hello方法");
+
+        }
+
+      }
+
+      -JS代码
+
+              <!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <title>Carson</title>  
+      <script>
+         
+        
+         function callAndroid(){
+        // 由于对象映射，所以调用test对象等于调用Android映射的对象
+            test.hello("js调用了android中的hello方法");
+         }
+      </script>
+   </head>
+   <body>
+      //点击按钮则调用callAndroid函数
+      <button type="button" id="button1" "callAndroid()"></button>
+   </body>
+</html>
+
+   -Android中通过WebView加载JS
+   
+         WebSettings webSettings = mWebView.getSettings();
+
+        // 设置与Js交互的权限
+        webSettings.setJavaScriptEnabled(true);
+
+        // 通过addJavascriptInterface()将Java对象映射到JS对象
+        //参数1：Javascript对象名
+        //参数2：Java对象名
+        mWebView.addJavascriptInterface(new AndroidtoJs(), "test");//AndroidtoJS类对象映射到js的test对象
+
+        // 加载JS代码
+        // 格式规定为:file:///android_asset/文件名.html
+        mWebView.loadUrl("file:///android_asset/javascript.html");
+
+
+      (2)通过 WebViewClient 的shouldOverrideUrlLoading ()方法回调拦截 url
+         
+         -拦截Url
+
+         mWebView.setWebViewClient(new WebViewClient() {
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                //
+                return super.shouldOverrideUrlLoading(view, request);
+            }
+        }); 
+
+         -解析URL
+
+         -如果检测到是预先约定好的协议，就调用相应方法
+
+
+-JS端约定协议
+
+
+         <!DOCTYPE html>
+<html>
+
+   <head>
+      <meta charset="utf-8">
+      <title>Carson_Ho</title>
+      
+     <script>
+         function callAndroid(){
+            /*约定的url协议为：js://webview?arg1=111&arg2=222*/
+            document.location = "js://webview?arg1=111&arg2=222";
+         }
+      </script>
+</head>
+
+<!-- 点击按钮则调用callAndroid（）方法  -->
+   <body>
+     <button type="button" id="button1" "callAndroid()">点击调用Android代码</button>
+   </body>
+</html>
+ 
+
+ -Android 端拦截解析Url
+
+mWebView.setWebViewClient(new WebViewClient() {
+                                      @Override
+                                      public boolean shouldOverrideUrlLoading(WebView view, String url) {
+
+                                          // 步骤2：根据协议的参数，判断是否是所需要的url
+                                          // 一般根据scheme（协议格式） & authority（协议名）判断（前两个参数）
+                                          //假定传入进来的 url = "js://webview?arg1=111&arg2=222"（同时也是约定好的需要拦截的）
+
+                                          Uri uri = Uri.parse(url);                                 
+                                          // 如果url的协议 = 预先约定的 js 协议
+                                          // 就解析往下解析参数
+                                          if ( uri.getScheme().equals("js")) {
+
+                                              // 如果 authority  = 预先约定协议里的 webview，即代表都符合约定的协议
+                                              // 所以拦截url,下面JS开始调用Android需要的方法
+                                              if (uri.getAuthority().equals("webview")) {
+
+                                                 //  步骤3：
+                                                  // 执行JS所需要调用的逻辑
+                                                  System.out.println("js调用了Android的方法");
+                                                  // 可以在协议上带有参数并传递到Android上
+                                                  HashMap<String, String> params = new HashMap<>();
+                                                  Set<String> collection = uri.getQueryParameterNames();
+
+                                              }
+
+                                              return true;
+                                          }
+                                          return super.shouldOverrideUrlLoading(view, url);
+                                      }
+                                  }
+        );
+   
+
+      (3)通过 WebChromeClient 的onJsAlert()、onJsConfirm()、onJsPrompt（）方法回调拦截JS对话框alert()、confirm()、prompt（） 
+
+      消息
+
+  11. Android 热修复
+
+      -AndFix 阿里开源的热修复库  
+
+      HotFix 阿里百川(对HotFix的升级)
+
+      Sophix 阿里手机淘宝团队对HotFix的升级
+
+      都是即时生效的
+
+      -Robust 
+
+       美团的热修复框架
+
+       对每个方法在编译打包阶段自动的插入一段代码,类似代理，将方法执行的代码
+
+       重定向到其他方法；
+
+       实际上使用的是字节码插庄技术
+
+       也是即时生效的
+
+     -Tinker 
+      
+      介绍Tinker之前，我们先来了解一下 增量更新，全量更新
+
+      我们以APK的版本包为例来说明:
+
+      1.0版本的 APK
+
+      2.0版本的 APK
+
+      全量更新：就是下载2.0版本的APK，安装，以替换1.0版本的APK
+
+      增量更新：首先会有一个差分包，就是2.0版本与1.0版本的不同的地方的一个包
+
+                 然后1.0版本的APK与差分包合成后，就是新的包(相当于2.0的APK的包);
+
+      有一个工具专门用来实现增量更新 bsdiff
+
+      bsdiff支持任意的文件增量更新
+
+      Tinker是腾讯微信团队开发的一款热修复框架;
+
+      Tinker自己开发出了DexDiff,专门比较APK文件中的dex文件的差异，生成dex差分文件
+
+      dex实际上就是字节码文件，都是一个个类的信息，所以Tinker是替换整个类的,
+
+      dex差分包与原本的APK中dex合并生成新的dex,也就是修复之后的dex
+
+      Android中的类加载器:
+      
+      BootClassLoader 用于加载Android Framework中的类
+
+      PathClassLoader 用于加载自己写的类
+ 
+      DexClassLoader 与PathClassLoader一样，都是加载自己写的类的    String   
+
+      -类替换实现热修复的流程：
+
+      要想知道类替换实现热修复的流程，首先得要知道Android中类的加载
+
+      我们修复Bug，肯定是修改自己写的类，而对于自己定义的类，Android中
+
+      是使用PathClassLoader进行加载的;PathClassLoader继承自BaseDexClassLoader
+
+      然后加载某个类的，是调用findClass方法，查找对应的类，是调用BaseDexClassLoader
+
+      中的DexPathList成员的findClass方法，查找类，最终是遍历DexPathList成员中Element[]
+
+      数组查找，Element是DexPathList中的一个内部类，里面又包含DexFile属性，而一个DexFile
+
+      就代表一个dex文件，所以Element对应的是多个dex文件，因为一个dex文件方法数最多是65535
+
+      所以打包APK时经常需要分包，也就是会出现多个dex文件，所以这里是一个Element[]数组，从
+
+      数组中的第一个dex文件开始进行类的查找并进行加载;
+
+      所以我们要向替换类，实际上就会把补丁包dex文件放到Element[]数组的最前面，让PathClassLoader
+
+      先加载补丁包中类，也就是加载修复过的类，原本APK中有问题的类就不会再进行加载了;
+
+      所以类替换实现热修复的步骤是： 
+
+      -获取当前应用的PathClassLoader
+
+      -反射获取到PathClassLoader的父类BaseDexClassLoader中DexPathList属性对象 pathList
+
+      -反射修改pathList的dexElements
+
+       (1)把补丁包的patch.dex转化为Element[]
+
+       (2)获得pathList的dexElements属性(已安装的APK中的dexElements)
+
+       (3)patch+old合并，并反射赋值给pathList的dexElements+
+
+
+     这个类替换的步骤，我们应该是要在Application中的最先执行替换的，所以需要重新
+
+     启动APP，才能够生效的;
+
+     这个基本步骤是没有问题的，但是要注意从Android N开始，Android重新引入了JIT，就是JIT+AOT
+
+     在Android 5.0-Android7.0之间，Android的 ART虚拟机是在应用进行安装的时候将字节码文件
+
+     转机器码，所以应用安装起来很慢；而Android 7.0之后，JIT+AOT 不再安装APK的时候将字节码文件
+
+     全部转成机器码，而是在应用运行的时候，对于一些热点代码，记录到Profile文件中，然后在手机空闲
+
+     或者充电的时候，将对应的热点代码转机器码，生成对应的app image，base.art(类对象映射文件)，这个
+
+     ART文件会在应用启动的时候自动加载，那么根据类加载原理，已经加载过得类是无法再进行加载的，所以我们
+
+     也就无法使用补丁包中类替换原来的类，即无法通过即上面步骤实现热修复；
+
+     对于Android N之后我们到底如何实现热修复；因为我们知道Android N以及之后，会生成base.art这个文件
+
+     这个文件中的类会首先被应用的PathClassLoader进行加载，导致我们无法再进行这些类的替换；
+
+     所以我们可以替换系统的PathClassLoader，使用自己的ClassLoader,这样base.art文件就无效了；
+     
+
+12.我们可不可以替换系统中的String类
+
+  实际上是不能的,因为类的加载的双亲委托机制;会由BootClassLoader加载,无法使用
+
+  自己的类加载器进行加载；   
+
+13.Hook技术
+
+   Hook技术就是用来干涉程序的运行的；程序在运行的过程中，我们可注入自己的代码
+
+   来执行我们自己的操作；
+
+   -Android中的Hook技术
+
+    (1) 需要Root技术，可以直接Hook系统
+
+    (2) 免Root技术，但是只能Hook自身，无法Hook系统其它APP
+
+  -Hook的步骤
+  
+   Hook的步骤主要是分为三步
+
+   1.确定要Hook的对象
+
+   (Hook的对象尽量是静态变量或者单例对象，
+    
+     尽量Hook Public的对象和方法
+
+   )
+
+   2.找到要Hook的对象的持有者，拿到要Hook的对象
+
+   3.定义要Hook的对象的的代理类，并创建该类的对象(这里是静态代理实现)
+
+   4.使用上一步创建的对象，替换掉要Hook的对象
+   
+  -Hook技术实现的原理：反射和代理
+
+14.Activity的启动流程 
+
+以下是基于Android9.0  (API:28)来分析Activity的启动流程
+
+Activity.startActivity--->Activity.startActivityForResult---->
+
+Instrumentation.execStartActivity--->ActivityManager.getService().startActivity(这里就交到了ActivityManagerService去操作了)
+
+--->ActivityManagerService.startActivityAsUser--->ActivityStarter.execute--->ActivityStarter.startActivity--->
+
+ActivityStarter.startActivityUnchecked--->ActivityStarter.startActivityUnchecked--->
+
+ActivityStackSupervisor.resumeFocusedStackTopActivityLocked--->ActivityStack.executeAppTransition
+
+--->ActivityStack.resumeTopActivityUncheckedLocked--->ActivityStack.resumeTopActivityInnerLocked
+
+--->ActivityStackSupervisor.startSpecificActivityLocked--->ActivityStackSupervisor.realStartActivityLocked
+
+--->
+
+ActivityStarter
+
+ClientLifecycleManager.scheduleTransaction
+
+ClientTransaction.schedule
+
+IApplicationThread.scheduleTransaction 
+
+ActivityThread.scheduleTransaction
+
+ClientTransactionHandler.scheduleTransaction{
+   ... 	
+   sendMessage(ActivityThread.H.EXECUTE_TRANSACTION, transaction);
+} 
+
+ActivityThread中  handleMessage
+
+TransactionExecutor.execute 
+
+TransactionExecutor.executeCallbacks
+
+TransactionExecutor.cycleToPath
+
+TransactionExecutor.performLifecycleSequence{
+	
+    mTransactionHandler.handleLaunchActivity 
+
+}
+
+
+TransactionHandler中的handleLaunchActivity是抽象方法
+
+TransactionExecutor.performLifecycleSequence中的mTransactionHandler实际上
+
+是ActivityThread,ActivityThread是继承自TransactionHandler;
+
+ActivityThread.handleLaunchActivity
+
+ActivityThread.performLaunchActivity
+
+Instrumentation.callActivityOnCreate
+
+Activity.performCreate{
+	
+   ....
+
+    onCreate(icicle); //到这里就是执行Activity的onCreate生命周期函数  
+}
+ 
+前面的TransactionExecutor.performLifecycleSequence 会根据状态依次执行
+
+mTransactionHandler.handleLaunchActivity 
+
+mTransactionHandler.handleStartActivity
+
+mTransactionHandler.handleResumeActivity
+
+也就是最终对应到Activity中的onCreate,onStart,onResume 
+
+至此整个Activity的启动流程就分析结束了；
+
+15.Android插件化
+
+-插件化技术最初是源于免安装运行APK的想法,这个免安装的APK就可以理解为插件
+
+而支持插件的APP我们一般称之为宿主
+
+-插件化主要是用来解决什么问题?
+
+ (1) APP的功能模块越来越多，体积越来越大
+
+ (2) 模块之间的耦合度高，协同开发沟通成本越来越大
+
+（3）方法数超过65536,APP内存占用过大
+
+-插件化和组件化的区别
+
+ 组件化开发就是将一个APP分成多个模块，每个模块都是一个组件，开发的过程中我们可以让这些组件
+
+ 相互依赖或者单独调试部分组件等，但是最终发布的时候是将这些组件合并打包成一个APK,这就是组件化开发
+
+ 插件化开发和组件化开发的策略不同，插件化开发是将整个APP拆分成多个模块，这些模块包括一个宿主和多个
+
+ 插件，每个模块都是一个APK,最终打包的时候宿主APK和插件APK分开打包；
+
+ -插件化实现思路
+
+  如何加载插件的类 
+
+  如何加载插件的资源 
+
+  如何调用插件的类 
+
+-加载插件的普通类 
+
+-如何加载插件的Activity(Android系统四大组件) 
+
+ 问题：因为插件的Activity没有在AndroidManifest.xml中注册
+
+ 所以要解决的是怎么加载没有在清单文件中注册的Activity?
+
+ 这就需要知道Activity的启动流程；
+
+16.try-catch可以捕获OutOfMemoryError吗
+
+   可以捕获
+
+   try{
+
+      byte[] bytes = new byte[1000 * 1024 * 1024];
+
+   }catch(OutOfMemoryError e){
+   
+      Log.e(TAG, "outOfMemory: " + e);
+
+   } 
+
+   try-catch 是可以捕获Throwable的，
+
+   OutOfMemoryError 是继承自Error,Error是继承自Throwable的，所以可以捕获；
+
+ 17.PackageManagerService
+
+    PackageManagerService 是Android系统核心服务之一,管理着所有跟 package 相关的工作;
+
+    主要功能：
+
+    -解析AndroidManifest.xml
+
+    -
+
+    PackageManagerService是在SystemService进程中启动的
+
+    SystemService.startBootStrapService()--->PackageManagerService.main()
+
+    --->PackageManagerService构造方法实例化PackageManagerService
+
+18.raw与asset目录下的文件有什么不同？
+   
+   raw下的文件，会在R.java中生成对应的ID,我们可以通过ID访问,raw可以在XML中访问
+   
+   asset目录下的文件不会生成id，只能通过getAsset访问，不可以在XML中访问
+
+19.Application与Activity的对应的上下文对象是一样的吗?
+
+   Application对应的Context的生命周期是整个应用的生命周期
+
+   Activity对应的Context的生命周期是Activity从创建到销毁
+
+20.如何判断一个App是在前台还是现在后台?
+
+可以在Application中registerLifecyleCallBacks注册Activity的生命周期
+
+回调函数，定义一个变量mActivityCount;，然后分别在onActivityStart和onActivityStop中；
+
+mActivtiy++,mActivity--;，如果mActivity大于0则APP处于前台，否则处于后台；
+
+21.Android 进程间通信 IPC(InterProcess-Communication)
+
+-Android多进程 (为什么APP要使用多进程？)
+一般情况下，一个应用只有一个进程，但是在APP功能模块越来越多，业务
+
+越来越复杂的情况下，APP对运行内存的使用也越来越多，而单个进程所分配
+
+到的运行内存是有限的，所以我们可以为我们的应用用上多进程，让一部分的
+
+组件运行在其他进程，以降低APP的内存压力；
+
+(1)缓解APP的内存压力，降低OOM的可能性
+
+(2)增加应用的稳定性，某个进程出现崩溃，不会影响主进程，而导致
+
+   整个应用闪退；
+
+-怎么实现多进程？
+
+怎么实现多进程这个问题，这里实际上涉及到的是两个问题
+
+(1)怎么让我们的APP运行在多个进程? 如何开启多进程
+
+(2)运行在多个进程，不同进程之间的组件怎么通信?  进程间通信 IPC 
+
+-让APP运行在多进程，实际上就是让应用的一部分组件运行在其它进程
+
+ 只要在AndroidManifest.xml中声明组件时，为组件设置android:process
+
+ 属性 android:process=":other",这样组件就运行在了其它进程;
+
+ android:process属性的值
+
+ -以":"开头 如android:process":other",这样设置，进程名为
+
+  应用包名:other,创建的进程属于当前应用的私有进程，其它应用的
+
+  组件不可以和它跑在同一个进程中
+
+ -不以":开头" 如:android:process="com.myactivity.otherprocess"
+ 
+ 这样设置，进程名就为设置的属性值com.myactivity.otherprocess,
+
+ 创建的进程属于全局进程，其它应用可以通过shareUID方式和它跑在同一个
+
+ 进程中;
+
+ Android会为每一个应用分配唯一的一个UID(linux user 
+
+ ID),则这样权限就被设置成该应用程序的文件只对该用户可见，也就是只对
+
+ 该应用程序自身可见，而我们可以使某个应用程序的文件对其它应用可见，这就会
+
+ 使用到shareUID,就是让两个APK有相同的UID,这样它们就可以看到对方的文件
+
+ 两个应用通过shareUID运行在同一个进程中是有要求的，就是急需要两个应用
+
+ 有相同的UID，并且签名也要相同；
+
+-多进程产生的问题
+
+不同的进程间，有不同的虚拟机实例，不同的虚拟机实例对应的是
+
+不同地址的内存空间，这就导致在不同进程中访问同一个类的对象，会
+
+产生多个副本，所以不同进程之间数据不是共享的;
+
+(1)Application会创建多个实例，初始化多次
+   
+   我们通常会在Application的onCreate中进行一些初始化操作，主要是
+
+   第三方SDK的初始化等，那么这些初始化操作我们只需要在主进程初始化
+
+   一次就可以了，但是由于Application会初始化多次，导致这些初始化操作
+
+   执行多次；
+
+   解决办法：判断是否是主进程，只有主进程的时候才执行相关的初始化操作；
+
+(2)静态属性不可共用
+
+在单进程下，类的静态属性在所有地方是共享的，即在某个地方进行修改，其它
+
+地方访问时，肯定是修改后的值，但是在多进程下不是这样,因为多进程不是内存
+
+数据共享的;
+
+单例和同步锁也是同样失效的;
+
+(3)单例以及同步锁都失效
+
+也是由于数据不共享的原因，导致单例和同步锁失效
+
+(3)文件共享失效
+
+   多进程情况下，会出现两个进程在同一时刻访问同一个数据库文件的情况
+
+   这可能造成资源的竞争访问，导致数据库损坏，数据丢失等；在多线程情况下
+
+   我们可以通过锁机制来控制资源共享，但是多进程下锁机制也是无效的；
+
+   解决办法：就是多进程的时候不访问同一个文件，比如子进程涉及到数据库
+
+   操作，就可以考虑调用主进程进行数据库的操作；
+
+-进程间通信
+
+ (1) BroadCastReceiver
+
+ (2) ContentProvider
+
+ (3) Binder
+
+ (4) Socket
+
+22. try-catch可以捕获OutOfMemoryError吗
+
+   可以捕获
+
+   try{
+
+      byte[] bytes = new byte[1000 * 1024 * 1024];
+
+   }catch(OutOfMemoryError e){
+   
+      Log.e(TAG, "outOfMemory: " + e);
+
+   } 
+
+   try-catch 是可以捕获Throwable的，
+
+   OutOfMemoryError 是继承自Error,Error是继承自Throwable的，所以可以捕获；
+
+23.Android 事件分发机制
+
+   dispatchTouchEvent
+
+   onInterceptTouchEvent
+
+  首先是由父View接收到触摸事件,也就是ViewGroup接收到触摸事件
+  
+  进入到dispatchTouchEvent方法--->onInterceptTouchEvent
+
+  如果onInterceptTouchEvent返回false,则表示当前ViewGroup
+
+  不拦截该事件，交由子View进行处理，子View进入dispatchTouchEvent
+
+  方法,子View如果是ViewGroup继续执行上述流程，如果不是ViewGroup则
+
+  执行onTouchEvent方法，onTouchEvent返回true，表示该子View处理完当前事件，事件结束；
+
+  如果返回false,表示子View无法处理再交由父View进行处理；
+
+  如果父容器ViewGrop拦截了子View的事件，也即onInterceptTouchEvent返回true,
+
+  我们如果在无法修改ViewGroup源码的情况下，我们又希望某个子View不被ViewGroup拦截
+
+  事件,我们可以在子View的dispatchTouchEvent,onInterceptTouchEvent,onTouchEvent中调用父View的
+
+  requestDisallowInterceptTouchEvent(true)，来告诉父View不要拦截事件； 
+
+  这是View事件分发的的大致流程；
+
+  -我们再来看下View中一些比较常见的触摸方法和监听
+
+    onTouchEvent方法，mOnTouchListener,onClickListener
+
+   我们通过View的dispatchTouchEvent方法来看一下上述执行的流程
+
+   如果mOnTouchListenre不为null,并且mOnTouchListener的回调
+
+   方法onTouch方法返回true，表示事件已处理完，如果onTouch返回false
+
+   --->onTouchEvent返回true表示事件已处理完，否则再交由父View;
+
+    setOnClickListener是在onTouchEvent中调用的，所以如果设置了
+
+    mOnTouchListener,并且回调方法onTouch返回true,则不会走onTouchEvent,
+
+    setOnCliclListenre也无效了;
+
+24.Android 签名机制
+
+   -应用签名
+
+    我们在开发完应用之后，需要生成一个用签名文件签名之后的APK文件,然后才能发布;
+
+    那为什么要对应用进行签名？
+
+    我们知道Android系统唯一识别一个应用的标识是应用的包名; 那么如果有另外应用和我们
+
+    的应用的包名一样，那么安装这个应用的时候就会覆盖我们的应用，所以仅仅通过包名还不过，
+
+    Android系统还会检测APK的签名是否一致，如果安装应用的时候发现和已安装的某个应用的包名
+
+    一致，但是签名不一致，是无法进行安装的;
+
+    并且签名机制，也能够防止我们的APK文件被别人二次打包；
+
+   -应用的签名过程
+
+    我们对打包出来的APK文件，修改后缀名为.zip之后，进行解压，解压出来之后，有一个MEAT_INF
+
+    目录，这个目录下有三个文件MANIFEST.MF,CERT.SF,CERT.RSA文件； 这三个文件都是应用签名
+
+    相关的文件;
+
+    (1)MANIFEST.MF文件中的内容 是对APK中的所有文件使用信息摘要算法（SHA算法）生成的信息摘要的base64值
+
+    (2)CERT.SF文件 首先是MANIFEST.MF文件使用信息摘要算法生成信息摘的base64要作为头部属性，然后其他内容
+
+    是MANIFEST.MF中的每一项再单独使用信息摘要算法生成的摘要的base64值;    
+    
+    (3)CERT.RSA文件中的内容  是CERT.SF文件进行数字签名(也就是使用私钥对CERT.SF中的内容进行加密)，
+
+    以及数字证书的一些信息，包括公钥信息;
+
+   -应用安装的时候前签名校验的过程
+
+    根据应用的签名的过程，我们应该就知道Android系统在安装APK的时候是怎么进行签名校验的，无非
+
+    就是将应用的签名过程再走一边，然后与META-INF中的三个签名相关关的文件中的内容做比对，来校验签名
+
+    依次来判断是否可以安装应用;
+
+    校验的步骤：
+
+    (1)首先将APK中的所有文件(除了META_INF下的文件),使用信息摘要算法生成信息摘要的base64值，
+
+    然后与MANIFEST.MF中的内容做比对，如果一致进行下一步，否则校验失败； 
+
+    (2)然后将MANIFEST.MF文件生成信息摘要，以及MANIFEST.MF中的单独每一项生成信息摘要与
+
+       CERT.SF中的内容做比对，如果一致进行下一步，否则校验失败； 
+
+    (3)对CERT.SF中的内容生成数字签名以及数字证书的信息包括公钥和CERT.RSA中对应的信息进行
+
+       比对，如果一致则校验成功，否则校验失败；   
+
+
+    如果你修改了APK中的某一个文件，那么更改的文件生成的信息摘要，肯定与MANIFEST.MF中的
+
+    改文件的信息摘要不一致，验证失败，如果你对更改后的文件生成信息摘要，然后同时修改MANIFEST.MF
+
+    中对应的属性值，那么与CERT.SF中的摘要值不一致，照样验证失败，如果你还不死心，也修改了CERT.SF
+
+    中的摘要值，那么数字签名值必定与CERT.RAS中的不一样，因为数字签名是使用私钥签名的，私钥只有应用
+
+    的发布者知道,所以还是会校验失败； 这样Android中的签名机制成功防止了二次打包；
+  
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+ 
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       
+     
+
+
+
+
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       
+
+
+
+
+
+
+
+
+
+
+   
+
+     
+
+
+
+
+
+
+
+
+
+
+
+
+   
+    

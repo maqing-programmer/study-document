@@ -1,0 +1,21 @@
+Windows下编译FFmpeg for Android
+
+1.下载MinGw
+
+  下载地址： https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe/
+
+  下载完成后配置环境变量
+
+2.NDK  r14版本 
+
+  版本： android-ndk-r14b-windows-x86_64   
+  
+  下载后配置环境变量
+
+3.下载FFmpeg 
+
+   官网下载FFmpeg源码 3.3.9版本
+
+./build_android.sh  //这里要等待较长的时间，我等了七八分钟的样子才有反应        
+
+D:/android-ndk-r14b-windows-x86_64/android-ndk-r14b

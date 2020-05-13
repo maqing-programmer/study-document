@@ -1,0 +1,242 @@
+1.Android 应用启动优化
+
+  Android 应用在冷启动的时候，总是会有一段时间的白屏，然后再进入APP
+
+  页面，只不过不同的应用白屏的时间不一样.
+
+  那么为什么应用启动的时候会出现一段的时间白屏呢？
+
+  那我们就要来了解一下APP的启动过程。
+
+  APP启动主要分为冷启动、热启动两种方式。
+
+-冷启动（Cold Start）
+
+  冷启动是指系统中没有该应用的进程,从头开始启动。
+
+  冷启动开始的时候，系统有是三个任务的：
+
+  1.加载和启动应用
+
+  2.显示一个空的Window
+
+  3.创建一个APP进程
+
+  当应用进程创建好之后，应用进程会执行以下步骤：
+
+  1.创建应用对象
+
+  2.启动主线程
+
+  3.创建一个主Activity
+
+  4.加载View
+
+  5.将View布局到屏幕上
+
+  6.进行初始化的绘制，显示View
+  
+  当应用进程初始化绘制完成后，系统进程会将当前显示的Window替换成主Activity
+
+  这个时候，用户可以使用应用了
+
+  那么由上面应用冷启动的过程，知道之所以应用在启动的时候会有一段时间的白屏，实
+
+  际上是应用在冷启动的时候，会进行一些始化操作时，系统会显示一个空白的Window,
+
+  初始化完成之后，这个空白Window才会消失，显示应用的启动界面。
+
+  那么白屏的时间取决于初始化操作的时间。
+
+  那么怎么解决应用启动的白屏问题?
+
+  我们可以为应用的启动页Activity设置一个主题，这个主题的windowBackground设
+
+  置成要显示的启动页图片，并且启动页Activity中就不用再设置图片了。
+
+   <style name="SplashAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@drawable/splash</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">false</item>
+    </style>
+
+  这样设置之后，应用启动时就没有白屏了,显示的就是设置的启动图片。
+
+-热启动(Hot start)
+
+  系统中已经有应用的进程,并且所有的Activity都存在内存中，系统只是需要将应用的
+
+  Activity从后台移至前台即可。
+   
+-暖启动(Warm start)： 
+   
+   暖启动的场景主要有：
+
+   1. 使用返回键退出应用后，马上又重新启动它
+
+   2.应用被系统从内存中清除,再次打开应用可以通过onCreate()保存的实例进行恢复
+
+-应用的启动时间
+
+怎么查看应用的启动时间？
+
+应用的启动时间是指打开应用从初始化到显示启动页Activity的时间
+
+-使用logcat查看启动时间
+
+在Android4.4（API level 19）以上的Android版本上，当启动应用时Android 
+
+Studio自动会在logcat中输出启动时间。 
+
+这个时间从应用启动（创建进程）开始计算，
+
+到完成视图的第一次绘制（即Activity内容对用户可见）为止。
+
+ I/ActivityManager: Displayed com.nado.businessfastcircle/.ui.SplashActivity: +205ms
+
+ -使用 adb 命令查看应用启动时间 adb shell am start -S -W  packageName/
+
+ package.SplashActivity
+
+ 进入AndroidStuido 的Teminal命令行，然后通过cd命令进入到SDK的platform-tools目录
+
+ c: 进入C盘
+
+ cd Users\maqing-PC\AppData\Local\Android\Sdk\platform-tools 进入plaform-tools目录
+
+ adb shell am start -W com.nado.businessfastcircle/.ui.SplashActivity
+
+ 执行后显示如下：
+ Starting: Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] cmp=com.nado.businessfastcircle/.ui.SplashActivity }
+ Status: ok
+ Activity: com.nado.businessfastcircle/.ui.SplashActivity
+ ThisTime: 2102
+ TotalTime: 2102
+ WaitTime: 2157
+ Complete
+
+ 我们只需要关注totalTime,这里的totalTime就是，应用的启动时间
+
+ -使用系统提供的reportFullyDrawn()方法也可以在logcat打印出应用的启动时间
+
+  在启动页Activity的onCreate方法中调用该方法
+
+  启动页显示时，logcat会出现如下打印
+
+   I/ActivityManager: Fully drawn com.nado.businessfastcircle/.ui.SplashActivity: +2s56ms
+
+   这里的时间也是应用从开始启动到启动页完全显示的时间,也即应用的启动时间。
+
+   Android 官方给出了以下标准时间，如果应用启动超过以下标准时间，那么你的应用启动
+
+   时间就过长了，就需要考虑优化应用的启动时间。
+
+   -冷启动时间超过5秒
+
+   -热启动时间超过1.5秒
+
+   -暖启动时间超过2秒
+
+ 2.如果优化应用的启动时间
+
+ 如果应用的启动时间过长，必然会给用户带来极差的体验。
+
+ 1.上面说的给应用的启动页设置一个背景，背景就是启动图，
+
+   这样就避免了启动应用时，应用是空白屏状态，以此提高用户体验
+
+ 2.但是上面操作并没有降低应用的启动时间。
+
+ 我们知道在Application中，我们一般会进行第三方库的初始化，或者应用本身
+
+ 的一些初始化操作，那么项目一大，Application中初始化操作一多，就会提高应用的
+
+ 启动时间，所以我们优化的时候，需要考虑将一些初始化操作移动到使用的时候进行
+
+ 或者延迟初始化的操作，从而降低应用的启动时间。
+
+
+ 1.进入该播放界面
+
+   -首先判断是否有网
+
+   没有网  获取该电视剧所有缓存的集数
+   
+   -有网
+
+   接口获取所有集数
+
+2.0-15
+
+  音量变化范围
+
+  手指一动范围   0-screenHeight
+
+  (mEndY-mStarY）/screenHeight  移动的距离
+
+  移动的距离占高度的百分比
+
+  当前有一个音量  mCurrentVolume   15
+
+  移动的间距  越来越大
+
+  5.从下往上   percent mVolumne  变化很快   
+
+  15 最大
+
+  15 0
+
+  移动的距离
+
+
+
+  亮度  0-1
+
+  每次移动增加或减少3/255
+
+  100 / 15
+
+
+old_volume+  15/100*distanceY  
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

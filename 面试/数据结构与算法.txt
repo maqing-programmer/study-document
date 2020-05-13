@@ -1,0 +1,45 @@
+1.常用的数据结构
+
+  -数据结构
+
+  计算机存储，组织数据的方式;
+
+  -常用的数据结构主要有四大类
+
+  -线性表
+
+  （1）链式存储结构 (链表)
+       
+       代表：LinkedList  
+
+   (2) 顺序存储结构 (数组）
+
+       代表:ArrayList 
+
+  -栈 （Stack）
+   
+   Java中 java.util.Stack<E> 可以用来表示栈
+
+  -队列 (Queue)
+
+   Java中 java.util.Queue<E> 可以用来表示队列
+
+  -哈希表
+
+  代表：HashMap ,LinkedHashMap
+
+  -树
+
+  -图
+
+2.
+
+
+
+
+
+
+
+
+
+
