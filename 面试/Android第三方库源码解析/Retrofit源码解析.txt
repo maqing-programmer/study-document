@@ -1,0 +1,332 @@
+1.如何来阅读第三方库源码，首先我们得具备一些基础
+
+  注解 ，反射，设计模式 ，架构思想
+
+2.Retrofit 
+  
+  -Retrofit
+
+   Retrofit是一个基于OKHttp的Restful API风格的网络请求库,Retrofit
+
+   的网络请求工作的本质上是由OKHttp完成，而Retrofit主要是对网络请求接口的
+
+   封装，如请求头，请求方式，请求参数，Url等，Retrofit主要是使用注解的方式
+
+   来对请求参数进行封装; 
+   
+  -基本使用
+
+  首先定义一个请求接口文件;
+
+  创建Retrofit对象 Retrofit创建使用Builder模式;
+
+  通过Retrofit对象创建第一步定义的请求接口的对象;  动态代理方式  
+
+  然后调用请求接口对象中的请求方法创建一个请求Call
+
+  然后通过请求对象发起同步或者异步请求
+
+  -Retrofit中的注解
+
+   Retrofit中主要是通过注解来配置网络请求参数，包括请求头，请求方式，请求参数，请求的
+
+   Url等都可通过注解来进行配置;
+
+   (1)请求方式的注解
+
+      @GET
+      @POST
+      @HEAD
+      @PUT
+      @DELETE
+      @PATCH
+      @OPTIONS
+
+      @HTTP 通用注解，可以替代上面所有注解，拥有method,path,hasBody
+
+            三个属性 
+
+     @HTTP注解示例：  
+     /**
+      * 用户登录
+      */
+    @FormUrlEncoded
+    @HTTP(method = "POST", path =RequestManager.mInterfacePrefix + "Login", hasBody = true)
+    Call<String> login1(@FieldMap Map<String, String> params);
+
+    (2)参数类的注解
+       
+       //请求头的注解
+       @Headers
+       @Header 
+
+	   //请求体的注解
+       @Body
+
+       //请求参数的注解 
+       @Field 
+       @FieldMap
+       @Part
+       @PartMap
+       @Query
+       @QueryMap
+
+       //请求的Url中包含动态参数
+       @Path
+
+       //指定请求路径
+       @Url
+
+    (3)标记类的注解
+       
+       //使用POST请求的时候使用该标记表示表单提交
+       @FormUrlEncode 
+
+       //文件上传的时候使用该标记
+       @Multipart   
+       
+       //一般请求，网络框架都会将响应的数据一次性保存到内存里面
+       //然后处理后返回给上层，到我们的响应回调；
+       //但是如果返回的是一个大文件，或者数据非常大的情况下，还一次性
+       //保存到内存，在移动设备上肯定是会内存溢出的，使用@Streaming是以流的
+       //形式一点一点的读取返回给上层，到我们的响应回调，就不会出现问题 
+       @Streaming 
+
+    -Retrofit中注解的解析流程
+
+     Retrofit.create()
+
+     Retrofit发起一个网络请求的时候，需要创建网络请求接口对象，是通过
+     
+     动态代理创建网络请求接口对象
+
+     -->loadServieMethod()-->ServiceMethod.parseAnnotations()-->
+
+     -->RequestFactory.parseAnnotations()-->RequestFactory.parseMethodAnnotation() //解析请求方法注解
+                                         -->RequestFactory.parseParameter() //解析请求参数注解
+
+     -->HttpServiceMethod.parseAnnotations()
+     
+     并且某个接口已经请求过，也就是网络请求接口中某个方法被调用过，注解解析的结果会被缓存起来，
+     
+     保存在Retrofit的serviceMethodCache这个Map中;
+
+     -Retrofit中网络请求部分
+
+      上面描述的是Retrofit中注解的解析流程，实际上也就是请求中的各种配置的解析，请求头，请求方法，
+
+      请求参数的配置解析；
+
+      下面我们就要来学习一下真正的网络请求部分，真正的网络请求部分是交由OKHttp来完成的;
+
+      调用网络请求接口中的某个方法，发起网络一个网络请求，实际上是返回一个Call,一个Call
+      
+      就代表一个接口请求，这里的Call是OKHtpCall,OKHttp里面有一个rawCall，这个
+
+      rawCall是OKHttp的okhttp3.Call代表是真正的网络请求;
+
+      Retrofit.create()(动态代理创建请求接口对象)--->通过创建的请求接口对象调用指定请求（调用指定接口）
+
+      (HttpServiceMethod.invoke()-->ExecutorCallbackCall(OKHttpCall))-->OkHttpCall.enqueue()（
+       
+       -->OKHttpClient.newCall(requestFactory.create(
+
+       args))（创建一个真正的OKHttp的Call:rawCall,OKHttp的一个Call实际上
+
+       对应的是一个okhttp3.Request,就是一个网络请求,而这里的Request,包括了请求方式，请求Url,请求头等请求信息
+
+       ，Call是通过OKHttpClient,和参数requestFactory创建的，而requestFactory是通过RequestFactory.parseAnn
+
+       otation()创建的也就是上面解析注解流程，解析了所有注解信息，也就是请求方式，请求Url，请求头信息
+       
+       OKHttpClient代表的是一个OKHttp的对象，就是将Retrofit对象与一个OKHttp对象关联起来，OKHttpClient里面
+
+       可以配置网络请求的一些设置，如超时时间，Cookie,加密证书校验，域名校验，DNS解析器，等设置；
+
+       ) 
+       -->RealCall.newRealCall()-->RealCall.enqueue()（异步请求）-->
+                                -->RealCall.execute() (同步请求) -->
+ 
+        -->RealInterceptorChain.proceed()
+
+        RetryAndFollowUpInterceptor
+        BridgeInterceptor
+        CacheInterceptor
+        ConnectInterceptor
+        CallServerInterceptor                                                  
+                                                       
+       (这里有多种拦截器,使用的是责任链模式,  RealInterceptorChain是责任链，实现Interceptor.Chain接口， 
+
+       其它各种拦截器都是实现Interceptor接口，RealCall中的enqueue,以及execute方法最终都调用了getResponseWithInte
+
+       rceptorChain()方法，而拦截器的责任链处理模式，就是从这里开始发起；
+
+       getResponseWithInterceptorChain()方法首先是将多种拦截器放入到一个List中，然后创建一个责任链RealInterceptC
+
+       hain,使用责任链对象开始第一个拦截器的处理，调用的是RealInterceptorChain.proceed()方法，proceed方法中会
+
+       调用拦截器的intercept方法进行拦截器的一些操作，并且会重新创建责任链RealInterceptorChain,然后继续调用
+
+       RealInterceptorChain.proceed()方法进行才一个拦截器的处理，直到最后一个拦截器处理结束；
+
+       ) 
+
+       OKHttp中内部五大拦截器：
+
+       (1)RetryAndFollowUpInterceptor
+
+          用来处理请求错误，请求重试，和请求重定向
+
+       (2)BridgeInterceptor
+          
+          用来为请求添加必要的请求头，以及将网络请求的响应Response进行压缩或解压缩转化成用户可用的Response
+
+       (3)CacheInterceptor
+          
+          负责处理网络请求以及响应的缓存
+
+       (4)ConnectInterceptor
+       
+          负责与服务端建立网络链接
+
+       (5)CallServerInterceptor
+
+          负责向服务器发起网络请求，以及接受服务器的响应  
+
+
+         -//OKHttp的缓存策略
+       
+         CacheStrategy  通过工厂模式创建缓存策略CacheStrategy对象
+
+         CacheStrategy 中有两个对象 networkRequest和cacheResponse
+
+         networkRequest如果为null，则表示不进行网络请求，如果cacheResponse
+
+         为null表示没有有效的缓存
+         
+         -OKHttp定义拦截器设置网络缓存，在有网的时候缓存响应数据，没有网络的时候从缓存中
+
+          获取响应数据
+
+          定义拦截器：
+
+
+          Interceptor interceptor = new Interceptor() {
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            Request request = chain.request();
+            if (!NetworkUtil.isConnected()) {
+                request = request.newBuilder()
+                        .cacheControl(CacheControl.FORCE_CACHE)
+                        .build();
+            }
+            Response response = chain.proceed(request);
+            if (NetworkUtil.isConnected()) {
+                int maxAge = 0 * 60;
+                // 有网络时 设置缓存超时时间0个小时
+                response.newBuilder()
+                        .header("Cache-Control", "public, max-age=" + maxAge)
+                        .removeHeader("Pragma")// 清除头信息，因为服务器如果不支持，会返回一些干扰信息，不清除下面无法生效
+                        .build();
+            } else {
+                // 无网络时，设置超时为4周
+                //int maxStale = 60 * 60 * 24 * 28;
+                int maxStale = 0;
+                response.newBuilder()
+                        .header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale)
+                        .removeHeader("Pragma")
+                        .build();
+            }
+            return response;
+        }
+    }; 
+
+    使用拦截器：
+
+     
+      File cacheDirectory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "OKHttp_cache");
+        Cache cache = new Cache(cacheDirectory, 10 * 1024 * 1024);
+
+        mOkHttpClient = new OkHttpClient.Builder()
+                //添加网络过滤器
+                .addInterceptor(interceptor)  //addInterceptor
+                .addNetworkInterceptor(interceptor) // addNetworkInterceptor
+                .cache(cache) //设置网络缓存
+                .retryOnConnectionFailure(true)
+                .connectTimeout(mConnectTimeout, TimeUnit.SECONDS)
+                .writeTimeout(mReadTimeout, TimeUnit.SECONDS)
+                .readTimeout(mWriteTimeout, TimeUnit.SECONDS)
+                .build();
+
+        mRetrofit = new Retrofit.Builder()
+                .baseUrl(mBaseUrl)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .client(mOkHttpClient)
+                .build();
+
+
+         特别注意：OKHttp只能缓存GET请求，POST请求不能缓存，如果要缓存POST请求，只能自己缓存
+
+                  自己缓存POST请求，可以把响应数据缓存到Sqlite数据库，或者使用DiskLRUCache
+
+                  缓存到文件中； 
+
+
+
+
+
+
+
+
+
+
+
+
+       
+
+
+
+    
+
+
+
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
