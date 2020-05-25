@@ -1295,8 +1295,11 @@ mActivtiy++,mActivity--;，如果mActivity大于0则APP处于前台，否则处�
     的发布者知道,所以还是会校验失败； 这样Android中的签名机制成功防止了二次打包；
 
     -Android中的V1,V2,V3签名
-    
-    -apktool
+     
+      
+
+
+    -反编译 apktool
 
      apktool d test.apk  //反编译APK文件,生成test文件夹，里面是反编译出的APK内容
 
