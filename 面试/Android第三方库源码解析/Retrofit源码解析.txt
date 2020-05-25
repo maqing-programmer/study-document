@@ -272,6 +272,19 @@
                   缓存到文件中； 
 
 
+        -->OKHttpCall.parseResponse()-->HttpServiceMethod.createResponseConverter()-->Retrofit.responseBodyConverter()
+
+        -->Retrofit.nextResponseBodyConverter()
+
+        (经过一系列的拦截器处理之后，客户端成功发起请求，也得到响应之后，响应内容Response中我们需要的数据ResponseBody,
+         
+         可以通过Convert(转换器)转成我们需要的格式,Retrofit对象中是使用converterFactories这个List数据结构，表示可添加多个
+
+         转换器，将响应内容转成我们想要的各种数据格式,OKHttpCall.parseResponse方法是解析响应内容Response，最终交给Convert
+         
+         进行转换成我们想要的格式，而Convet是来自于Retrofit中的converterFactories中的合适的Convert;
+        )
+        
 
 
 
