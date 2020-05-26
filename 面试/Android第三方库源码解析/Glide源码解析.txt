@@ -1,0 +1,58 @@
+1.Glide简介
+
+  Glide是一个快速高效的Android图片加载库，可以加载图片以及GIF动画
+
+2.Glide基本使用
+
+  Glide.with(mActivity)
+       .load(mImagUrl)
+       .into(mImageView);
+
+   Glide.with(mFragment)
+       .load(mImagUrl)
+       .into(mImageView);  
+
+3.Glide加载图片的流程
+
+  -我们通过上面最简单的基本使用，来跟踪一下Glide加载图片的流程
+
+    Glide.with(mActivity)-->
+
+    Glide.get(context).getRequestManagerRetriever().get(context)-->
+
+    (
+
+     解析： 
+
+     -Glide.get(context) 返回一个Glide实例，Glide对象是单例的,使用的是双重检验锁
+
+     方式的单例,
+      
+     -Glide.getRequestManagerRetriever()返回RequestManagerRetriever,RequestManagerRetriever
+
+     是用于创建新的RequestManager,或者从Activity和Fragment中获取已有的RequestManagerRetriever
+
+     -RequestManagerRetriever.get(context)返回一个RequestManager对象，RequestManager是用来
+
+      管理和启动Glide请求的，可以根据Activity和Fragment生命周期智能的停止，启动，和重新启动请求
+
+     )
+
+     -->RequestManager.load(mImageUrl)
+
+     -->RequestBuilder.load(mImageUrl)
+
+     -->RequestBuilder.into(mImageView)
+
+     -->
+
+     
+
+
+
+
+
+
+
+
+
