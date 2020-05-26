@@ -125,9 +125,19 @@
 
       rawCall是OKHttp的okhttp3.Call代表是真正的网络请求;
 
-      Retrofit.create()(动态代理创建请求接口对象)--->通过创建的请求接口对象调用指定请求（调用指定接口）
+      Retrofit.create()(动态代理创建请求接口对象)-->
 
-      (HttpServiceMethod.invoke()-->ExecutorCallbackCall(OKHttpCall))-->OkHttpCall.enqueue()（
+      HttpServiceMethod.invoke()(通过创建的请求接口对象调用指定请求（调用指定接口），
+
+           HttpServiceMethod.invoke()的返回值默认是Call,这个调用请求接口文件中的方法后的
+
+           返回值Call实际上是由Retrofit中callAdapterFactories中的CallAdapterFactory决定的，默认的
+
+           callAdapterFactories会添加一个DefaultCallAdapterFactory,而DefaultCallAdapterFactory
+
+           默认会在调用接口文件中的请求后返回Call代表一个请求
+
+          )-->ExecutorCallbackCall(OKHttpCall))-->OkHttpCall.enqueue()（
        
        -->OKHttpClient.newCall(requestFactory.create(
 
