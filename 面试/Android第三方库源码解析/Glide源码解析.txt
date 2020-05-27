@@ -16,7 +16,7 @@
 
   -我们通过上面最简单的基本使用，来跟踪一下Glide加载图片的流程
 
-    Glide.with(mActivity)-->
+    Glide.with(mActivity/mFragment/Application)-->
 
     Glide.get(context).getRequestManagerRetriever().get(context)-->
 
@@ -24,17 +24,21 @@
 
      解析： 
 
-     -Glide.get(context) 返回一个Glide实例，Glide对象是单例的,使用的是双重检验锁
+     Glide.with()调用的是Glide.get(context).getRequestManagerRetriever().get(context)
 
-     方式的单例,
-      
-     -Glide.getRequestManagerRetriever()返回RequestManagerRetriever,RequestManagerRetriever
+     这一步的作用主要是Glide生命周期的控制，如果with中传入的是Activity或者Fragment,Glide
 
-     是用于创建新的RequestManager,或者从Activity和Fragment中获取已有的RequestManagerRetriever
+     会创建一个无UI的Fragment添加到Activity或者Fragment中,然后通过这个Fragment的生命周期，来管理
 
-     -RequestManagerRetriever.get(context)返回一个RequestManager对象，RequestManager是用来
+     Glide加载图片请求的开始，停止，重新开始；也就是通过这个Fragment与我们的Activity以及Fragment
 
-      管理和启动Glide请求的，可以根据Activity和Fragment生命周期智能的停止，启动，和重新启动请求
+     生命周期进行绑定;
+
+     如果with中传入的是Application，那么并不会创建Fragment，这个时候Glide加载图片的请求的生命周期
+
+     和整个应用的生命周期一样，除非应用被杀死，或者Glide加载图片的请求完成，否则Glide加载图片的
+
+     操作一直存在;
 
      )
 
@@ -42,11 +46,36 @@
 
      -->RequestBuilder.load(mImageUrl)
 
+
+     (解析：
+
+      load()操作，其实过程很简单，并没有进行图片加载的真正操作，只是对加载的数据源进行封装，也就是
+
+       确定我们加载的数据源到底是什么样的形式 Drawable,Bitmap,Url/Uri.FilePath,File,resourceId
+
+     )
+
      -->RequestBuilder.into(mImageView)
+
+     -->GlideContext.buildImageViewTarget(view, transcodeClass)
+
+     -->
 
      -->
 
      
+
+   -总结：
+
+    (1)Glide加载图片生命周期的控制
+
+       Glide生命周期的控制主要是通过在Activity和Fragment中添加一个无界面的Fragment,以及来监听
+
+       Activity和Fragment的生命周期，在Activity和Fragment销毁之前将加载图片的请求移除掉；
+
+       如果传入的是Context对象是Application,Glide加载图片的请求就是一个全局请求，在应用没有被
+
+       杀死，加载操作没有完成之前，Glide加载的请求一直存在
 
 
 
