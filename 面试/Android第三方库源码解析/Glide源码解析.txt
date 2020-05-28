@@ -58,13 +58,135 @@
      -->RequestBuilder.into(mImageView)
 
      -->GlideContext.buildImageViewTarget(view, transcodeClass)
-
-     -->
-
-     -->
-
      
+        (
 
+        解析：
+
+        这里会创建一个ImageViewTarget,那么为什么会创建一个ImagevIewTaget,查看源码，我们会发现
+
+        这个ImageViewTarget是和我们的ImageView绑定的，具体为什么要这样做，我们继续往下看源码
+        
+        )
+
+     -->RequestBuilder.into(
+
+      @NonNull Y target,
+     
+      @Nullable RequestListener<TranscodeType> targetListener,
+     
+      BaseRequestOptions<?> options,
+     
+      Executor callbackExecutor)
+
+      (
+
+       解析：
+       
+       通过查看这个方法的源码，我们可以知道上面ImageViewTarget的作用，ImageViewTarget主要是将
+
+       Glide加载图片的请求(Request)与ImageView绑定起来,如果这个ImageView已经有过图片加载请求了，那么
+
+       会判断这次的加载的图片请求，和上一次的加载图片的请求是不是同一个请求,这里判断是否是同一个请求
+
+       不仅仅和数据源有关，还与设置的RequesOption中的配置有关;
+
+       如果是同一个请求不再发起请求
+
+       如果不是同一个请求，则先清除之前的请求，重新将新的请求与ImageViewTarget绑定，然后发起请求
+
+      )
+
+     -->RequestManager.track(target,request)
+
+     -->RequestTracker.runRequest(request)
+
+     -->SingleRequest.begin()
+
+     -->SingleReady.onSizeReady(overrideWidth, overrideHeight)/Target.getSize(this);
+
+     -->Engine.load()
+
+     -->Engine.loadFromMemory() / Engine.waitForExistingOrStartNewJob()
+
+        (
+
+        解析：
+
+        SingleRequest.begin()方法发起一个加载图片的请求， 
+
+        首先会判断有没有执行加载的图片的宽和高(overideWidth,overrideHeight),
+
+        如果没有则需要计算ImageView的宽和高 ,最终还是会回调SingleReady.onSizeReady(width,height)方法
+        
+        当加载的图片宽和高准备好之后，就开始获取图片资源了,
+
+        Engine.loadFromMemory()会先从内存中读取缓存，当然是在没有设置跳过缓存的情况下， 
+
+        如果内存缓存中有则直接读取内存缓存中的图片数据，如果没有则进行加载；
+
+        Glide的内存缓存：
+
+        这里从内存中读取缓存，Glide中的内存缓存有2种
+
+        1.活动资源(Active Resources) 正在使用的图片字资源，也就是该图正在某个ImageView上显示
+
+        2.内存缓存(Memory cache)  这个内存缓存是没有在ImageView显示，但是之前加载过并且仍然存在于内存找那个的图片资源
+
+        活动资源这个内存缓存是存在于ActiveResources中的activeEngineResources这个数据结构中的,
+
+        而activeEngieResource是一个Map，值是ResourceWeakReference，是图片资源的弱引用WeakReference<EngineResource<?>>
+
+        而内存缓存Memory是保存在MemoryCache这个数据结构中，而这里的MemoryCache实际上是LruResourceCache,而LruResourceCache
+
+        是继承自LruCache,所以这个Memory实际上使用的是LruCache算法,但是Glide这里的LruCache并不是Android自带的LruCache,而是
+
+        Glide自己写的一个LruCache,但是原理都是一样的，都是设置一个内存缓存的最大值，当内存缓存达到这个最大值的时候，会将使
+
+        用次数最少的缓存对象移除掉
+
+        )
+
+     -->Engine.waitForExistingOrStartNewJob()
+
+     -->Engine.start(decodeJob)
+
+     -->DecodeJob.run()
+
+     -->DecodeJob.runWrapped()
+
+     -->DecodeJob.getNextStage()
+
+     -->DecodeJob.runGenerators()
+
+     -->DataFetcherGenerator.startNext()
+
+     (
+
+      解析:
+
+      上一次的解析我们讲到了从内存缓存中读取图片数据,那么从waitForExistingOrStartNewJob这个
+
+      方法开始，进入到从磁盘缓存读取以及从从数据源获取图片数据;
+
+      waitForExistingOrStartNewJob方法中创建了两个变量EngineJob,DecodeJob,
+
+      EngineJob是用来管理(添加/移除)加载的回调的
+
+      DecodeJob是用来从缓存数据或者原始数据源解码和转换图片资源
+
+      getNextStage()方法用来获取磁盘缓存策略,根据不同的磁盘缓存策略，使用不同的处理策略,
+
+      不同的处理策略读取不同的磁盘缓存数据 
+
+      ResourceCacheGenerator  读取转换之后的缩略图磁盘缓存数据
+
+      DataCacheGenerator      读取原数据磁盘缓存数据
+
+      SourceGenerator         这个是从数据源进行加载
+
+     )  
+        
    -总结：
 
     (1)Glide加载图片生命周期的控制
@@ -75,7 +197,26 @@
 
        如果传入的是Context对象是Application,Glide加载图片的请求就是一个全局请求，在应用没有被
 
-       杀死，加载操作没有完成之前，Glide加载的请求一直存在
+       杀死，加载操作没有完成之前，Glide加载的请求一直存在;
+
+
+    (2)Glide的缓存
+
+  
+     磁盘缓存策略(DiskCacheStrategy)
+     
+     Glide可以将磁盘缓存策略应用到每一个单独的请求,以设置是否缓存，缓存无修改的原始数据，或者仅缓存
+
+     转换之后的缩略图，或者都缓存;
+
+
+  (3)缓存的管理
+  
+     Glide内存和磁盘缓存都是LRU，也就是在缓存达到限制值的时候，会自动移除最长时间没有使用的缓存数据
+
+     当然Glide也提供了接口去手动清理内存和磁盘缓存;
+
+
 
 
 
