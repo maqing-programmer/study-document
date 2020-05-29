@@ -1,0 +1,84 @@
+1.EventBus简介
+
+  EventBus是一个开源的用于Android中组件间通信的开源框架，
+
+  EventBus是使用发布者/订阅者模式进行解耦
+
+2.EventBus基本使用
+
+  (1)首先需要定义一个事件Event
+
+      public class UpdateInfoEvent{
+       
+       public void String mInfo;
+
+       public void setInfo(String info){
+
+        this.mInfo=info;
+
+       }
+
+       public String getInfo(){
+
+          return mInfo;
+
+       }
+
+
+      }
+
+   (2) 在需要接收事件的地方注册EventBus事件,并且定义事件处理方法
+
+
+       //注册EventBus事件 
+
+       EventBus.getDefault().register(Object)
+
+       //定义事件处理方法,这个事件处理方法必须要使用@Subscribe注解
+       //来表示是事件处理方法
+
+       @Subscribe
+       public void updateInfo(UpdateInfoEvent event){
+          
+         //进行相关处理
+
+       }
+
+       //第三步
+
+       对于Android中的Activity,Fragment，Service这些有生命周期的订阅者
+
+       我们需要在销毁的时候及时取消订阅
+
+       在onDestroy生命周期函数中取消事件订阅
+
+       EventBus.getDefault().unRegister(Object) 
+
+    (3)在需要的时候发送事件
+
+       UpdateInfoEvent event= new UpdateInfoEvent()
+
+       event.setInfo("信息");
+
+       EventBus.getDefault().post(event); 
+
+ 
+3.设置订阅者事件处理调方法所在的线程
+
+   在Android中不同的操作，需要在不同的线程中进行操作，
+
+   UI操作需要在UI线程，耗时操作需要在子线程中进行操作,
+
+   所以我们应该根据事件处理方法中的操作需要在哪个线程运行，
+
+   来合理设置处理方法所在的线程，EventBus也提供了注解参数
+
+   来设置方法所在的类型;
+
+   
+   
+  
+
+
+
+  
