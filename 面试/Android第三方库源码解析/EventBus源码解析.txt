@@ -1,8 +1,8 @@
 1.EventBus简介
 
-  EventBus是一个开源的用于Android中组件间通信的开源框架，
+  EventBus是一个开源的用于Android中组件间通信的开源框架；
 
-  EventBus是使用发布者/订阅者模式进行解耦
+  EventBus是使用发布者/订阅者模式进行解耦；
 
 2.EventBus基本使用
 
@@ -74,6 +74,118 @@
    来合理设置处理方法所在的线程，EventBus也提供了注解参数
 
    来设置方法所在的类型;
+
+   (1)Thread.POSTING
+
+       该线程模式表示订阅者的该事件处理方法将在发布事件的同一线程
+
+       被调用,也是默认的线程模式  
+
+       @Subscribe(threadMode=threadMode = ThreadMode.POSTING)
+       public void updateInfo(UpdateInfoEvent event){
+          
+         //进行相关处理
+
+       }
+
+   (2)Thread.MAIN
+   
+      表示订阅者的事件处理方法将在主线程中被调用
+
+   (3)Thread.MAIN_ORDER
+   
+      该模式下订阅者的事件处理方法也是在主线程中调用，与Thread.MAIN不同的是，
+
+      如果我们发布一个事件，在Thread.MAIN模式的事件处理方法中,我们再发布第二个事件，那么第二个事件
+
+      事件处理方法是先执行完，然后第一个事件的事件处理方法才执行完;
+
+      而如果我们发布一个事件，在使用Thread.MAIN_ORDER模式的事件处理方法中，我们再发布第二个事件，那么
+
+      第一个事件处理方法先完成，然后第二个事件处理方法才执行;
+
+   (4)Thread.BACKGROUND
+
+      该模式下如果发布事件是在主线程中，则订阅者的处理方法在一个子线程中被调用
+
+      如果发布事件就是在子线程中，那么订阅者的处理方法在同一线程中被调用;
+
+   (5)Thread.ASYNC
+   
+      该模式下订阅者的事件处理方法将在一个不同于主线程和发布事件的线程的
+
+      子线程中被调用;   
+   
+4.EventBus源码分析
+
+  -我们从EventBus的基本使用的步骤中来分析一下源码
+
+   (1)订阅者注册/取消 EventBus事件 
+
+      //注册EventBus事件
+
+      EventBus.getDefault().register(mActivity/mFragment)
+
+      EventBus.register()-->SubscriberMethodFinder.findSubscriberMethods()
+
+      -->SubscriberMethodFinder.findUsingReflection() / SubscriberMethodFinder.findUsingInfo
+
+      -->SubscriberMethodFinder.findUsingReflectionInSingleClass() /
+
+      SubscribeMethosFinder.getSubscriberInfo()
+
+      -->EventBus.subscribe()
+
+
+      (
+       
+       解析：
+
+       EventBus.getDefault().register(obejct)注册EventBus事件,首先是通过
+
+       SubscribeMethodFinder查找订阅者中的使用@Subscribe注解的事件处理方法
+
+       查找事件处理方法的操作如果不使用EventBus索引，则直接在运行时通过反射
+
+       SubscriberMethodFinder.findUsingReflection()方法
+
+       去查找订阅者及其父类中的所有事件处理方法,而如果使用了EventBus索引
+
+       则在编译的时候，会生成一个索引类文件，索引类文件里使用了一个HashMap
+
+       保存了键是订阅者类，值是订阅者信息SubscribeInfo(SubscribeInfo就是订阅者信息类，
+       
+       有订阅者类，订阅者中的所有事件处理方法，以及订阅者的父类SubscribeInfo)
+
+       这样在执行regiser操作的时候，执行SubscriberMethodFinder.findUsingInfo()
+
+       从EventBus索引列表中去获取对应订阅者中的所有事件处理方法;
+
+       获取到订阅者的所有事件处理方法之后，会更新subscriptionsByEventType，typesBySubscriber
+
+       EventBus中维护了两个HashMap数据结构
+
+       subscriptionsByEventType,typesBySubscriber
+
+       subscriptionsByEventType保存的是键为Event事件类，值为订阅关系CopyOnWriteArrayList<Subscription>列表
+
+       (订阅关系Subscription包含了订阅者以及订阅者对应的订阅方法)
+
+       typesBySubscriber保存的是键为Subscriber订阅者类，值为处理事件类型列表List<Class<?>>
+
+           
+      //取消注册EventBus事件
+
+       EventBus.getDefault().unRegister(mActivity/mFragment)
+
+      
+
+
+
+
+      
+
+
 
    
    
