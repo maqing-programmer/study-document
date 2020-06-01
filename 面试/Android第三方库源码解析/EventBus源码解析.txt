@@ -174,9 +174,25 @@
        typesBySubscriber保存的是键为Subscriber订阅者类，值为处理事件类型列表List<Class<?>>
 
            
-      //取消注册EventBus事件
+       //取消注册EventBus事件
 
        EventBus.getDefault().unRegister(mActivity/mFragment)
+
+
+ 		EventBus.unRegister(mActivity/mFragment)
+
+ 		-->EventBus.unsubscribeByEventType()
+
+
+       (
+
+        解析:
+
+        取消注册EventBus事件，从subscriptionsByEventType中移除对应的订阅关系Subscrition
+
+        从typesBySubscriber中移除对应的订阅者SubScriber
+         
+       )
 
       
 
