@@ -195,6 +195,75 @@
        )
 
       
+   (2)发布者发送事件/订阅者在事件处理方法中处理接收到的事件
+
+      //发布者发送事件 
+
+      EventBus.getDefault().post(Object)
+
+      //订阅者在事件处理方法中处理事件
+
+      @Subscribe
+      public void updateInfoEvent(UpdateInfoEvent event){
+
+        //处理
+
+      }
+
+
+      EventBus.post()-->EventBus.postSingleEvent()-->EventBus.postSingleEventForEventType()-->
+
+      EventBus.postToSubscription()-->EventBus.invokeSubscriber(subscription,event)-->
+
+      SubscriberMethod.method.invoke()
+
+      (
+
+      解析:
+      
+      发布者调用EventBus.post()方法发送事件，根据事件类型从subscriptionsByEventType中找到订阅关系列表
+
+      CopyOnWriteArrayList<Subscription>,然后遍历列表,调用postToSubscription()方法调用每一个订阅者的对应
+
+      的事件处理方法;
+
+      这里调用订阅者对应的订阅方法时，首先要先判断订阅者处理事件设置的线程模式threadMode
+
+      前面我们已经了解了不同线程模式下订阅者事件处理方法被调用的线程;
+
+      这里我们结合源码查看不同线程模式到底是怎么处理的
+
+      查看EventBus.postToSubscription()方法我们可以看到不同线程模式的处理
+ 
+      -ThreadMode.POSTING 直接调用 EventBus.invoke(subscription, event)方法执行订阅者的事件处理方法
+
+      -ThreadMode.MAIN  会先判断发布者是否处于主线程模式，如果发布者处于主线程模式，则直接调用EventBus.invoke(subscription, 
+
+      event)方法执行订阅者的事件处理方法; 如果发布者不是处于主线程模式，则将事件添加到mainThreadPoster主线程发布者队列中
+
+      然后通过Handler切换主线程中去调用订阅者的事件处理方法
+ 
+      -ThreadMode.MAIN_ORDERED 如果使用是在支持主线程的环境中，则是将事件放到mainThreadPoster主线程发布者的队列中
+
+       然后通过Handler切换主线程中去调用订阅者的事件处理方法
+
+      -Thread.BACKGROUND 如果发布者是在主线程中，则将事件放到backgroundPoster后台线程发布者队列中，然后使用Handler
+
+       切换到一个子线程中去调用订阅者的事件处理方法，当然EventBus中使用的是线程池来管理使用到的子线程的;
+
+       如果发布者是在子线程中,则直接调用EventBus.invoke(subscription, event)方法执行订阅者的事件处理方法
+
+      -ThreadMode.ASYNC 将事件添加到asyncPoster 异步的发布者队列中，然后通过Handler切换到一个线程中
+       
+       执行订阅者的事件处理方法;
+
+       也就是订阅者的事件处理方法在不同于发布者以及订阅者的线程中去执行；
+
+       )   
+
+      
+
+
 
 
 
