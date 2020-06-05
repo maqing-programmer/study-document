@@ -268,7 +268,6 @@ ArrayList底层的数据结构是数组
     线程终止
 
 
-    
 -线程的生命周期
 
 (1) NEW(新建状态)
@@ -303,7 +302,7 @@ Thread thread=new Thread(){
 
 正在运行的线程由于某些原因放弃CPU，暂时停止运行，就会处于阻塞状态，
 
-此时JVM不会为该线程分配CPU，知道线程重新进入就绪状态，才有机会转到运行状态
+此时JVM不会为该线程分配CPU，直到线程重新进入就绪状态，才有机会转到运行状态
 
 阻塞状态只能先重新进入就绪状态，不能跳过就绪状态直接进入运行状态
 
@@ -350,7 +349,7 @@ JVM会把线程放入对象的等待队列中，此时线程进入计时状态�
 
  yield也是Thread的静态方法，使当前线程进入就绪状态，使得具有相同级别，或者更高级别
 
- 的线程获得CPU，当然也有可能当前线程进图就绪状态后，又立即进入运行状态。
+ 的线程获得CPU，当然也有可能当前线程进入就绪状态后，又立即进入运行状态。
 
  wait方法是所有对象都有的方法，  在某个线程中调用某个对象的wait方法，会使得该线程进入等待状态
 
@@ -1882,7 +1881,21 @@ Android中Bitmap的创建使用了简单工厂模式(BitmapFactory)
    
     Exception有一个比较重要的子类RuntimeException  
 
-    如ArrayIndexOutOfBoundException，ArithmeticException等    
+    如ArrayIndexOutOfBoundException，ArithmeticException等
+
+20.System.gc()和Runtime.getRuntime().gc();
+   
+   System.gc()最终也是调用RunTime.getRunTime().gc()；
+
+   运行垃圾回收器,进行垃圾回收；但是调用这两个方法只是建议JVM可以进行
+
+   垃圾回收，并不一定会触发垃圾回收；
+
+
+
+
+
+        
         
 
 
