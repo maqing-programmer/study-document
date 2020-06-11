@@ -1883,6 +1883,32 @@ Android中Bitmap的创建使用了简单工厂模式(BitmapFactory)
     Exception有一个比较重要的子类RuntimeException  
 
     如ArrayIndexOutOfBoundException，ArithmeticException等    
+
+
+ 20.Object有哪些方法
+ 
+    -Object类是Java中所有类的父类
+
+    -Obejct类中的方法
+
+    hashCode()
+
+    clone()
+
+    finalize()
+
+    getClass()
+
+    equals()
+
+    toString()
+
+    notify()/notify()
+
+    notifyAll()
+
+    wait()
+
         
 
 
