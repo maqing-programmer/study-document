@@ -1891,6 +1891,10 @@ Android中Bitmap的创建使用了简单工厂模式(BitmapFactory)
 
    垃圾回收，并不一定会触发垃圾回收；
 
+21.Java8的新特性
+
+   stream流   
+
 
 
 

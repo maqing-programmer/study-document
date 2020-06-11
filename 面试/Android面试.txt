@@ -498,7 +498,6 @@
 
       解码时使用的配置就需要支持透明度，默认会使用ARGB_8888来解码。
 
-
       其实大多数情况下非ARGB_8888色彩模式指定都是无效的,具体如下:
 
       所有情况下ARGB_8888配置都可以满足
@@ -763,7 +762,7 @@ mWebView.setWebViewClient(new WebViewClient() {
 
       PathClassLoader 用于加载自己写的类
  
-      DexClassLoader 与PathClassLoader一样，都是加载自己写的类的    String   
+      DexClassLoader 与PathClassLoader一样，都是加载自己写的类的String   
 
       -类替换实现热修复的流程：
 
@@ -785,7 +784,7 @@ mWebView.setWebViewClient(new WebViewClient() {
 
       数组中的第一个dex文件开始进行类的查找并进行加载;
 
-      所以我们要向替换类，实际上就会把补丁包dex文件放到Element[]数组的最前面，让PathClassLoader
+      所以我们要想替换类，实际上就会把补丁包dex文件放到Element[]数组的最前面，让PathClassLoader
 
       先加载补丁包中类，也就是加载修复过的类，原本APK中有问题的类就不会再进行加载了;
 
@@ -801,8 +800,7 @@ mWebView.setWebViewClient(new WebViewClient() {
 
        (2)获得pathList的dexElements属性(已安装的APK中的dexElements)
 
-       (3)patch+old合并，并反射赋值给pathList的dexElements+
-
+       (3)patch+old合并，并反射赋值给pathList的dexElements
 
      这个类替换的步骤，我们应该是要在Application中的最先执行替换的，所以需要重新
 
@@ -831,10 +829,28 @@ mWebView.setWebViewClient(new WebViewClient() {
 
 12.我们可不可以替换系统中的String类
 
-  实际上是不能的,因为类的加载的双亲委托机制;会由BootClassLoader加载,无法使用
+  -实际上是不能的,因为类的加载的双亲委托机制;会由BootClassLoader加载,无法使用
 
   自己的类加载器进行加载；   
 
+  -但是如果我们写一个自定义的类加载器,然后重写findClass方法，打破双亲委托机制，也就是
+
+  不调用父类加载器进行加载，可以实现自己重写一个java.lang.String类来替换系统的吗？
+
+  如果我们自己重写一个类加载器重写findClass方法，findClass中我们首先要将Class文件
+
+  转成byte[]，然后需要调用defineClass方法，通过字节码文件byte[]数据获的一个Class
+
+  对象作为findClass方法的返回值；
+
+  我们查看defineClass方法可以知道，最终是调用了defindClass1方法，而defindClass1方法是
+
+  一个native方法，而这个方法就会抛出异常java.lang.SecurityException: Prohibited package name: java.lang
+
+  也就是说使用这个方法来加载我们自己写的类，包名是java.lang实际上是不被允许的；
+
+  所以自定义类加载器实际上也无法加载我们自己写的java.lang.String;
+  
 13.Hook技术
 
    Hook技术就是用来干涉程序的运行的；程序在运行的过程中，我们可注入自己的代码
