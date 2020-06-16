@@ -1881,7 +1881,6 @@ Android中Bitmap的创建使用了简单工厂模式(BitmapFactory)
    
     Exception有一个比较重要的子类RuntimeException  
 
-<<<<<<< HEAD
     如ArrayIndexOutOfBoundException，ArithmeticException等
 
 20.System.gc()和Runtime.getRuntime().gc();
@@ -1892,20 +1891,9 @@ Android中Bitmap的创建使用了简单工厂模式(BitmapFactory)
 
    垃圾回收，并不一定会触发垃圾回收；
 
-21.Java8的新特性
-
-   stream流   
 
 
-
-
-
-        
-=======
-    如ArrayIndexOutOfBoundException，ArithmeticException等    
-
-
- 20.Object有哪些方法
+ 21.Object有哪些方法
  
     -Object类是Java中所有类的父类
 
@@ -1929,7 +1917,149 @@ Android中Bitmap的创建使用了简单工厂模式(BitmapFactory)
 
     wait()
 
->>>>>>> 6d80bd141f1d2d57ea0207925ea37b1e2c89927d
+ 22.Java中的锁
+
+    -锁是Java中实现多线程下数据共享安全的一种机制，Java中的锁有很多种类型
+
+    -乐观锁/悲观锁
+
+     (1) 定义 
+
+     乐观锁：线程要访问某个数据时，总是认为不会有其他线程来修改这个数据，
+
+             所以访问数据时不会加锁，在修改数据的之前，先比较这个数据有没有
+
+             被修改(被其他线程修改)，如果没有被修改则直接修改，否则根据不同的
+
+             实现方式执行不同的操作(如报错或者重试)
+
+     悲观锁：线程在访问某个数据时，总是认为会有其他的线程来修改数据，因此在访问数据时
+
+             会先加锁，确保某个线程在访问数据时，不会有其他线程来修改数据；
+
+     (2)乐观锁和悲观锁的具体实现
+
+        -乐观锁的实现
+
+         乐观锁在Java中是以无锁的方式来实现的，CAS(Compare And Swap)就是乐观锁的一种实现方式
+
+         CAS就是Compare And Swap比较与交换，CAS如何实现线程安全的呢?
+
+         线程在读取数据时不进行加锁，在准备修改数据时，先去查询数据的值有没有被修改，如果没有
+
+         没修改，则直接修改。如果已经被修改，则执行重新读取流程； 
+
+       -乐观锁存在的一些问题
+       
+        1.ABA问题
+
+         如果一个线程1读取了数据A，
+
+         线程2也读取了线程A
+
+         线程2通过CAS比较，发现A值没有修改，就把数据A修改成了B
+
+         线程3这个时候读取了数据B
+
+         线程3通过CAS比较发现数据B没有修改，就把数据B修改回了A
+
+         这个时候线程1通过CAS比较，发现数据A没变，就修改成了要修改的值
+
+         在这个过程中，线程1通过CAS比较将数据A修改成功了，但是在实际过程中，数据A是被修改了的，
+
+         只不过又被修改回去了，而线程A是不知道这个过程的; 其实这样的情况的出现对结果本省没有什么影响
+
+         但是我们还是要防范;
+
+       2.循环比较开销大
+       
+          多个线程访问某一个数据时，某个线程就可能一直处于比较的状态，也就是一直自旋，
+
+          给CPU带来非常大的开销
+
+       3.只能保证一个共享变量的原子操作
+       
+          CAS操作单个变量的时候可以保证原子操作，多个变量就不行了，JDK5之后，AtomicReference可以用来
+
+          保证对象之间的原子性，就可以把多个对象放入CAS中操作;
+
+
+        举例：AtomicInteger中的incrementAndGet()这个自增方法就使用了CAS 
+
+     -悲观锁的具体实现
+
+       Synchronized,ReentrantLock都是悲观锁
+     
+     -Synchronized的底层实现是什么样的?
+
+      Synchronized修饰方法时:
+
+      在字节码文件中，如果有线程在访问该方法，该方法中的access_flag就会变成
+
+      ACC_SYNCHRONIZED，其他线程如果访问该方法时发现access_flag是ACC_SYNCHRONIZED,就无法访问该方法了
+
+      Synchronized在修饰代码块时:
+
+      查看字节码文件，是通过monitorenter和monitorexit实现的,我们知道每一个对象在JVM内存模型中，都分为
+      
+      三块区域:对象头(Header)、实例数据(Instance Data)、对齐填充(Padding)
+
+      而对象头(Header)主要包括Mark Word(标记字段)，Klass Pointer(类型指针);
+
+      而对象头(Header)中的Mark Word(标记字段)中有锁标志位和mointor对象的起始地址,monitor对象的起始地址
+
+      也就是指向一个monitor对象
+
+      当Monitor对象被某个线程持有后，就会处于锁定状态，monitor对象中的Owner也会指向持有Monitor对象的线程;
+
+      所以每个对象都会有一个monitor对象与之关联，当monitor被某个线程拥有之后就会被锁住；当线程执行
+
+      到monitorenter指令时就会去尝试获取对应的monitor，而每个monitor对象又维护者一个记录拥有次数的计数器，
+
+      未被拥有的monitor该计数器为0，当一个线程获得monitor后(执行monitorenter后),该计数器自增为1
+      
+      当同一个线程再次获得该monitor时，计数器再次自增;
+
+      当不同线程想要获得该monitor的时候。就会被阻塞;
+
+      当同一个线程释放monitor(执行monitorexit指令)的时候，计数器自减
+
+      当monitor为0的时候monitor被释放,其他线程可以获得monitor;
+
+
+      总结：Synchronized的底层实现
+
+            Synchronized修饰方法，是通过方法中的access_flags标志设置为 ACC_SYNCHRONIZED来实现
+
+            Synchronized修饰代码块是通过monitorenter和monitorexit实现的
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
         
 
 
