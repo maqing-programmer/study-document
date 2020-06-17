@@ -342,7 +342,6 @@ JVM会把线程放入对象的等待队列中，此时线程进入计时状态�
 
 计时等待状态
 
-
 -sleep、wait、join、yield的区别
 
  sleep是Thread的静态方法，使当前线程进入阻塞状态，不会释放资源锁
@@ -1892,7 +1891,6 @@ Android中Bitmap的创建使用了简单工厂模式(BitmapFactory)
    垃圾回收，并不一定会触发垃圾回收；
 
 
-
  21.Object有哪些方法
  
     -Object类是Java中所有类的父类
@@ -2042,6 +2040,27 @@ Android中Bitmap的创建使用了简单工厂模式(BitmapFactory)
 
      同步等待队列是一个双向链表;
 
+     ReentrantLock可以是公平锁实现也可以是非公平锁实现;ReentrantLock内部是通过Sync来获取和释放锁的
+
+     Sync是继承自AQS(AbstractQueuedSynchronizer),ReentrantLock中有FairSync和NonfairSync来分别实现
+
+     公平锁和非公平锁；
+
+     对于公平锁实现：线程在申请锁的(调用ReentrantLock.locak()方法)
+
+     时候，会先通过CAS判断锁是否被其他线程占用，如果没有，则判断AQS
+
+     等待队列中有没有线程在等待，没有等待线程就直接获取锁,有等待线程则不作操作返回false;
+
+     如果通过CAS检测到有线程正在占用锁，则将线程放入到AQS等待队列中
+
+     对于非公平锁实现：线程在申请锁的(调用ReentrantLock.locak()方法)
+
+     时候,先通过CAS判断锁是否被其他线程占用,如果没有,则直接获取锁,如果通过CAS检测到有线程正在占用锁，
+
+     则首先会再通过CAS检测一次锁是否被占用，如果还是被占用则直接返回false
+
+
     -可重入锁/不可重入锁
     
      -可重入锁
@@ -2078,6 +2097,361 @@ Android中Bitmap的创建使用了简单工厂模式(BitmapFactory)
     
     ReentrantLock默认就是非公平锁实现
 
+   -偏向锁,轻量锁
+   
+    在JDK 1.6之前synchronized一直都是重量级的锁，但是在JDK 1.6之后对synchronized进行了优化，优化之后
+
+    在一些情况下就不是那么重,JDK 1.6为了减少获得锁以及释放锁带来的性能消耗，引入了偏向锁和轻量级锁
+
+    针对synchronized获取锁的方式，JVM使用了使用了锁升级的优化，就是先使用偏向锁优先同一线程再次获取锁
+
+    如果获取失败，就升级为CAS的轻量级锁，如果获取还失败,就会短暂自旋，如果还获取失败，最后就升级为重量级锁
+
+    这个过程被称之为锁升级，锁只能升级，不能降级;
+
+    -偏向锁
+
+     因为在大多数情况下，总是只有一个线程执行操作，也就是只有一个线程执行同步代码块，所以为了让获得锁的代价
+
+     降低引入了偏向锁，就是当一个线程访问同步代码块的时候，获取到锁时，就会进入偏向模式，同时会把线程的ID记录
+
+     在对象的对象头中的Mark Word(标记字段)中，下一次如果是同一线程要获取锁，如果从标记字段中获取到线程ID是与
+
+     当前线程ID一样，就不进行CAS等操作了，直接对标记位+1,获取到锁，不同线程过来，也就是获取锁失败(这个比较线程ID
+    
+     的过程实际也是一个CAS过程)
+
+    -轻量级锁
+
+     CAS的实现就是一种轻量级锁
+    
+   -synchronized和Lock的区别
+
+    (1)synchronized是JVM层面实现，Lock是一个接口提供了大量的API供我们去实现;
+
+    (2)synchronized是非公平锁，Lock可以实现公平和非公平锁
+
+    (3)synchronized不可以手动释放锁，Lock可以手动释放锁
+
+    (4)synchronized可以作用于方法和代码块，Lock只能作用于代码块
+
+    (5)synchronized不可中断，Lock可以中断也可以不中断
+
+      (
+
+       这里解释一下中断和不可中断的意思:
+
+       对于synchronized,如果线程A获取了对象O的锁，线程B
+
+       之后来获取对象O的锁，就会获取不到，然后就处于阻塞状态，直到A释放锁为止，也就是B的等待
+        
+       在A释放锁之前是没法中断的;
+       
+       而对于Lock,我们以ReentrantLock为例是可以中断也可以不中断的；
+
+       如果在获取锁的时候调用的是：
+
+       lock()方法，如果获取了锁立即返回，如果别的线程持有锁，则当前线程一直处于阻塞状态，直到获取锁 (也就是不可中断)
+       
+       tryLock()方法 如果获取了锁立即返回true,如果别的线程持有锁,则like返回false
+       
+       tryLock(long timeout,TimeUnit unit)方法 如果获取了锁立即返回true,如果别的线程持有锁，怎会等待timeout时间
+
+       等待的过程中获取到了锁返回true，等待时间到了还没获取到锁，则返回false
+
+       tryInterruptibly()方法，线程A如果获取到锁立即返回，如果有其他线程B占用锁，则当前线程A处于阻塞状态，直达获取到锁，或者
+
+       被别的线程C调用线程A的interrupt方法使线程A中断等待状态
+       
+      )
+
+23.CountDownLatch,CyclicBarrier,Semaphore
+
+   -CountDownLatch、CyclicBarrier、Semaphore都是java.uitl.conncurrent中的线程
+
+   同步的工具类
+
+   -CountDownLatch可以用于实现一个或者多个线程等待另外一组其他线程的操作全部完成；
+
+    基本用法：
+
+    CountDownLatch countDownLatch=new CountDownLatch(waitThreadNum); //waitThreadNum 需要
+
+    等待的线程数目;
+
+    然后在需要等待的线程中调用countDownLatch.await();使得调用方法的线程进入阻塞状态;
+
+    然后在waitThreadNum个线程中，每一个线程操作完毕后都执行countDownlatch.countDown()
+
+    方法，则海需要等待的线程数就会减1;
+
+    当需要等待的线程数减为0的时候，则之前阻塞的线程恢复运行;
+
+    注意：CountDownLatch不可复用，只能使用一次;
+
+  -CyclicBarrier 这个同步工具类可以实现多个线程之间相互等待
+
+   实际就是一组线程会互相等待，直到所有的线程都达到一个同步点;
+
+   基本用法：
+
+   我们来实现一个实例：运动员百米赛跑。有N个运动员，比赛需要等待这N个运动员都准备好才能开始
+
+    
+    //首先我们定义一个Runnable用来代表一个运动员，run方法中是代表这个
+
+    //运动员的动作 
+
+    public class Runner implements Runnable {
+        private CyclicBarrier mCyclicBarrier;
+        private String mName;
+
+        public Runner(CyclicBarrier cyclicBarrier, String name) {
+            mCyclicBarrier = cyclicBarrier;
+            mName = name;
+        }
+
+        @Override
+        public void run() {
+            Log.e(TAG, mName + "已准备好"); //准备
+            try {
+                mCyclicBarrier.await();  //等待其他人准备好
+
+            } catch (BrokenBarrierException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Log.e(TAG, mName + "开跑");  //所有人准备好,比赛开始,开跑
+        }
+
+    }
+
+
+   CyclicBarrier cb=new CyclicBarrier(3); //代表有三个线程需要相互等待，这里就是
+
+   //三个运动员相互等待其他人准备好
+
+
+   //创建三个运动员
+
+   Runner runner1 = new Runner(cyclicBarrier, "张三");
+
+   Runner runner2 = new Runner(cyclicBarrier, "李四");
+
+   Runner runner3 = new Runner(cyclicBarrier, "王五");
+
+   ExecutorService executorService = Executors.newFixedThreadPool(3);
+   
+   executorService.execute(runner1);
+   
+   executorService.execute(runner2);
+   
+   executorService.execute(runner3);
+    
+
+   打印结果:
+   
+   张三已准备好
+
+   李四已准备好
+
+   王五已准备好
+
+   李四开跑
+
+   张三开跑
+
+   王五开跑 
+
+   根据打印结果可知，比赛开跑是在所有运动员都准备好后才开始的，
+
+   所以在有人没有准备好，所有人都没法开跑，三个线程都是相互等待的；
+
+   CyclicBarrier还有一个构造方法 CyclicBarrier(int parties, Runnable barrierAction)
+
+   barrierAction是一个Runnable,用于在相互等待的线程都准备好后，需要进行的操作；也就是
+
+   三个运动员都准备好后，如果希望裁判吹完口哨，比赛才开始，运动员才能开跑就可以把裁判
+
+   吹口哨的动作放到Runnbale中，创建CyclicBarrier时传进入; 但是要注意的是这个Runnbale
+
+   是工作在最后一个调用CyclicBarrier.await()方法的线程中的;
+
+    CyclicBarrier cyclicBarrier = new CyclicBarrier(3, new Runnable() {
+            @Override
+            public void run() {
+
+                Log.e(TAG, "裁判吹口哨");
+
+            }
+        });
+
+ 注意：CyclicBarrier 是可以重用的,当一次用完(也就是count减为0，barrierAction执行完之后，
+
+ count就会被重新置为parties)
+
+ -Semaphore 可以用来控制同一时间，资源可以被访问的线程数量,一般可用于流量的控制;
+
+  我们通过一个实例来学习一下使用:
+
+  在一个路口，有10辆车需要通过，但是路口一次只能通过3辆车，其他车辆只能等待
+
+  private void semaphoreOperate() {
+        
+         //可以用来控制在同一时间，资源被访问的线程数量
+        final Semaphore semaphore = new Semaphore(3);
+       
+        
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        
+        for (int i = 0; i < 5; i++) {
+
+            final int position = i;
+
+            executorService.execute(new Runnable() {
+                
+                @Override
+
+                public void run() {
+
+                    try {
+
+                        semaphore.acquire(); //获取许可
+
+                    } catch (InterruptedException e) {
+                    
+                        e.printStackTrace();
+                    }
+
+                    Log.e(TAG, "run: begin" + position + "");
+
+                    try {
+
+                        Thread.sleep(1000); //模拟车辆同行时间
+
+                    } catch (InterruptedException e) {
+
+                        e.printStackTrace();
+
+                    }
+
+                    Log.e(TAG, "run: end" + position + "");
+
+                    semaphore.release(); //释放许可
+
+                }
+            });
+        }
+
+    }
+
+  这里有个问题我们知道这里有10辆车，当第一批三辆车通过之后，剩余的车子都会想要获取许可
+
+  通过，那接下来到底给哪3辆车呢，这里就需要用到锁，拿到锁的就获得许可
+
+  semaphore中可以使用公平锁也可以使用非公平锁；默认是非公平锁，也就是不是先来的先获取到许可
+
+  而公平锁我们可以再构造函数中传入true来实现，这样就是先来的先获取到许可;
+
+
+  总结：CountDownLatch用来实现一个线程等待一组其他线程都执行
+
+        CyclicBarrier 用来实现多个线程相互等待
+
+        Semaphore 用来控制同一时间，资源被访问的线程数量
+
+        CountDownLatch不可重用，CyclicBarrier可重用
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+     
+  
+
+
+   
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
 
 
 
