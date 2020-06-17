@@ -2026,12 +2026,84 @@ Android中Bitmap的创建使用了简单工厂模式(BitmapFactory)
 
       当monitor为0的时候monitor被释放,其他线程可以获得monitor;
 
-
       总结：Synchronized的底层实现
 
             Synchronized修饰方法，是通过方法中的access_flags标志设置为 ACC_SYNCHRONIZED来实现
 
             Synchronized修饰代码块是通过monitorenter和monitorexit实现的
+    
+    -ReentrantLock的实现
+
+     ReentrantLock是基于AQS实现的;
+
+     AQS(Abstract Queued Synchronizer) 即队列同步器，
+
+     AQS有一个state标记，值为1时表示有线程正在占用，其它线程访问该数据的时候进入同步等待队列，
+
+     同步等待队列是一个双向链表;
+
+    -可重入锁/不可重入锁
+    
+     -可重入锁
+
+     可重入锁是指当一个线程获取对象的锁之后，当这个线程可以再次获取本对象的锁，而其他线程是不可以的
+
+     这种场景比如说一个同步方法A中调用了另外一个同步方法B，线程A在访问同步方法A的时候获取到了锁，在
+
+     执行方法A的过程中调用同步方法B,这个时候是可以再次获取到锁的;
+
+     synchronized和ReentrantLock都是可重入锁
+
+     -不可重入锁
+
+     不可重入锁相对应的，如果一个线程获取到了对象的锁之后，当这个线程再次获取这个对象的锁，和其它线
+
+     程一样也是是获取不到的，只有这个线程先释放锁;
+
+   -公平锁/非公平锁
+    
+    -公平锁
+
+    公平锁就是当锁被释放时，先等待的线程总是先获取锁
+
+    ReentrantLock可以设置是公平锁实现还是非公平锁实现，默认是非公平锁，
+
+    构造方法中传入true表示以公屏锁方式实现；
+
+    -非公平锁
+
+    后来的的线程可能要比先等待的线程先获取锁 
+
+    Synchronized就是非公平锁，由JVM随机选取一个等待的线程
+    
+    ReentrantLock默认就是非公平锁实现
+
+
+
+
+
+
+
+
+
+
+
+   
+
+    
+
+
+
+
+
+
+
+     
+
+
+
+
+
 
             
 
