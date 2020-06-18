@@ -1176,6 +1176,10 @@ mActivtiy++,mActivity--;，如果mActivity大于0则APP处于前台，否则处�
 
  (4) Socket
 
+-Binder实现进程通信的原理
+
+  
+
 22. try-catch可以捕获OutOfMemoryError吗
 
    可以捕获
