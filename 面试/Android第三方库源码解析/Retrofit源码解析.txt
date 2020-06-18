@@ -253,7 +253,6 @@
 
     使用拦截器：
 
-     
       File cacheDirectory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "OKHttp_cache");
         Cache cache = new Cache(cacheDirectory, 10 * 1024 * 1024);
 

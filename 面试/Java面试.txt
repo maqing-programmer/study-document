@@ -1915,6 +1915,22 @@ Android中Bitmap的创建使用了简单工厂模式(BitmapFactory)
 
     wait()
 
+    -为什么要有hashCode方法?
+    
+     在Java中有一些集合类Set,Map
+
+     像HashSet中的元素是不能重复的，这个在存放对象元素的时候首先是通过计算元素的hashCode的值，找到它
+
+     所在的位置，如果所在的位置中没有元素，则直接添加元素，如果有元素则替换元素;
+
+     如果没有hashCode方法，那么判断元素是否已经存在，只能通过equals方法来比较,那么元素一旦多了
+
+     每添加一个元素，就要调用equals方法比较多次;
+
+     HashMap中键值是不能重复的，也是首先计算Key的hashCode值找到所在的位置，然后通过equals方法比较两个键值是否
+
+     相等，相等则替换;
+
  22.Java中的锁
 
     -锁是Java中实现多线程下数据共享安全的一种机制，Java中的锁有很多种类型
@@ -2165,6 +2181,26 @@ Android中Bitmap的创建使用了简单工厂模式(BitmapFactory)
        
       )
 
+   -死锁
+   
+    多个线程相互等待对方释放锁资源，而导致这些线程都进入阻塞状态，从而导致后面的任务无法
+
+    得到执行，这样就导致程序无法继续执行，进入死锁状态;
+
+    产生死锁的必要条件:
+
+    互斥条件：当一个资源被一个线程使用时，其他线程无法使用
+
+    不可抢占：如果资源被一个线程使用，其他线程无法强制从资源占有者中夺取资源，只能
+
+              等待资源占有者主动释放
+
+    请求和保持：即资源请求者在请求其他资源时保持对原有资源的占有
+
+    循环等待：即存在一个循环队列，p1占有p2的资源，p2占有p3的资源，p3又占有p1的资源，这样就形成了
+
+              循环等待           
+
 23.CountDownLatch,CyclicBarrier,Semaphore
 
    -CountDownLatch、CyclicBarrier、Semaphore都是java.uitl.conncurrent中的线程
@@ -2362,7 +2398,6 @@ Android中Bitmap的创建使用了简单工厂模式(BitmapFactory)
         Semaphore 用来控制同一时间，资源被访问的线程数量
 
         CountDownLatch不可重用，CyclicBarrier可重用
-
 
 
 

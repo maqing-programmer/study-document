@@ -1063,6 +1063,7 @@ mActivtiy++,mActivity--;，如果mActivity大于0则APP处于前台，否则处�
 21.Android 进程间通信 IPC(InterProcess-Communication)
 
 -Android多进程 (为什么APP要使用多进程？)
+
 一般情况下，一个应用只有一个进程，但是在APP功能模块越来越多，业务
 
 越来越复杂的情况下，APP对运行内存的使用也越来越多，而单个进程所分配
@@ -1281,7 +1282,9 @@ mActivtiy++,mActivity--;，如果mActivity大于0则APP处于前台，否则处�
 
     根据应用的签名的过程，我们应该就知道Android系统在安装APK的时候是怎么进行签名校验的，无非
 
-    就是将应用的签名过程再走一边，然后与META-INF中的三个签名相关关的文件中的内容做比对，来校验签名
+    就是将应用的签名过程再走一边，然后与META-INF中的三个签名相关关的文件中的内容做比对，来校
+
+    验签名
 
     依次来判断是否可以安装应用;
 
@@ -1299,20 +1302,85 @@ mActivtiy++,mActivity--;，如果mActivity大于0则APP处于前台，否则处�
 
        比对，如果一致则校验成功，否则校验失败；   
 
-
     如果你修改了APK中的某一个文件，那么更改的文件生成的信息摘要，肯定与MANIFEST.MF中的
 
-    改文件的信息摘要不一致，验证失败，如果你对更改后的文件生成信息摘要，然后同时修改MANIFEST.MF
+    该文件的信息摘要不一致，验证失败，如果你对更改后的文件生成信息摘要，然后同时修改MANIFEST.MF
 
-    中对应的属性值，那么与CERT.SF中的摘要值不一致，照样验证失败，如果你还不死心，也修改了CERT.SF
+    中对应的属性值，那么与CERT.SF中的摘要值不一致，照样验证失败，如果你还不死心，也修改了CER
 
-    中的摘要值，那么数字签名值必定与CERT.RAS中的不一样，因为数字签名是使用私钥签名的，私钥只有应用
+    T.SF中的摘要值，那么数字签名值必定与CERT.RAS中的不一样，因为数字签名是使用私钥签名的，私
 
-    的发布者知道,所以还是会校验失败； 这样Android中的签名机制成功防止了二次打包；
+    钥只有应用的发布者知道,所以还是会校验失败； 这样Android中的签名机制成功防止了二次打包；
 
     -Android中的V1,V2,V3签名
-     
+
+     -V1签名机制的缺点：
+
+     (1)我们知道META_INF目录下存放的签名相关的文件是不会在签名校验时使用到，所以我们可以在在MET
+
+     A_INF目录下添加文件，这样就可以破坏APK文件的完整性，如一些批量打包方案就是在META_INF目
+
+     录下添加空文件实现的；
+
+     (2)由于V1签名，校验时需要对所有文件生成信息摘要进行比较，比较耗时，导致应用安装比较慢
+
+     -V2签名机制
+
+     正是由于V1签名机制的一些缺陷，所以出现了V2签名机制，首先V2签名机制，不再是对APK文件中单个
+
+     条目进行进行验证，而是验证整个APK文件的字节，所以速度要比V1要快；
+
+     V2签名模式中在原先的APK块中增加了一个新的签名块，签名块存储了签名，信息摘要，签名算法
+
+     证书链等信息;
+
+     为了保护APK内容，整个APK被分为4个区块：
+
+     ZIP条目的内容(也就是数据区，是一个记录列表，每条记录包含文件名，压缩前后大小，压缩后的数据) 
+
+     APK签名块 (存放签名，签名算法，信息摘要，证书信息)
+
+     ZIP中央目录 (
+
+     也是一个记录列表，每条记录存放的文件名，本地文件头起始偏移量,通过本地文件头的起始偏移量
+
+     可以找到文件压缩后的数据
+     )
+
+     ZIP中央目录结尾（中央目录的条目数,size,起始偏移量）
+
+     -V2签名过程
+
+      首先把APK中ZIP条目内容，ZIP中央目录，以及ZIP中央目录结尾按照1M大小分成一些小块
+
+      生成每个小块的信息摘要
+
+      然后通过这些小块的信息摘要整体再生成一个信息摘要也就是APK摘要；
+
+      然后使用签名文件中的私钥对APK摘要进行加密，加密后的数据也就是签名
+
+      签名、APK摘要、签名算法、证书都会被放到签名块中；
+
+    -V2签名校验过程
     
+     V2签名机制是从 Android 7.0(Android N)开始引入的，所以只有Android 7.0以上的设备上才可以安装V2签名的APK包
+
+     Android 7.0以下的包无法安装只用V2签名模式签名的包；V1签名的包可以安装在Android 7.0之前设备，也可以安装在
+
+     Android 7.0之后的设备，只不过V1签名的包在Android 7.0之上不会使用安全的验证模式;
+
+     当然我们还可以同时使用V1和V2两种签名模式对APK进行签名,可以在Android 7.0之前和之后的设备上安装，并且在
+
+     Android 7.0之上安装时使用安全的验证模式;
+     
+     签名校验过程：
+
+     在Android7.0以上的系统在安装APK的时候，首先会检测APK中是否有V2签名块，如果有V2签名块,则验证是否符合
+
+     V2签名，也就是验证APK摘要，以及是否解密出签名数据等；
+
+     如果没有V2签名块，则降级为V1签名验证，执行V1签名验证过程;
+
     -反编译 apktool
 
      apktool d test.apk  //反编译APK文件,生成test文件夹，里面是反编译出的APK内容
@@ -1321,6 +1389,7 @@ mActivtiy++,mActivity--;，如果mActivity大于0则APP处于前台，否则处�
      //重新对反编译出的APK文件内容 打包回APK 
 
     -jarsigner 对APK重新签名
+
      jarsigner -verbose -keystore [keystorePath] -signedjar [apkOut] [apkin] [alias]
 
 命令格式及参数意义：
@@ -1335,7 +1404,7 @@ mActivtiy++,mActivity--;，如果mActivity大于0则APP处于前台，否则处�
 
 [alias] -> 证书别名
 
-这里最好是把要签名的APK移至签名文件同目录下，这样就不用写签名文件的完整路劲
+这里最好是把要签名的APK移至签名文件同目录下，这样就不用写签名文件的完整路径
 
 例子：(这里待签名文件test.apk是在签名文件nadoinc.jks同目录下)
 
@@ -1372,6 +1441,108 @@ test.apk nadoinc
     所以我们需要在应用中校验服务端的证书，只对我们指定的证书信任;
 
 24.APK打包流程
+
+   我们知道Android移动设备上的一个应用是安装的APK文件，而一个APK
+
+   文件就是一个Android项目源码编译打包之后的产物;
+
+   在了解Android打包流程之前,我们先看一下打包的产物APK文件是一个什么样的
+
+   结构；
+
+   我们知道APK文件实际上是一个压缩文件，我们解压出来之后就可以查看APK文件的结构
+
+   classes.dex文件 : 是Java代码编译之后的class文件通过Android SDK目录中build-tools
+
+                    中dex.bat转成classes.dex文件;  .dex文件是Dalvik或者ART虚拟机
+
+                    加载并执行的文件;
+
+   lib目录: lib目录中存放的是项目使用到的.so文件
+
+   res目录: res目录中保存的是处理后的二进制资源文件
+
+            如图片资源文件，布局资源文件，颜色资源文件等
+   
+   resources.arsc文件:编译后的二进制资源文件索引，记录了资源文件
+
+                      和资源文件ID的映射关系，这样程序在运行的过程中
+
+                      就可以根据资源ID找到对应的资源文件了；                  
+
+   AndroidManifest.xml文件：AndroidManifest.xml文件是Android应用的配置文件
+
+                            这里是编译之后的二进制文件
+
+
+  -APK的打包流程
+  
+   了解APK文件的结构，现在我们再学习一下APK文件打包流程;
+
+   (1)使用AAPT/AAPT2编译资源文件生成resources.arsc以及R.java文件;
+
+      (打包资源工具AAPT位于android-sdk/platform-tools目录下)
+
+   (2)使用aidl工具处理AIDL文件，生成java文件
+
+      (aidl工具位于android-sdk/platform-toold目录下)
+
+   (3)编译Java源文件，生成.class文件
+
+      (使用Java编译器javac编译java源码键生成.class文件，生成的.class文件位于
+
+      app/build/intermediates/javac/debug/classes目录下
+
+      )
+
+   (4)通过dx工具将.class文件转成.dex文件，可以在Dalvik和ARTAndroid虚拟机上执行
+
+      (dx工具位于android-sdk/build-tools/Android版本目录下/dex.bat)
+
+   (5)使用Android NDK处理native代码生成.so文件
+
+   (6)使用apkbuilder工具打包生成未签名的APK文件
+
+      apkbuilder原本为一个脚本文件,原本存在与android-sdk/tools目录下，现在已经被移除了
+
+      ，使用android-sdk/tools/sdklib-26.0.0.jar
+
+      文件中com.android.sdklib.build.ApkBuilder这个类来进行文件打包
+
+   (7)签名APK
+
+     将上一步打包好的APK文件使用签名工具apksinger以及签名文件进行签名，签名后的APK文件就可以安装了
+
+     签名工具路径 android-sdk/build-tools/android版本/apksigner.bat
+
+25.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
    
 
 
