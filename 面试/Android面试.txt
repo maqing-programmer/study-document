@@ -1312,9 +1312,7 @@ mActivtiy++,mActivity--;，如果mActivity大于0则APP处于前台，否则处�
 
     -Android中的V1,V2,V3签名
      
-      
-
-
+    
     -反编译 apktool
 
      apktool d test.apk  //反编译APK文件,生成test文件夹，里面是反编译出的APK内容
@@ -1375,7 +1373,7 @@ test.apk nadoinc
 
 24.APK打包流程
    
-    
+
 
 
 
