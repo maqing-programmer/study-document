@@ -1,0 +1,555 @@
+1.RxJava
+
+  RxJava是一个基于观察者模式的的异步处理框架;
+
+  Android中 AsyncTask和Handler都可以用来处理异步任务;
+
+  而RxJava之所以受欢迎，是得益于RxJava的基于事件流的链式调用
+
+  方式，使得我们异步逻辑处理变得简洁，并且有大量的操作符等API
+
+  可以实现各种场景和需求；
+
+2.RxJava的基本使用
+
+  (1)创建被观察者:
+  
+  Observable<String> observable = Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter<String> e) throws Exception {
+
+                Log.e(TAG, "subscribe: "+Thread.currentThread());
+
+				//发射事件
+                e.onNext("1");  
+                e.onNext("2");
+                e.onNext("3");
+                e.onNext("4");
+
+            }
+        });  
+
+ (2)创建观察者
+
+ //创建观察者
+        Observer<String> observer = new Observer<String>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                Log.e(TAG, "onSubscribe: ");
+            }
+
+            @Override
+            public void onNext(String value) {
+
+                //接收到事件
+                Log.e(TAG, "onNext: "+value+","+Thread.currentThread());
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: ");
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e(TAG, "onComplete: ");
+            }
+        }; 
+
+(3)连接观察者和被观察者
+
+ observable.subscribe(observer);
+
+当然我们说了RxJava是为了处理异步操作，如果仅仅是这样，就不是异步操作，而是同步操作
+
+因为这样观察者和被观察者都是在当前线程，也就是同意线程，所以是同步操作，那么异步操作
+
+肯定是观察者和被观察者处于不同线程
+
+observable
+        .subscribeOn(Schedulers.newThread())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(observer);  
+
+这样被观察者observerable就工作在一个新的线程中，而观察者observer工作在主线程中
+
+所以就会是异步操作了;
+
+-RxJava的链式调用
+
+ 上面我们说过RxJava是基于事件流的链式调用，那么上面基本使用的三步，我们应该可以通过
+
+ 链式调用连起来；
+
+ Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter<String> e) throws Exception {
+                Log.e(TAG, "subscribe: " + Thread.currentThread());
+                e.onNext("1");
+                e.onNext("2");
+                e.onNext("3");
+                e.onNext("4");
+            }
+        }).observeOn(Schedulers.newThread())
+          .subscribeOn(AndroidSchedulers.mainThread())
+          .subscribe(new Observer<String>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(String value) {
+                                Log.e(TAG, "onNext: " + value + "," + Thread.currentThread());
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
+
+-切断观察者和被观察者之间的连接
+
+ 可使用Disposable.dispose()方法切断观察者和被观察者之间的连接
+
+ 调用该方法之后，观察者无法接受被观察者的事件，但被观察者还是可以发送事件的
+    
+   //使用 
+   private Disposable mDisposable = null;
+
+   Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter<String> e) throws Exception {
+                Log.e(TAG, "subscribe: " + Thread.currentThread());
+                e.onNext("1");
+                e.onNext("2");
+                e.onNext("3");
+                e.onNext("4");
+            }
+        }).observeOn(Schedulers.newThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        mDisposable = d;
+                    }
+
+                    @Override
+                    public void onNext(String value) {
+                        Log.e(TAG, "onNext: " + value + "," + Thread.currentThread());
+                        if (value.equals("2")) {
+                            mDisposable.dispose();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
+3.RxJava的操作符
+
+  -创建操作符
+
+  RxJava的创建操作符是用来创建被观察者(Observable)对象和发送事件的
+
+  创建操作符可以分为三大类：基本创建操作符、快速创建和发送事件操作符、延迟创建操作符
+
+  (1)基本创建操作符
+
+     create()
+
+      Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter<String> e) throws Exception {
+                Log.e(TAG, "subscribe: " + Thread.currentThread());
+                e.onNext("1");
+                e.onNext("2");
+                e.onNext("3");
+                e.onNext("4");
+            }
+        })；
+
+  （2）快速创建和发送事件操作符
+  
+       -just()  
+
+       创建一个被观察者对象，并发射传入数据，最多接收10个数据参数
+
+        Observable.just(1, 2, 3)
+                .observeOn(Schedulers.newThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Integer>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        mDisposable = d;
+                    }
+
+                    @Override
+                    public void onNext(Integer value) {
+                        Log.e(TAG, "onNext: " + value + "," + Thread.currentThread());
+                        if (value == 2) {
+                            mDisposable.dispose();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }); 
+    
+       -fromArray()
+
+        创建一个被观察者对象，并发送传入的数组中的数据事件
+
+        Integer[] nums = {1, 2, 3};
+
+        Observable.fromArray(nums)
+                .observeOn(Schedulers.newThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Integer>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Integer value) {
+                        Log.e(TAG, "onNext: " + value);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+        
+        -formIterable() 
+
+         创建一个被观察则对象，并发送传入的集合数据事件
+
+         List<Integer> numList = new ArrayList<>();
+        numList.add(1);
+        numList.add(2);
+        numList.add(3);
+
+        Observable.fromIterable(numList)
+                .observeOn(Schedulers.newThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Integer>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Integer value) {
+                        Log.e(TAG, "onNext: " + value);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    
+    (3)延迟创建操作符
+
+
+       -defer()
+       
+       直到有观察者订阅时，才会执行Callable回调，然后在回调里面发送的是最新的数据
+
+       而just,from这类创建操作符是在调用的的时候就存储要发送的数据，即使后面发送的数据变了
+
+       发送的还是老的调用的时候的数据
+       
+       int i = 0;
+
+        Observable<Integer> observable = Observable.defer(new Callable<ObservableSource<? extends Integer>>() {
+            @Override
+            public ObservableSource<? extends Integer> call() throws Exception {
+                return Observable.just(i);
+            }
+        });
+
+
+        i = 1;
+
+        Observer observer = new Observer() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Object value) {
+                Log.e(TAG, "onNext: " + value);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        };
+
+        observable.observeOn(Schedulers.newThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);  
+    
+    (2)timer()
+
+       创建一个被观察者对象，并且延迟指定时间后，发送一个Long型数据
+
+    (3)interval()   
+       
+       创建一个被观察者对象，并且每隔一段时间发送一个Long型数据
+
+       数据从0开始依次递增1
+    
+    (4)intervalRange()
+
+       创建一个被观察者对象，然后每隔一段时间发送一个Long型数据，
+
+       但是可以指定个数的数据，数据从0开始依次递增1 
+
+    (5)range()
+
+       创建一个被观察者对象，发送指定范围的Integer型数据,发送数据一次递增1
+
+    (6)rangeLonge()
+    
+       创建一个被观察者对象,发送指定范围的Long型数据
+
+    
+    -变换操作符
+
+     变换操作符的作用就是用来对发送的事件进行加工处理(变换),变成其它的事件输出；
+
+     下面我们来学习一下RxJava中常见的变换操作符
+
+     (1)map()
+
+        对被观察者的每一个事件都通过指定的函数处理，从而变成另外一个事件
+
+        Observable
+                .just(1,2, 3)
+                .map(new Function<Number, String>() {
+                    @Override
+                    public String apply(Number number) throws Exception {
+                        return "0" + number;
+                    }
+                })
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(String value) {
+                        Log.e(TAG, "onNext: " + value);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                })
+        ;
+    
+    (2)flatMap()
+
+       将被观察者发送的每个事件通过指定的函数进行处理，处理之后变成一个对应的
+
+       Observable对象，然后将这些Observable对象再合并成一个Observable,
+
+       而新的Observable再将合并的事件序列发送给观察者;
+
+       但是注意处理之后合并的事件序列是无序的，和合并前的事件顺序无关，是随机的
+    
+    (3)concatMap()   
+
+      与flatMap作用一样，只不过发送的事件经过处理之后再合并后的事件序列和处理前的
+
+      事件序列顺序一致;
+
+    (4)buffer()  
+
+       每次从被观察者需要发送的事件序列中取出一定数量的事件放到缓存区中，最终发送
+
+       buffer(count,skip) count表示每次从事件序列中取出的事件的个数
+
+                          skip表示每次取出count之后移动的步数,移动到最后一个元素结
+
+                          束
+
+        buffer(3,1)就表示每次从事件序列中取出3个，每取出一次，向后移动一步                   
+         Observable.just(1, 2, 3, 4, 5)
+                .buffer(3, 1)
+                .subscribe(new Observer<List<Integer>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Integer> value) {
+                        Log.e(TAG, "onNext: " + value);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+        
+
+        这个例子每次从事件序列中取出3个，每取出一次，向后移动一步   
+
+        打印结果是：
+
+        [1,2,3]
+        [2,3,4]
+        [3,4,5]
+        [4,5]
+        [5]
+
+         Observable.just(1, 2, 3, 4, 5)
+                .buffer(1,3)
+                .subscribe(new Observer<List<Integer>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Integer> value) {
+                        Log.e(TAG, "onNext: " + value);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
+       这个例子每次从事件序列中取出1个，每取出一次，向后移动3步
+
+       打印结果:
+
+       [1]
+       [4]  
+
+    -合并操作符
+
+     (1)concat()/conatArray()
+
+        合并多个被观察者，并且将合并后的事件按照顺序发送
+
+        按发送顺序串行执行
+
+        conact最多能合并4个被观察者
+
+        concatArray可以合并多个观察者 可以4个以上
+
+         Observable.concat(
+                Observable.just(1, 2),
+                Observable.just(3, 4),
+                Observable.just(5, 6)
+        ).subscribe(new Observer<Integer>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Integer value) {
+                Log.e(TAG, "onNext: " + value);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+        
+   (2) merge()/mergeArray()
+
+       合并多个被观察者，合并后的事件一起发送，但是合并后的事件顺序是随机的 
+
+       按时间线并行执行
+
+       同样的，merge只能合并最多4个被观察则
+
+       mergeArray可以合并多个被观察者，可以4个以上
+
+   (3)     
+
+
+
+
+
+
+
+
+    
+
+        
+
+
+

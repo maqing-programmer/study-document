@@ -301,6 +301,32 @@
 
    MessageQueue中的延迟消失,而非延迟消息会继续交给Handler进行处理
 
+   -Handler中postDelayed的Message怎么处理?
+
+    Handler的postDelayed以及sendMessageDelay最终都是调用sendMessageAtTime
+
+    方法处理,会通过延迟的时间加上当前时间计算出希望得到处理的时间点,时间点被赋值给
+    
+    Message的when字段，然后根据希望得到处理的时间，将消息插入到消息队列MessageQueue中;
+
+    Looper的loop方法不断从MessageQueue取出消息，即调用NessageQuqeu的next方法取出一个消息，
+
+    首选判断时间是否已经到达，需要执行的时间点,如果已经到达时间点或者大于时间点，则直接执行，
+
+    否则循环等待，因为MessageQueeu中的next方法是通过循环实现循环等待的；
+
+    这里我们需要注意的一点是，我们调用postDelayed或者sendMessageDelayed方法希望在延迟指定时长之后
+
+    处理我们的消息A，但是如果消息队列中已经有消息，或者在我们发送这个延迟消息后，消息队列中又进来了消息，
+
+    且希望处理的时间点比我们发送的这个需要延迟的消息A时间点要靠前，那么首先肯定是会先处理这些时间点靠前的消息
+
+    如果这些消息的处理是耗时的，那么就有可能导致到达我们的消息在叨叨希望处理的时间点时，还没法处理，也就是实际
+
+    我们调用postDelayed方法和sendMessageDelayed方法并不会一定会在指定的延迟指定时长时之执行，而是可能会在指定时长
+
+    之后执行；
+
 -ThreadLocal
 
   ThreadLocal是用来在线程中创建局部变量的;
@@ -1512,7 +1538,6 @@ test.apk nadoinc
 
                             这里是编译之后的二进制文件
 
-
   -APK的打包流程
   
    了解APK文件的结构，现在我们再学习一下APK文件打包流程;
@@ -1553,12 +1578,25 @@ test.apk nadoinc
 
      签名工具路径 android-sdk/build-tools/android版本/apksigner.bat
 
-25.
+25.Android UI的刷新机制/屏幕的刷新机制/UI的绘制原理
 
+   View--->ViewGroup--->ViewRootImpl
 
+   View.invalidate()--->View.invalidate(true)--->View.invalidateInternal()
 
+   --->ViewGroup.invalidateChild()--->ViewGroup.onDescendantInvalidated()
 
+   --->ViewRootImpl.onDescendantInvalidated()--->ViewRootImpl.invalidate()
 
+   --->ViewRootImpl.scheduleTraversals()--->ViewRootImpl.doTraversal()
+
+   --->ViewRootImpl.e()--->ViewRootImpl.performMeasure()
+
+                           ViewRootImpl.performLaout()
+
+                           ViewRootImpl.perfromDraw()
+
+   --->ViewRootImpl.draw()                     
 
 
 
