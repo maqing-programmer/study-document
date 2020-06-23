@@ -1,0 +1,27 @@
+1.NDK
+
+  NDK即Native Development Kit即本地开发工具包，使得可以在Android应用中
+
+  使用C/C++代码；
+
+  NDK开发环境配置，需要安装NDK和CMake;
+
+  CMake就是C/C++的编译工具，可以根据我们提供的脚本来编译so库，和gradle
+
+  作用类似，只不过CMake是专门用来编译本地语言的
+
+-JNI
+
+ JNI即Java Native Interface,Java和Native接口，就是Java和C/C++之间通讯的桥梁  
+
+ 为什么要有JNI,因为Java和C/C++之间是无法直接相互调用的，也就是无法直接通讯，就和
+
+ Java和JS之间也不能直接相互调用，中间需要翻译者来处理，JNI就是为了实现Java和C/C++
+
+ 之间这两种不同语言之间的通讯的；
+
+ 
+
+
+
+
