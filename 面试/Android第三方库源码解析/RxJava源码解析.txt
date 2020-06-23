@@ -538,7 +538,366 @@ observable
 
        mergeArray可以合并多个被观察者，可以4个以上
 
-   (3)     
+    (3) concatDelayError/mergeDelayError
+
+        这两个操作符我们可以结合前面的concat和merge合并操作符;
+
+        前面我们使用了concat和merge合并多个被观察者，如果某个被观察者发送了Error事件，
+
+        则后面的事件是不会再继续发送的;
+
+        而concatDelayError和mergeDelayError和concat和merge的作用一样，都是合并被观察者，
+
+        但是如果某个被观察者发送了Error事件，不会立即被发送，后面的事件还是会继续发送的，
+
+        事件都发送完了，最后再发送onError事件；
+
+    (4) zip()
+
+       合并多个被观察者发送的事件,生成一个新的事件序列(即组合过后的事件序列)
+
+       事件的组合方式 严格按照原先事件序列 进行对位合并
+       
+       合并后的事件数量等于被观察中数量最少的数量
+
+       Observable<Integer> observable1 = Observable.create(new ObservableOnSubscribe<Integer>() {
+            @Override
+            public void subscribe(ObservableEmitter e) throws Exception {
+                e.onNext(1);
+                e.onNext(2);
+                e.onNext(3);
+            }
+        });
+
+        Observable<String> observable2 = Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter e) throws Exception {
+                e.onNext("a");
+                e.onNext("b");
+            }
+        });
+
+        Observable.zip(observable1, observable2, new BiFunction<Integer, String, Object>() {
+            @Override
+            public Object apply(Integer integer, String s) throws Exception {
+                return integer + s;
+            }
+        }).subscribe(new Observer<Object>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Object o) {
+                Log.e(TAG, "onNext: " + o);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+        
+        打印结果：
+
+        1a
+        2b
+
+        根据打印结果也验证了合并的事件序列是按照原先的事件序列对位合并的，
+
+        并且合并后的事件个数是被观察者中数量最少的数量
+
+    (5) combineLatest()
+    
+        这个操作符也是用来合并被观察者的事件的，只不过与zip一一对位合并不一样的是，
+
+        combineLatest在某个观察者发送事件的时候，会将这个事件与其他观察者最新的事件
+
+        进行合并，如果其他观察者没有发送事件，则不会合并也不会回调onNext;
+
+          Observable<Integer> observable1 = Observable.create(new ObservableOnSubscribe<Integer>() {
+            @Override
+            public void subscribe(ObservableEmitter e) throws Exception {
+                e.onNext(1);
+                e.onNext(2);
+                e.onNext(3);
+            }
+        });
+
+        Observable<String> observable2 = Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter e) throws Exception {
+                e.onNext("a");
+                e.onNext("b");
+                e.onNext("c");
+            }
+        });
+
+        Observable.combineLatest(observable1, observable2, new BiFunction<Integer, String, Object>() {
+            @Override
+            public Object apply(Integer integer, String s) throws Exception {
+                return integer + s;
+            }
+        }).subscribe(new Observer<Object>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Object o) {
+                Log.e(TAG, "onNext: " + o);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e(TAG, "onComplete: ");
+            }
+        });
+
+        打印结果:
+
+        3a
+        3b
+        3c
+
+        因为在observable1发送方事件的时候,observable2没有发送事件，所有没有合并，也没有回调onNext,而
+
+        当observable2发送事件的时候，会将事件与observable1最新也就是最后发送的数据3进行合并，所以最后
+
+        打印结果是 31,3b,3c
+
+    (6)comnineLatestDelayError
+    
+       这个和前面的coacatDelayError以及mergeDelayError是一样的道理，就是在combineLatest的作用的基础上
+
+       继续发送Error之后的事件，并且最后发送Error事件
+
+    (7)reduce()
+    
+       将被观察者需要发送的事件聚合成一个事件发送
+
+       聚合的逻辑根据需求，但是本质上都是前两个数据聚合，然后聚合的结果继续与下一个数据聚合
+
+       Observable.just(1, 2, 3).reduce(new BiFunction<Integer, Integer, Integer>() {
+            @Override
+            public Integer apply(Integer o, Integer o2) throws Exception {
+                return o + o2;
+            }
+        }).subscribe(new MaybeObserver<Integer>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onSuccess(Integer integer) {
+                Log.e(TAG, "onSuccess: " + integer);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+
+        打印结果：
+
+        6
+
+    (8)collect()
+    
+       将被观察者发送的事件收集到一个数据结构里
+
+        Observable
+                .just(1, 2, 3)
+                .collect(new Callable<List<Integer>>() {
+                    @Override
+                    public List<Integer> call() throws Exception {
+                        return new ArrayList<>();
+                    }
+                }, new BiConsumer<List<Integer>, Integer>() {
+                    @Override
+                    public void accept(List<Integer> integers, Integer integer) throws Exception {
+                        integers.add(integer);
+                    }
+                }).subscribe(new Consumer<List<Integer>>() {
+            @Override
+            public void accept(List<Integer> integers) throws Exception {
+                Log.e(TAG, "accept: " + integers);
+            }
+        });
+
+        打印结果
+
+        [1,2,3] 
+
+    (9) startWith()/startWithArray()
+    
+        在每一个被观察者发送事件前，追加一些事件或者被观察者        
+
+        Observable.just(1, 2, 3)
+                .startWith(0)
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) throws Exception {
+                        Log.e(TAG, "accept: " + integer);
+                    }
+                });
+
+        Observable.just(1, 2, 3)
+                .startWith(Observable.just(0))
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) throws Exception {
+                        Log.e(TAG, "accept: " + integer);
+                    }
+                });
+
+
+        以上代码分别添加了一个数据事件和一个被观察者        
+        
+        打印结果都是:
+
+        0
+        1
+        2
+        3
+    
+    (10) count()
+
+    统计发送事件的数量
+
+    Observable.just(1, 2, 3)
+                .count()
+                .subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                        Log.e(TAG, "accept: " + aLong);
+                    }
+                });
+
+    打印结果
+    
+    3            
+
+    -功能性操作符
+
+     (1) subscribe()
+
+         连接观察者和被观察者形成订阅关系
+
+     (2) subscribeOn()/observerOn()
+
+         默认情况下,被观察者和观察者都是工作在所创建的线程下，也就是说在哪个线程被创建就在哪个线程下工作;
+
+         而subscribeOn和observerOn就是用来切换被观察者和观察者工作的线程;
+
+         RxJava中内置了多种用于调度的线程类型:
+
+         Schedulers.immediate()          当前线程=不指定线程   默认
+
+         AndroidSchedulers.mainThread()  Android主线程         操作UI
+
+         Schedulers.newThread()          普通新线程            耗时等操作
+
+         Schedulers,io()                 io操作线程            网络请求，读写文件等io密集型操作
+
+         Schedulers.computation()        CPU计算操作线程       大量计算操作
+
+         RxJava内部使用线程池来维护这些线程，所以线程调度的效率是非常高的
+
+    (3)delay()
+
+       使得被观察者延迟一段时间再发送事件
+
+        Observable.just(1, 2, 3)
+                .delay(2000, TimeUnit.MILLISECONDS)
+                .subscribe(new Observer<Integer>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        Log.e(TAG, "onNext: " + integer);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });     
+        
+        (4)do系列操作符
+
+           do系列操作符相当于给Observable在执行的各个阶段添加回调，当Observable执行到这个阶段时，这些回调
+
+           就会被调用;
+
+           doOnNext  当Observable没发送一个数据时，doOnNext首先被回调，然后再回调onNext
+
+           doAfterNext 当onNext被调用后，会回调doAfterNext
+
+           doOnError   发送onError事件时，doOnError先回调，然后回调onError
+
+           doOnCompleted 正常发送事件完毕后回调doOnCompleted,然后回调onComplete
+
+           doOnTerminate 无论正常发送完毕还是异常终止都会回调doOnTerminate
+
+           doFinally 最后执行
+
+           doOnSubscribe 观察者订阅时执行
+
+           doOnUnSubscribe 观察者取消订阅时调用
+
+           
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
