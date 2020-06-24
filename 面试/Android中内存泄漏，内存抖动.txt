@@ -252,7 +252,6 @@ ART虚拟机主要也是对上面几个缺点进行了改进
  (1)使用第三方库LeakCanary来检测内存泄漏 
 
     
-
  (2)使用Android Studio自带的 Profiler中的Memory Profiler
 
     来查看Java堆内存的分配和对象的引用情况来排查内存泄漏
