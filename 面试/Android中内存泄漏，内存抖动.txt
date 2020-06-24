@@ -251,10 +251,60 @@ ART虚拟机主要也是对上面几个缺点进行了改进
 
  (1)使用第三方库LeakCanary来检测内存泄漏 
 
+    AppWatcherInstaller.onCreate()--->AppWatcher.manualInstall()--->InternalAppWatcher.install()
+
+         ActivityDestoryWatcher.install()---> Application.registerActivityLifecycleCallbacks(
+    --->                                         ActivityDestoryWatcher.lifecycleCallbacks)      
+         FragmentDestoryWatcher.install()---> Application.registerActivityLifecycleCallbacks(){
+
+                onActivityCreated() 
+
+         }--->FragmentManager.registerFragmentLifecycleCallbacks()
+
+    对于Activity是在Application中监听Activtiy的生命周期，onDestroy的时候进行内存泄漏的记录操作
     
+    而对于Fragment,也是在Application中监听Activity的生命周期，然后再onActivityCreated中拿到FragmentManager
+
+    通过FragmentManager监听Fragment的生命周期，在onDestroyView中去进行内存泄漏的记录操作     
+
  (2)使用Android Studio自带的 Profiler中的Memory Profiler
 
     来查看Java堆内存的分配和对象的引用情况来排查内存泄漏
+
+    AndroidStudio中 View--->Tools Windows--->Profiler --->选择Memory
+
+    Profile可以查看分析CPU,网络，内存使用情况，我们通过Memory模块查看内存使用情况
+
+    dump java heap 查看某一时刻的内存使用情况，包括对象的引用情况
+
+    并且可以导出.hprof文件 该时刻的内存快照文件
+
+ (3)使用MAT工具排查内存泄漏
+
+    MAT是Eclipse上的一款内存详细分析工具，我们也可以单独下载MAT，来对上面Android Studio中的
+
+    Profiler导出的内存快照文件.hprof文件进行分析;
+
+    这里要注意的是Android Studio Profiler导出的内存快照文件.hprof文件，MAT是不能直接打开的，
+
+    我们需要使用Android/SDK/Platform-tools/hprof-conv.exe这个工具将导出的.hprof文件转成标准的
+
+    .hprof文件，然后使用MAT打开
+
+    转标准的.hprof文件的命令： hprof-conv origin.hprof target.hprof
+
+                               origin.hprof是转换之前的文件，target.hprof是转换之后的文件名
+
+    然后打开MAT工具，打开标准的.hprof文件 target.hprof文件，选择Overview下Actions中的Histogram
+
+    视图可以查看对象的引用情况;
+
+                               
+
+
+
+
+
 
 
 

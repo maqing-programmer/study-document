@@ -1596,8 +1596,7 @@ test.apk nadoinc
 
                            ViewRootImpl.perfromDraw()
 
-   --->ViewRootImpl.draw()                     
-
+   --->ViewRootImpl.draw()
 
 
 
