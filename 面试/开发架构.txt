@@ -1,0 +1,93 @@
+1.
+
+ MVC
+
+ Model  数据模型 
+
+ View   视图View 布局或者Activity 
+
+ Control 中间者 Model View通信  Activity充当 数据处理逻辑 
+
+ 优点： 开发简单，Model  View 通信简单 文件少
+
+ 缺点： Activity 本是View 又充当Control 
+
+       所以Activity臃肿
+
+  MVP Model 数据模型/逻辑处理  抽象出接口
+  
+      View  Activity/布局/View  抽象出接口  
+
+      Preneter 中间者 Model和View之间通信 
+
+      Presenter 持有Model和View 的引用实现通信
+
+  优点:View和Model隔离 
+  
+  缺点：接口暴增    
+
+  MVVM  
+
+  Model  数据模型/数据逻辑处理   网络请求/文件/数据库操作等业务逻辑
+
+  ViewModel  Model和View之间的通信的中间者   
+
+  View   Activtiy/布局/View
+
+2.Jetpack
+
+  -Jetpack是Android 提供的一套库，主要是为了帮助开发者减少样板代码，简化复杂任务，
+
+  写出更优质的应用
+
+  我们现在使用的LiveData,ViewModel都是属于androidx.lifecycle下的组件,这些
+
+  都是生命周期感知型组件，也就是可以根据Activtiy或者Fragment生命周期状态的变化响应
+
+  不同的操作;
+
+  -Lifecycle
+
+   Lifecycle这个类是用来存储组件(如：Activity/Fragment)的生命周期状态信息的，并
+
+   允许其他对象观察此状态
+
+   ComponentActivity 
+
+   实现LifecycleOwner/ViewModelStoreOwner
+   
+   Lifecycle 实际上一种被观察者，提供添加/移除观察者的方法 addObserver/
+
+   removeObserver     
+
+   成员：LifecycleRegistry承自Lifeycle
+
+-ViewModel
+
+ 让View和LiveData建立连接 
+
+ 通信还是LiveData直接与View通信 观察者模式   
+
+ 
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+ 
+
+
+
+
+
