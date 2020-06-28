@@ -218,6 +218,7 @@
   interface MyInterface{
 
    ...
+
   }
 
  class KotlinActivity : AppCompatActivity(), MyInterface{
@@ -340,6 +341,402 @@ class KotlinActivity : AppCompatActivity {
      if(a is B){
        a.test()
      }
+
+ (a as B) 类型强转，如果强转成功，则没有问题，如果强转不成功，肯定是会抛出异常crash的
+ 
+ Kotlin中也设计了安全的强转 使用 "as?" ,如果强转失败不会泡池异常crash,而是强转成空null
+
+ (a as? C)?.test()  //因为as?表示可能会强转成null,所以调用要使用"?."来安全调用      
+
+ 下面给出几个示例：
+
+ (a as? C)?.test()    //将a强转成一个不可为空的C对象，如果a不是C类对象或者C类的子类对象，但是不为null，
+
+                      //则被强转成null,然后方法不会被调用;如果a为null则会crash   
+
+ (a as  C?)?.test()   //将a强转成一个可为空的C对象,如果a不是C类对象或者C类的子类对象，但是不为null,则会crash;
+
+                      //如果a为null,则会被强转成null,不会调用方法
+
+ (a as? C?)?.test()   //将a强转成一个可为空的C对象，如果a不是C类对象或者C类的子类对象,或者为null
+
+                      //则被强转成null,然后方法不会被调用
+ 
+7.Kotlin中那些[不Java]的写法
+  
+  Kotlin完全兼容Java,也就是Java编写的代码，和Kotin编写的代码是可以完美交互的
+
+  而不是说可以用Java的写法去写Kotlin；现在我们就来学习一下Kotlin中那些[不Java]
+
+  的写法
+
+  -构造方法 constructor
+   
+   //Java
+   public class A{
+
+     private String mId;
+
+     private String mName;
+
+     public A(String id,String name){
+        this.mId=id;
+        this.mName=name;
+     }
+   }
+
+   //Kotlin
+   open class A{
+
+        var id:String=""
+
+        var name:String=""
+
+        constructor(id:String,name:String){
+            this.id=id
+            this.name=name
+        }
+
+    }
+   
+  Kotlin中使用constructor来声明构造函数
+  
+  默认的可见性就是公开的
+
+  -初始化代码块 init
+
+   //Java中的初始化代码块
+
+   public class A{
+
+     {
+
+       //初始化代码块，先于构造方法执行
+
+     }
+
+     public A(){
+
+     }
+
+   }  
+
+   //Kotlin中的初始化代码块
+
+   class A{
+     
+     init {
+      
+      //初始化代码块，先于构造方法执行
+
+     }
+
+     constructor(){
+
+     }
+
+   }
+
+ Kotlin中初始化代码块需要用init关键字标识
+
+ -静态属性和静态方法
+
+  Java中使用static 修饰类级别的属性和方法，也即静态变量和静态方法
+
+  可以通过"类名."直接引用;
+
+  而Kotlin中实际上是没有静态属性和静态方法的概念的，取而代之的是compain object伴生对象
+
+  和object对象
+
+  class A{
+
+     companion object B{
+
+       var name:String=""
+
+       fun printName(){
+
+       }
+     }
+
+  }
+
+  A.B.name 或者A.name
+
+   class A{
+
+     companion object {
+
+       var name:String=""
+
+       fun printName(){
+
+       }
+     }
+
+  }
+
+  可以直接把对象名B给省略掉
+
+  A.name
+
+  在一个类中使用companion object定义一个伴生对象，伴生对象中定义的变量可以看作是静态变量，
+
+  伴生对象中定义的方法可以看做是静态方法；
+
+  注意：一个类中只能定义一个伴生对象
+
+-object关键字
+
+ (1)可以使用object关键字来修饰类,表示定义一个类，并声明一个类的对象
+
+ 该类中的变量，方法都可以通过类名直接访问；
+
+ object定义的类中不能重写构造方法，声明出来的对象只有一个，所以
+
+ 也是单例的一种形式
+
+ object A{
+
+   var name:String=""
+
+   fun test(){
+
+   }
+
+ }
+
+ A.name
+
+ A.test()
+
+ 当然object定义的类也是可以继承和实现其他的类和接口的
+
+ object A :B(),MyInterface{
+
+ }
+
+ (2)object是定义一个类，并声明一个对象
+
+    注意这个类是单例的
+
+    object A{
+
+     var name:String=""
+
+    }
+
+   这样是定义了一个单例类，是饿汉式的单例类，在使用的时候
+
+   创建实例的，并且是线程安全的单例
+
+ (2)object标识匿名类
+
+    Java中匿名内部类写法
+
+     ViewPager.OnPageChangeListener listener = new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        };   
+
+  Kotlin中匿名内的写法:
+
+   var listener = object: ViewPager.OnPageChangeListener {
+
+            override fun onPageSelected(position: Int) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+        }
+
+ Java中使用new来创建匿名内部类的对象，Kotlin中使用 "object:" 来创建匿名内部内的对象  
+
+-顶级属性/方法 top-level property/function
+
+ 所谓顶级属性和方法，就是把属性和方法的声明写在class外面，这个是Kotlin所允许的，
+
+ 这样声明的属性和方法不属于类，而是属于包
+
+ 顶级属性和顶级方法和静态属性以及静态方法一样是全局的，但是使用起来更加方便，就连类名都不用写
+
+ package com.nado.androiddemo.kotlin
+
+ var name:String="张三"
+
+ fun test() {
+    
+ }
+
+ class A {
+
+ }
+
+ 我在包下创建了一个Kotlin文件,里面定义了一个类
+
+ 类外定义了一个属性和方法,这个属性和方法就是顶级属性和方法;
+
+ 同一个包下使用顶级属性和方法，直接使用就可以，
+
+ 不同包下,导入包，就可以使用
+
+ 总结： 
+ 
+ 在实际开发中，object 、companion object 、top-level到底该选择使用哪一个
+
+ 如果是写工具类的功能，直接创建文件，写top-level函数
+
+ 如果是需要继承自别的类或实现接口，就用object和companion object
+
+-const val 定义常量
+
+ 前面我们已经学习过val来声明一个常量，而const val也是声明常量的，只不过
+
+ const val只能用在object(包括伴生对象companion object)和顶级中
+
+ 只能是基本类型和String类型可以使用const val修饰，其他自定义类对象无法使用const val修饰
+
+ 那const val和val的区别是什么？
+
+ 用途是没什么区别的，都是定义常量，查看字节码可以看到
+
+ val声明的变量是 private final static 的，并且会生成一个getNormalObeject()方法，通过方法调用访问
+
+ const val声明的变量是public final static,可以直接访问
+
+ 所有当定义常量时，处于效率考虑，我们应该使用const val ,避免频繁函数调用
+
+-数组和集合
+
+ Kotlin和Java一样有三种集合类型 List、Set、Map
+
+ List 以固定顺序存储一组元素，元素可以重复。 
+
+ Set 存储一组互不相等的元素，通常没有固定顺序。
+
+ Map 存储 键-值 对的数据集合，键互不相等，但不同的键可以对应相同的值。 
+
+ var list:List<Int> = listOf(1,2,3)
+
+ var set:Set<Int> = setOf(1,2,3)
+
+ var Map:Map<String,String> =mapOf("key1" to "value1", "key2" to "value2")
+
+ Kotlin中的集合分可变集合和不可变集合 
+
+ 上面这几个 listOf、setOf、mapOf创建的都是不可变的集合
+ 
+ 不可变集合：指的是集合中的元素，和集合的大小都不可变
+
+ 可变集合：  集合中的元素以及集合的大小是可变的
+
+ 可变集合创建需要使用:mutableOf()
+
+ var changeList:MutableList<String> = mutableListOf() //可变List
+
+ var changeSet:MutableSet<String> = mutableSetOf() //可变Set
+
+ var changeMap:MutableMap<String,String> = mutableMapOf() //可变Map
+
+ 不可变集合是可以转可变集合的
+
+ list.toMutableList()
+
+ set.toMutableSet()
+
+ map.toMutableMap()
+
+ -可见性修饰符
+
+  public  公开，哪里都可以引用,Kotlin中默认都是public的
+
+  private 私有，可见性最小，根据声明位置不同，分为类中可见和文件中可见
+
+  protected 受保护的，只能子类可见
+
+  internal  module内可见
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
