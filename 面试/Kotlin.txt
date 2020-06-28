@@ -1,0 +1,382 @@
+1.Kotlin
+
+  在2019 Google I/O上，Google宣布Kotlin成为Android的第一开发语言
+
+2.Kotlin中变量的声明与赋值
+  
+  -声明变量
+
+  示例：
+
+  var count:Int=0
+
+  val num:Int=1
+
+  Kotlin中使用var或者val关键字来声明变量,var声明的变量可以改变值，
+
+  而val声明的变量，无法重新赋值，也即不能修改
+
+  变量名:类型
+
+  Kotlin中不需要以";"结束
+
+ -Kotlin中空安全设计
+ 
+  我们知道在Java中的属性是有默认的初始值的，对于对象类型，如果不显示的赋值，其
+
+  默认的初始值是null;
+
+  而Kotlin中变量是没有默认的初始值的，并且由于Kotlin的空安全设计，所有的变量默认
+
+  情况下都不能为空，如果显示的赋值null，也是会报错的；
+
+  var name:String=null //这样写编译器是会报错的
+
+  var name:String?=null //在类型后加"?"表示这个变量是个可空类型，那就没有问题
+
+  在类型后面加一个"?"表示变量是一个可空类型，但是还是由于Kotlin的空安全设计，在
+
+  使用这个变量的使用，如果直接使用也是会报错的；
+
+  var view:View?=null
+
+  view.setBackgroundColor(Color.RED) //编译器会报错
+
+  view?.setBackgroundColor(Color.RED) //这种写法就没问题
+
+  使用"?."来调用对象的方法，会做一次非空确认之后再调用方法;
+
+  还可以使用"!!":
+
+  view!!.setBackgroundColor(Color.RED) 
+  
+  使用"!!"就是告诉编译器我保证view一定是非空的，编译器不要检查了，实际上这样做就是
+
+  抛弃了Kotlin的空安全设计，运行的过程中如果为空，是会报NullPointerException的
+
+-延迟初始化 lateinit
+
+ 由于Kotlin中的空安全设计，声明一个变量时，默认情况下都必须要赋予初始值 （除非是抽象的
+
+ 属性，这里暂不介绍抽象属性）且不能为空；
+
+ 那么在实际情况下，我们定义一个属性，例如View的时候，我们希望它是非空的，但是在声明的时
+
+ 候我们又无法赋值非空的初始值，如果使用"?"来表示可空，后面使用的时候又需要通过"?."来使
+
+ 用，影响使用和代码可读性；
+
+ 这种情况下，我们可以使用lateinit关键字在声明变量时延迟初始化，这样编译器就不会对这个变
+
+ 量检查初始化和报错
+
+ class KotlinActivtiy : AppCompatActivity() {
+
+    lateinit var button: Button //延迟初始化
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activtiy_kotlin)
+        button = findViewById(R.id.btn_activity_kotlin)
+    }
+
+}
+
+-类型推断
+
+ 在声明变量的时候，如果进行了赋值，那么不写变量类型也是可以的；
+
+ var name="张三" //声明变量时，有初始值，不写类型没有问题
+
+ name=1  //会报错
+
+ 根据你声明的时候的初始值，Kotlin会推断出变量类型为String,后面
+
+ 你赋值1就会报错，因为1不是String类型的，这个就叫做类型推断
+
+3.Kotlin中的数据类型
+
+  -数值类型
+
+   Byte,Int,Short,Long,Float,Double
+
+   示例：
+
+   var price:Double=0.0
+
+ -数组类型
+  
+  IntArray,FloatArray,DoubleArray,CharArray等 
+
+  var ages:IntArray= intArrayOf(20,15,16)
+
+
+4.函数 function
+
+  -Java中的方法(method)，Kotlin中叫做函数(function) 
+
+  -函数的声明
+
+   fun getData(type:String):String{
+       ...
+   }
+
+   Kotlin中函数的声明是以fun关键字开头，如果有返回值，返回值类型在函数和参数
+
+   后面，没有返回值，可以写Unit,也可以不写；
+
+   fun setData(data:String):Unit{
+
+     ...
+   }
+
+   或者
+
+   fun setData(data:String){
+
+     ...
+
+   }
+
+   -函数中形参的空安全
+    
+    由于Kotlin中的空安全设计，我们在调用函数传递形参时，也需要注意；
+
+    默认情况函数的形参也是不能为空的,如果我们把一个可空的变量传给了
+
+    函数的不可为空形参，是会报错的；
+
+    fun setData(data:String){
+
+     ...
+
+    }
+
+    var data:String?="张三"
+
+    setData(data) //可空变量传给不可空形参，是会报错的
+
+    var data:String="张三";
+
+    setData(data) //不可空变量传给不可空形参就不会有问题
+
+    //定义形参可空的函数
+
+    fun setData2(data:String?){
+
+     ...
+
+    }
+
+    var data：String？="张三"
+
+    setData(data) //可空变量传给可空形参没有问题
+
+-属性的getter和setter函数
+
+ 在Java中，类的属性我们经常会定义gettter/setter函数。来获取和设置属性的值
+
+ 而Kotlin中则有专门的get和set关键字来表示getter/setter函数
+
+ getter/setter函数有专门的的关键字get和set
+
+ getter/setter函数位于var所声明变量下面
+
+  class People {
+        var name: String = ""
+            get() {
+                return field
+            }
+            set(value) {
+                field = value
+            }
+        var age: Int = 0
+            get() {
+                return field
+            }
+            set(value) {
+                field = value
+            }
+    }    
+
+5.类和对象
+
+ class KotlinActivity : AppCompatActivity() {
+
+ }
+
+ -Kotlin中定义一个类也是使用class关键字
+
+ -Java中一般会用public来定义类的可见性，而Kotlin中默认的可见性就是public
+
+  变量，方法，类，接口默认的可见性都是public的，所以定义类的时候省略了
+
+ -Kotlin中使用":"表示继承,":"也可以表示实现
+
+  Kotlin中接口的定义和Java中一样
+
+  interface MyInterface{
+
+   ...
+  }
+
+ class KotlinActivity : AppCompatActivity(), MyInterface{
+
+ }
+
+ -构造方法
+
+ Kotlin中构造方法使用constructor关键字来声明
+
+ class KotlinActivity : AppCompatActivity() {
+
+ }
+
+ 这个AppCompatActivity()也是一种省略写法等价于
+
+ class KotlinActivity constructor(): AppCompatActivity {
+
+ }
+
+ 或者
+
+class KotlinActivity : AppCompatActivity {
+   constructor(){
+	
+    }
+ }
+}
+
+-方法的重写 override 关键字 
+
+ class KotlinActivity : AppCompatActivity() {
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activtiy_kotlin)
+    }
+
+ }
+
+ Java中方法重写用的是@override注解标识的，Kotlin中使用的是override
+
+ 关键字来表示方法的重写
+
+ Kotlin 里的 override 函数的可见性是继承自父类的
+
+ -Kotlin中的类默认是final的，也就是不能被继承的继承
+
+  我们知道Java中的类只有显示的加fianl才表示最终类不能被继承，而
+ 
+  Kotlin中的类,方法默认是final的,是不能被继承或者重写的，
+
+  如果希望类可以被继承，方法可以被重写，需要加上open关键字
+
+  open class KotlinActivity : AppCompatActivity() {
+
+  } 
+  
+  这样KotlinActivity就是可以被继承的
+
+  class NewActivity : KotlinActivity{
+
+  }
+
+  但是要注意open是不会被继承的，所以NewActivity默认还是final的，
+
+-abstract 修饰的类是抽象类,不能直接实例化  
+
+-实例化一个类
+
+ class A{
+
+ }
+ 
+ var a:A=A()
+
+ Kotlin中的类的实例化，没有new关键字，直接调用构造方法即可
+
+ 总结：
+
+ 类的定义
+
+ 类的构造方法
+
+ 类的可见性
+
+ 类的继承
+
+ override函数
+
+ 类的实例化
+
+6.类型的判断和强转
+
+  Java中使用instanof 做类型判断，使用((B) A).test()类型强转
+
+  而Kotlin中使用 is 来做类型判断 ，as 关键字来做类型强转
+
+  open class A{
+
+   
+  }
+
+  class B: A(){
+    var fun test(){
+
+    }
+  } 
+
+  var a:A=B()
+
+  if(a is B){
+     (a as B).test()
+  }
+
+  由于Kotlin中有类型判断，所以可以省略强转写法
+
+  直接：
+  
+     if(a is B){
+       a.test()
+     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
