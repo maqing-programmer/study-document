@@ -676,7 +676,333 @@ class KotlinActivity : AppCompatActivity {
 
   internal  module内可见
 
+8.Kotlin中更方便的用法
+
+  上面我们主要学习了一下Kotlin中[不Java]的用法，下面我们主要学习一下Kotlin中
+
+  更方便的用法
+
+  -主构造器
+
+   之前我们已经学习了Kotlin中类的构造方法,使用constructor关键字,还有一种写法是
+
+   可以在类名之后,也是要使用constructor,这个构造方法是主构造方法；
+
+   //普通构造方法写法
+
+   class A{
+
+     var name:String=""
+
+     constructor(name:String){
+
+          this.name=name
+
+     }
+
+   }
+
+   //方便的写法
+
+  class A constructor (name:String){
+        var name:String=name  //等于号后面的这个name就是主构造方法中的参数
+    } 
+
+ 一个类中最多有一个主构造方法，如果一个类声明了主构造方法，
+
+ 那么其他次构造方法必须要通过this关键字主动调用主构造方法;
+
+ 在类的出初始化过程中首先执行的就是主构造方法
+
+ class C constructor(name:String){
+
+       constructor(name:String,id:String) : this(name){ //直接调用主构造方法
+           
+       }
+
+       constructor(name:String,id:String,age:Int) : this(name,id){ 
+
+       //调用上一个次构造方法，简洁调用主构造方法 
+
+       }
+
+   }
+
+通常情况下,主构造方法中的constructor关键字可以省略
+
+class A(name:String){
+	
+}
+
+但是有些情况下，主构造方法的constructor关键字是不能省略的
+
+如在主构造方法中使用了可见性修饰符
+
+class A private constructor(name:String){
+	
+}
+
+主构造器里面还可以直接声明属性,主构造方法里声明属性需要加上 var或者val
+
+class A constructor(var name:String){
+
+	 fun test(){
+         name="张三"
+     }
+
+}
+
+等价于 
+
+class A constructor(name:String){
+	
+	var name:String=name //这里等号右边的name就是主构造方法中的参数
+
+}
+
+-函数简化
+
+ -使用"="连接返回值
+
+  //普通写法
+  fun getArea(with:Int,height:Int):Int{
+
+    return width*height
+
+  }
+
+  //简化写法 
+  fun getArea(with:Int,height:Int):Int=width*height
+
+  我们知道Kotlin中有类型推断，所以这里的返回值类型也是可以省略的
+
+  fun getArea(with:Int,height:Int)=width*height
+
+  对于没有返回值的情况，也就是返回值为Unit的情况，也可以简化
+
+  fun print(){
+    Log.e(TAG,"test")
+  }
+
+  fun print()=Log.e(TAG,"test")
+
+-参数的默认值
+
+ Java中有方法的重载，也就是一个类中有多个方法名相同，但是参数类型或者参数个数不同的方
+
+ 法
+
+ 称之为方法的重载;
+
+ Kotlin中也有方法的重载，和Java中是一样的;
+
+ 但是Kotlin中还有一种更加简单的方式，就是参数的默认值
+
+ fun print(name:String="world")=Log.e(TAG,name)  
+
+ 这个方法的形参有一个默认值"world",当调用该方法，不传入参数时，
+
+ 参数就是默认值"world"
+
+ print()
+
+ 等价于 print("world")
+
+ 含有参数的默认值的方法在调用时，也是有一定规则的
+
+ fun print(name:String="world",age:Int){
+
+ } 
+
+ print(10) //这个方法，有默认值的参数，在无默认值的参数的前面，这样调用是会报错的
+           
+           //报参数不匹配操作The integer literal does not conform to the expected type String，No value passed for parameter 'age'
+ 
+ Kotlin中使用命名参数来解决这个问题
+
+ 即正确的调用应该为:
+
+ print(age=10)
+
+ 与命名参数对应的是位置参数，也就是按位置顺序进行参数填写
+
+ 如果调用一个函数，混用位置参数和命名参数，那么所有的位置
+
+ 参数都应该放在第一个命名参数之前
+
+ fun print(name:String="world",age:Int){
+
+ } 
+
+ print(name="张三",10) //这样调用就会报错，因为混用了命名参数和位置参数
+
+                      //但是位置参数应该在命名参数之后
+
+ print("张三",age=10) //这样调用就是正确的
+
+ -本地函数(嵌套函数)
+
+  //普通函数
+
+  fun login(name:String,pwd:String){
+
+      if(name.isEmpty()){
+         throw IllegalArgumentException("用户名不能为空")
+      }
+
+      if(pwd.isEmpty()){
+         throw IllegalArgumentException("密码不能为空")
+      }
+
+  }                    
+
+
+  fun login(name:String,pwd:String){
+
+      fun validate(value:String,String promptStr){ //本地函数(嵌套函数)
+           
+           if(value.isEmpty()){
+               throw IllegalArgumentException(promptStr)
+           }
+
+      }
+
+      validate(name,"用户名不能为空")
+
+      validate(pwd,"密码不能为空")
+
+  }
   
+这里的validate方法就是本地方法(嵌套方法),只能是在其外部方法login中调用，其它
+
+地方是无法访问这个本地方法(嵌套方法)的;
+
+嵌套方法是可以访问其外部方法中的所有变量的  
+
+-字符串中的的方便写法
+
+ Java中字符串与变量之间是使用 "+"进行拼接的,Kotlin中也是如此
+
+ val name="张三"
+
+ Log.e(TAG,"Hi "+name)
+
+ 但是当变量比较多的时候，再使用 "+",可读性就会变差，写起来也麻烦
+
+ Java给出的解决方案是String.format
+
+ System.out.print(String.format("Hi %s", name));
+
+ 而Kotlin为我们提供了一种更加方便的写法
+
+ val name="world"
+ 
+ Log.e(TAG,"Hi $name")
+
+ "$"后面除了可以跟变量，还可以跟表达式,但是表达式是一个整体，要用{}包起来
+
+ Log.e(TAG,"Hi ${name.length}")
+
+-数组和集合的方便用法
+
+ (1)forEach遍历数组和集合的每一个元素
+
+ val intArray=intArrayOf(1,2,3)
+
+ val list=listOf(1,2,3)
+
+ intArray.forEach { i->Log.e(TAG,"".plus(i)) }
+
+ list.forEach { i -> Log.e(TAG, "".plus(i)) }
+ 
+
+(2)filter 
+
+   对数组和集合中每个元素进行过滤操作，如果过滤条件成立则留下，否则剔除
+
+   最终生成新的集合
+
+   var array:IntArray = intArrayOf(1,2,3)
+
+   var list:List<Int> =array.filter{
+
+     i!=1   //过滤掉数组中等于1的元素，最终变成了一个list
+
+   }
+
+(3)map 遍历数组和集合中每个元素并执行给定的表达式，最终形成新的集合 
+
+   var list:List<Int> = array.map {
+
+            i->i+1 //对数组中每个元素加1，生成新的list
+
+        } 
+
+(4)flatMap
+
+   遍历数组和集合中每个元素，并为每个元素创建新的集合
+
+    array.flatMap {i->
+            listOf("${i+1}","a")
+        } 
+
+ -Range 
+
+  Kotlin中Range表示区间的意思，也就是范围
+
+  var range:IntRange=0..100
+
+  0..100表示0到100的范围 [0,100]的闭区间
+
+  除了IntRange，还有CharRange和LongRange
+
+  也有半开区间 until
+
+  var range:IntRange=0 until 100
+
+  [0,100) 0到100 ，不包括100
+
+  Range这个东西天生就是用来遍历的
+
+  var range:IntRange=0..100
+
+  for(i in range){
+
+    Log.e(TAG,"$i")
+
+  }
+
+  除了使用默认的步长1，还可以通过step设置步长
+
+     for (i in range step 2){
+         Log.e(TAG,"$i") //0,2,4,6.....100
+       }
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
