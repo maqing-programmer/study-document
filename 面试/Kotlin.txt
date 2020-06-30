@@ -1244,7 +1244,6 @@ fun validate(user:user){
 
   "? super A"  表示A类或者A类的父类
 
-
   List<TextView> tvList=new ArrayList<TextView>
 
   List<? extends View> viewList=tvList;
@@ -1268,6 +1267,72 @@ fun validate(user:user){
   //可以添加TextView元素,因为List<? super TextView> 里面一定是TextView或者TextView的父类
 
   复习完了Java中的泛型之后，我们现在来学习一下Kotlin中的泛型
+
+  Kotlin中的泛型的概念和Java中是完全一样的
+
+  泛型类和泛型变量:
+
+  class A<T> {
+
+    var value: T  //泛型变量
+
+    constructor(value: T) {
+        this.value = value
+
+    }
+
+}
+
+泛型方法:
+
+  fun <T>  test(count:T){
+        
+  }
+
+集合中使用泛型
+
+var int:List<Int>=listOf(1,2,3)
+
+当然Kotlin中也有通配符,只不过Kotlin中的通配符不是"?",
+
+而是 *
+
+var angList:List<*> = listOf(1,2,3)
+
+也有边界通配符，子不过边界通配符不再是? entends 和？ super 
+
+改成了关键字out和in
+
+out 支持协变,等同于Java中的 ? entends ，只能读，不能添加
+
+in  支持逆变,等同于Java中的 ？ super ，只能添加，不能读 
+
+ var tv:TextView = TextView(context)
+ var tvList:List<TextView> = listOf(tv)
+ var outList:List<out View> =tvList
+
+ var view:View= View(context)
+ var viewList:MutableList<View> = mutableListOf(view)
+ var btnsuperList:MutableList<in Button>  =viewList
+
+  class H<K>{
+         var value:K?=null
+         fun test():K?{
+             return value
+         }
+    }
+ 
+
+
+
+
+
+
+
+
+
+
+
 
   
 
