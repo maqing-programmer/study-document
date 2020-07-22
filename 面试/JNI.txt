@@ -1,1 +1,356 @@
-1.
+1.NDK/JNI
+
+  -NDK(Native Development Kit)-原生开发工具包，使得能够在Android上
+
+  去使用C/C++代码;
+
+  -那么为什么需要在Android上去使用C/C++代码?
+   
+   因为我们知道开发Android我们是使用Java/Kotlin语言进行开发的,那么不论是Java
+
+   还是Kotlin,最终都是编译成字节码文件.dex文件，然而字节码文件是Java/Kotlin经过
+
+   一定语义编译之后的产物，并不是完全可以运行的机器码指令；所以运行应用时还是需要
+
+   进一步的编译成机器码才能够执行;
+
+   而C/C++是完全的编译型语言，编译之后是机器码文件，运行应用时，可以直接执行的，所以
+
+   效率肯定是要比Java/Kotlin要高的；
+
+   所以一些对一些比较耗性能的操作，最好还是交由C/C++代码中取执行，这样能够大大提高应用的
+
+   效率；
+
+   这也是为什么需要NDK的原因；
+
+  -JNI
+
+   JNI(Java Native Interface)-Java原生接口；
+
+   因为我们的Android应用开始是使用Java语言的，那如何实现在Java中来调用C/C++代码
+
+   呢,这就需要使用JNI来实现Java和C/C++的互相调用;
+
+2.NDK开发环境配置
+
+  所需工具:使用AndroidStudio即可，但是需要增加下面两个工具
+
+  NDK、CMake ;
+
+  NDK和CMake都可以在Android Studio 中的Tools/SDK Manager/SDK Tools下下载
+
+  NDK上面已经解释过了;
+
+  -CMake
+
+   CMake就是一个编译工具，可以根据提供的脚本来把C/C++代码编译成so库,和Gradle
+
+   作用很类似，只不过CMake是用来编译本地语言的;
+
+3.NDK开发
+
+  Android Studio 新建一个项目，新建项目时，项目模板选择Native C++
+
+  新建项目成功后,我们可以看一下项目的目录结构
+
+  (1)在src/main目录下 有一个cpp目录，与java目录同级，cpp目录下有一个
+
+  CMakeLists.txt文件和native-lib.cpp
+
+  CMkeLists.txt就是CMake脚本文件
+
+  native-lib.cpp 是C++源文件 
+
+   (2)app build.gradle中会有一些NDk相关的配置
+    
+     android{
+
+     defaultConfig {
+
+       ...
+
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+            }
+        }
+    } 
+
+     externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+            version "3.10.2"
+        }
+      }
+
+     }
+
+(3) 在Run/Debug Configurations中 Debugger 调试有四个选项
+
+    Auto、   自动检测
+
+    Java、   只调试Java代码
+
+    Native、 只调试Native代码
+
+    Dual、 Java+Native两种都用    
+
+    注意不要选择Java和Native，选择Auto或者Dual
+
+(4)so库的加载
+
+   Android 系统 API提供了两种加载so库的方式,一种是直接加载APK中的so文件，
+
+   第二种是通过文件地址来加载so文件；
+
+   static{
+
+        System.loadLibrary("native-lib");
+
+   }
+
+(5)Java和C++互相调用
+
+   因为我们新建的项目模板是Native C++,所以项目中已经自动为我们创建了一个native-lib.cpp
+
+   C++源代码文件，MainActivtiy中也声明了一个native方法与native-lib.cpp中对应的native
+
+   方法对应，并且在MainActivtiy中调用了native方法；
+
+   来演示Java和C++之间的互相调用
+
+   -MainActivity中声明了一个native方法 ,被native修饰，不需要实现    
+
+   public native String stringFromJNI();
+
+   -native-lib.cpp查看
+
+    #include <jni.h>
+    #include <string>
+
+    extern "C" JNIEXPORT jstring JNICALL
+    Java_com_nado_jniproject_MainActivity_stringFromJNI(
+        
+        JNIEnv *env,
+        jobject thiz
+
+        ) {
+
+    std::string hello = "Hello from C++";
+
+    return env->NewStringUTF(hello.c_str());
+}
+
+下面我们来分析一下native方法: 
+
+Native方法中的包名要和Java方法中的包名对应上，Native层中JNI方法命名格式
+
+为Java_包名类名方法名 之间全部是下划线分隔 :
+
+Java_com_nado_jniproject_MainActivity_stringFromJNI
+
+参数：JNIEnv *env和jobject thiz
+
+-这个jobject类型的thiz就是对应外层的Java对象 jobject就是Java中的Object
+
+Java类型 C类型 以及 JNI别名 对应如下：
+
+Java 类型	JNI 别名  	    C 类型
+boolean	    jboolean	    unsigned char
+byte	    jbyte	        signed char
+char	    jchar	        unsigned short
+short	    jshort	        short
+int		    jint             int
+long	    jlong	        long
+float	    jfloat	        float
+double	    jdouble	        double
+String	    jstring	        char*
+Class	    jclass	        /
+Object	    jobject	        /
+
+由于Java和C语言之间是无法直接调用的，两种语言的基本类型是不一样的，
+
+例如Java中有boolean类型，而在C中就没有这种类型，但是C语言还是有if-else
+
+判断的，那怎么判断true或者false？ C中使用char类型，当char的值是0就是false
+
+非0就是true
+
+基于这种情况，JNI重新定义了一些类型，以便C和Java对应上；
+
+上面的这个方法的调用，实际上是Java中调用Native中的方法
+
+为了清楚的了解Java和C之间的互相调用，还需要学习一下Native中调用Java方法
+
+我们首先在MainActivity中定义一个Java方法,正常的定义就可以
+
+ public void callJavaMethod(String str) {
+
+        Log.e(TAG, "callJavaMethod: "+str);
+
+    }
+
+然后在native-lib.cpp的方法中调用这个Java方法:
+
+#include <jni.h>
+#include <string>
+extern "C" JNIEXPORT jstring JNICALL
+Java_com_nado_jniproject_MainActivity_stringFromJNI(
+        JNIEnv *env,
+        jobject thiz
+        ) {
+    std::string hello = "Hello from C++";
+
+    jclass cls = env->GetObjectClass(thiz);
+
+    jmethodID  methodID=env->GetMethodID(cls,"callJavaMethod","(Ljava/lang/
+
+    String;)V");
+
+    char* text="123";
+
+    env->CallVoidMethod(thiz,methodID,env->NewStringUTF(text));
+
+    return env->NewStringUTF(hello.c_str());
+}
+
+
+分析Native方法中调用Java方法：
+
+    jclass cls = env->GetObjectClass(thiz);
+
+    jmethodID  methodID=env->GetMethodID(cls,"callJavaMethod","(Ljava/lang/
+
+    String;)V");
+
+    char* text="123";
+
+    env->CallVoidMethod(thiz,methodID,env->NewStringUTF(text));
+
+
+   上面这一段代码就是Native方法调用Java代码的过程,这段代码很像Java中的反射调用对象的方法
+
+   jclass cls = env->GetObjectClass(thiz); //这段代码就是获取Java对象的Class对象
+
+   jmethodID  methodID=env->GetMethodID(cls,"callJavaMethod","(Ljava/lang/
+
+    String;)V"); 
+
+    //这段代码是为了获取Java类中的某个方法的；
+
+      GetMethodID有三个参数，第一个参数就是jclass
+
+      对象；
+
+      第二个参数"callJavaMethod"就是Java中的方法名；
+
+      第三个参数时方法的签名,方法的签名是对方法参数和返回值的描述；
+
+      在Java中允许方法的重载，这个时候需要sign来进行区分；
+
+      签名的书写规则： (参数类型签名)返回值类型签名
+
+      数据类型	签名
+
+      boolean	Z
+
+      byte	    B
+
+      char	    C
+
+      short	    S
+
+      int	    I
+
+      long	    J
+
+      float	    F
+
+      double	D
+
+      void	    V
+
+      object	L开头，然后以/分割包的完整类型，再加;号，如Ljava/lang/String;
+
+      Array	    以[开头，再加上数组元素的签名，比如int[]，签名就是[I，Object数组签名就是
+                [Ljava/lang/Object;
+
+
+    //调用Java中的方法
+
+    char* text="123";
+
+    env->CallVoidMethod(thiz,methodID,env->NewStringUTF(text));               
+
+4.如何定位Native Crash
+
+5.Windows下编译FFmpeg for Android 
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       
+ 
+
+
+
+
+
+
+
+
+
+
+     
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+

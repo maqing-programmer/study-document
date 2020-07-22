@@ -104,7 +104,6 @@ z1.如何来阅读第三方库源码，首先我们得具备一些基础
 
      -->RequestFactory.parseAnnotations()-->RequestFactory.parseMethodAnnotation() //解析请求方法注解
                                          -->RequestFactory.parseParameter() //解析请求参数注解
-
      -->HttpServiceMethod.parseAnnotations()
      
      并且某个接口已经请求过，也就是网络请求接口中某个方法被调用过，注解解析的结果会被缓存起来，

@@ -2,7 +2,7 @@
 
   RxJava是一个基于观察者模式的的异步处理框架;
 
-  Android中 AsyncTask和Handler都可以用来处理异步任务;
+  Android中AsyncTask和Handler都可以用来处理异步任务;
 
   而RxJava之所以受欢迎，是得益于RxJava的基于事件流的链式调用
 
@@ -63,7 +63,7 @@
 
 当然我们说了RxJava是为了处理异步操作，如果仅仅是这样，就不是异步操作，而是同步操作
 
-因为这样观察者和被观察者都是在当前线程，也就是同意线程，所以是同步操作，那么异步操作
+因为这样观察者和被观察者都是在当前线程，也就是同一线程，所以是同步操作，那么异步操作
 
 肯定是观察者和被观察者处于不同线程
 
@@ -284,7 +284,6 @@ observable
     
     (3)延迟创建操作符
 
-
        -defer()
        
        直到有观察者订阅时，才会执行Callable回调，然后在回调里面发送的是最新的数据
@@ -355,7 +354,6 @@ observable
     
        创建一个被观察者对象,发送指定范围的Long型数据
 
-    
     -变换操作符
 
      变换操作符的作用就是用来对发送的事件进行加工处理(变换),变成其它的事件输出；
@@ -497,7 +495,7 @@ observable
         合并多个被观察者，并且将合并后的事件按照顺序发送
 
         按发送顺序串行执行
-
+ 
         conact最多能合并4个被观察者
 
         concatArray可以合并多个观察者 可以4个以上
@@ -526,6 +524,7 @@ observable
             public void onComplete() {
 
             }
+
         });
         
    (2) merge()/mergeArray()
@@ -872,6 +871,300 @@ observable
            doOnSubscribe 观察者订阅时执行
 
            doOnUnSubscribe 观察者取消订阅时调用
+
+       (5)对Observable流进行整体的变换，一般用于把一个或多个操作符封装起来，便于复用
+
+           例如切换线程总是需要两个操作符操作:
+
+           subscribeOn(Schedulers.io())
+           .observeOn(AndroidSchedulers.mainThread())            
+
+           我们可以把这两步操作放到一个方法中返回一个ObservableTransformer,
+
+           然后使用compose操作符即可；
+
+           ObservableTransformer schedulersTransformer() {
+
+            return new ObservableTransformer() {
+               @Override
+               public ObservableSource apply(Observable upstream) {
+
+                  return  ((Observable)  upstream).subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+
+
+            };
+        };
+           
+           Observable.create(new ObservableOnSubscribe<Object>() {
+            @Override
+            public void subscribe(ObservableEmitter<Object> e) {
+
+                    e.onNext(1);
+
+            }
+        })
+          .compose(schedulersTransformer()) //compose操作对Observable进行变换
+
+          .subscribe(new Observer<Object>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        
+                    }
+
+                    @Override
+                    public void onNext(Object value) {
+                        Log.e(TAG, "onNext: "+value);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }); 
+
+3.RxJava内存泄漏解决
+
+  但我们使用RxJava执行耗时的异步操作时，当退出界面Activity时，也就是Activity销毁时，但是由于耗时操作还在执行
+
+  Activity无法被释放，就会出现内存泄漏；
+
+  解决方法：
+
+  -在onSubscribe拿到Disposable对象,在Activity的onDestory生命周期中调用dispose()方法，
+
+   切断观察者与被观察者的订阅关系
+
+   但是如果一个界面中有多个RxJava操作，则就要在onDestory中调用多个Disposable.dispose()
+
+   切断所有订阅关系
+
+ -使用CompositeDisposable 保存所有的Disposable,在Activity的
+
+  onDestory生命周期函数中，调用CompositeDisposable.disposable()
+
+  方法,切断所有的订阅关系
+
+ -使用RxLifeCycle 将RxJava操作与Activtiy/Fragment的生命周期绑定起来
+
+  在指定的生命周期中切断订阅关系
+
+  实现原理： (1)首先BaseActivity中定义一个:
+
+            BehaviorSubject<ActivityEvent>  lifecycleSubject 也就是一个Observable对象
+
+            实现LifeProvider接口，实现相应方法
+
+            @Override
+    public final Observable<ActivityEvent> lifecycle() {
+        return lifecycleSubject.hide();
+    }
+
+    @Override
+    public final <T> LifecycleTransformer<T> bindUntilEvent(ActivityEvent event) {
+        return RxLifecycle.bindUntilEvent(lifecycleSubject, event);
+    }
+
+    @Override
+    public final <T> LifecycleTransformer<T> bindToLifecycle() {
+        return RxLifecycleAndroid.bindActivity(lifecycleSubject);
+    }
+            
+           （2）在Activity的各生命周期内调用Observable发射对应的生命周期事件
+
+                  @Override
+                 protected void onDestroy() {
+
+                  lifecycleSubject.onNext(ActivityEvent.DESTROY); 
+
+                 }
+
+            (3)在使用时，被观察者使用compose操作符,来实现源Observable与组件的绑定
+               
+               LifecycleTransformer apply方法中使用了takeUtil操作符
+
+               也就是一旦我们的生命周期中的lifecycleSubject.onNext(ActivityEvent.DESTROY); 
+
+               执行，也就是第二个Observable lifecycleSubject发送了事件，则丢弃源观察者发射的任何事件
+
+               compose(bindToLifecycle())
+
+4.RxJava中的背压策略
+
+  我们知道RxJava是用来处理异步操作的，所谓异步，也就是被观察者和观察者处于不同的
+
+  线程中；
+
+  那么被观察者与观察者处于不同的线程，就可能会出现，观察者发送事件速度与接受者接收事件
+
+  的速度不匹配的情况; 因为处于不同的线程，被观察者发送一个事件后，不会等到观察者接收并
+
+  处理完事件后，再发送下一个事件，而是不断的发送事件，直到发送完毕;
+
+  如果被观察者发送事件的速度大于被观察者接收处理事件的速度，那么被观察者发送的事件实际
+
+  上是放到缓冲区的，等待观察者从缓冲区取出事件处理；
+
+  但是如果被观察者发送事件的速度太快，导致缓冲区满了，最终就会溢出，导致事件丢失或者
+
+  OOM;
+
+  出现这种情况我们就可以使用背压策略
+
+  RxJava提供了Flowable，以及背压策略来解决上述观察者发送事件速度与被观察者
+
+  接收速度不匹配导致的事件丢失或者OOM问题
+
+  -异步处理情况下的背压
+
+   因为我们上述已经说明了，背压策略是用来解决异步情况下速度不匹配导致的事件
+
+   丢失和OOM问题，所以下面我们就来针对异步订阅情况下学习背压策略；
+
+   (1)控制观察者接收事件的速度
+
+      对于异步订阅情况，若观察者没有设置Subscrition.request(long n)方法，说明
+
+      观察者不接收事件；
+
+      此时被观察则可以发送事件（存在缓存区,缓存区默认大小为128），等待被观察者需要时取出被观
+
+      察者事件;
+
+      当缓存区满是大于128时，如果我们的背压策略是BackPressureStragty.ERROR,则会溢出报错;
+
+      当观察者有需要时，调用request(long n),会从缓冲区中取出事件
+
+       Flowable.create(new FlowableOnSubscribe<Object>() {
+            @Override
+            public void subscribe(FlowableEmitter<Object> e) throws Exception {
+                e.onNext(1);
+                e.onNext(2);
+                e.onNext(3); //发送3时，就会溢出报错
+            }
+        }, BackpressureStrategy.ERROR)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Subscriber<Object>() {
+            @Override
+            public void onSubscribe(Subscription s) {
+                Log.e(TAG, "onSubscribe: " );
+
+                s.request(2);
+
+            }
+
+            @Override
+            public void onNext(Object o) {
+                Log.e(TAG, "onNext: "+o);
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                Log.e(TAG, "onError: " );
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e(TAG, "onComplete: ");
+            }
+        });
+    
+    (2) 使用背压策略
+
+        在创建Flowable的时候会需要传入背压策略,背压策略有以下几种：
+
+        -BackPressureStragety.ERROR 
+
+        当被观察者发送事件的速度大于观察者接收事件的速度，事件被放到缓冲区，
+
+        当缓冲区满时达到128个事件时，还继续发送事件时，就会溢出报错 MissingBackpressureException
+
+        -BackPressureStrategy.MISSING
+
+         当被观察者发送事件的速度大于观察者接收事件的速度，事件被放到缓冲区，
+
+         当缓冲区满时达到128个事件时，还继续发送事件时，也会溢出报错，但是会提示
+
+         缓冲区已满
+
+         io.reactivex.exceptions.MissingBackpressureException: Queue is full?!
+
+        -BackPressureStrategy.BUFFER
+        
+         当被观察者发送事件的速度大于观察者接收事件的速度，事件被放到缓冲区，
+
+         当缓冲区满时达到128个事件时，还继续发送事件时,则会将缓冲区大小设置无限大
+
+         但是要注意，防止出现OOM
+
+        -BackPressureStrategy.DROP
+        
+         当被观察者发送事件的速度大于观察者接收事件的速度，事件被放到缓冲区，
+
+         当缓冲区满时达到128个事件时，还继续发送事件时,超过缓冲区大小的事件
+
+         会被丢失；
+
+         如发送了150个事件，仅会保存1-128的事件,129到150的事件会被地市 
+
+        -BackPressureStrategy.LATEST
+         
+         当被观察者发送事件的速度大于观察者接收事件的速度，事件被放到缓冲区，
+
+         当缓冲区满时达到128个事件时，还继续发送事件时,会保存缓冲中事件，以及
+
+         最后一个事件(最新的一个事件)
+
+         如发送了150个事件，会保存1-128以及150这个事件   
+
+
+
+
+
+
+
+     
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+ 
+
+
+   
+
+   
 
            
 

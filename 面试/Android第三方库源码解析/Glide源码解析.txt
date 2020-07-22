@@ -149,9 +149,7 @@
 
         )
 
-     -->Engine.waitForExistingOrStartNewJob()  "xywrrmp"
-"xywrrmu#p"
-
+     -->Engine.waitForExistingOrStartNewJob()  
 
      -->Engine.start(decodeJob)
 
@@ -252,6 +250,8 @@
      Glide内存和磁盘缓存都是LRU，也就是在缓存达到限制值的时候，会自动移除最长时间没有使用的缓存数据
 
      当然Glide也提供了接口去手动清理内存和磁盘缓存;
+
+     
 
 
 
