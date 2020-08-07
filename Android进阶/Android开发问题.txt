@@ -1,0 +1,3 @@
+1.AndroidStudio 给代码打断点无效，断点处是一个白色的圆形反斜杠，
+
+  并且提示：No executable code found at line in lasss

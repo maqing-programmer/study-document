@@ -1,0 +1,91 @@
+1.ReactNative
+
+  -React Native 是一个使用React和应用平台的原生功能来构建 Android 和 iOS 应用的开源框架。通过 
+
+  React Native，您可以使用 JavaScript 来访问移动平台的 API，以及使用 React 组件来描述 UI 
+
+  的外观和行为：一系列可重用、可嵌套的代码。
+
+  -React Native应用是真正的移动应用
+
+   React Native产出的并不是“网页应用”， 或者说“HTML5应用”，又或者“混合应用”。 
+
+   最终产品是一个真正的移动应用，从使用感受上和用Objective-C或Java编写的应用相比几乎是无法区分的。 
+
+   React Native所使用的基础UI组件和原生应用完全一致。 
+
+   你要做的就是把这些基础组件使用JavaScript和React的方式组合起来
+
+2.核心组件和原生组件
+
+  -视图(View)与移动开发
+
+   在Android和iOS开发中,一个View是UI的基本组成部分：应用程序中的文本、按钮、图片等等都是一个View
+
+ -原生组件
+         
+  在Android开发中是使用Kotlin或者Java来编写视图，在iOS中是使用Swift或者Object-C来编写视图；
+
+  在ReactNative中，则是使用React组件通过JavaScript来调用这些视图。
+
+  在运行时，ReactNative为这些组件创建相应的Android和iOS视图，由于ReactNative组件就是对原生的视图
+
+  的封装，因此使用ReactNative编写的应用外观、感觉和性能与任何原生应用一样，我们将这些平台支持的组件
+
+  成为原生应用。
+
+
+-核心组件  
+
+  ReactNative还包括一些基本的，随时可用的原生组件，被称之为核心组件,
+
+  可以在https://reactnative.cn/docs/components-and-apis 这个API
+
+  文档查看所有核心组件
+
+  主要有以下核心组件:
+
+  ReactNative UI Component    Android View    iOS View 
+
+  <View>                      <ViewGroup>     <UIView>
+
+  <Text>                      <TextView>      <UITextView>
+
+  <Image>                     <ImageView>     <UIImageView>
+
+  <ScrollView>                <ScrollView>    <UIScrolView>
+  
+  <TextInput>                 <EditText>      <UITextField>
+
+3.React基础
+
+  -由于ReactNative使用与 React 组件相同的 API 结构，因此需要了解 React 组件 API 才能上手
+
+  ReactNative的基础是React,React是Web端非常流行的开源UI框架，要想掌握ReactNative,先了解
+
+  React框架本身是非常有帮助的,下面我们来学习一些React的入门知识;
+
+  -React的几个核心概念
+
+   components 组件
+
+   JSX
+
+   props 属性
+
+   state 状态
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+

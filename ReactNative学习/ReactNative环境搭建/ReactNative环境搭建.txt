@@ -1,0 +1,66 @@
+1.ReactNative搭建环境
+  
+  ReactNative中文官方网站： https://reactnative.cn
+
+  开发平台：Windows
+
+  目标品台:Android
+
+  -安装依赖  
+
+   Node,Python2,JDK,AndroidStudio
+   
+   -Node  
+
+   安装版本：12.18.3
+
+   注意: Node 的版本应大于等于 12,安装完 Node 后建议设置 npm 
+
+   镜像（淘宝源）以加速后面的过程（或使用科学上网工具）
+
+   #使用nrm工具切换淘宝源,在cmd中使用以下命令
+
+    npx nrm use taobao
+
+   #Yarn是 Facebook 提供的替代 npm 的工具，可以加速 node 模块的下载，
+
+    在cmd中执行以下命令 
+   
+    npm install -g yarn
+
+    安装完 yarn 之后就可以用 yarn 代替 npm 了，例如用yarn代替npm install命令，用yarn add 
+
+    某第三方库名代替npm install 某第三方库名。
+   
+   -Python2
+
+    安装版本:2.7.18
+
+    注意：Python 的版本必须为 2.x（不支持 3.x）
+
+   -JDK 
+   
+    安装版本：1.8
+
+    注意：JDK 的版本必须是 1.8（目前不支持 1.9 及更高版本）
+
+  -AndroidStudio 
+  
+   安装版本：AndroidStudio 4.0.1
+
+     
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
