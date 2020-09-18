@@ -1,0 +1,27 @@
+1.TypeScript
+  
+  -TypeScript简介
+
+  TypeScript 是JavaScript的一个超集,主要提供了类型系统和对ES6的支持;
+
+  它是由Miscrosoft开发的开源的语言;
+  
+  TypeScript可以编译成纯 JavaScript。编译出来的 JavaScript 可以运行在任何浏览器上;
+
+  TypeScript编译工具可以运行在任何服务器和任何系统上;
+
+2.安装TypeScript
+
+  在cmd中输入以下命令安装:
+
+  npm install -g typescript
+
+  以上命令会在全局环境下安装 tsc 命令，安装完成之后，我们就可以在任何地方执行 tsc 命令了
+
+  TypeScript 编写的文件以 .ts 为后缀，用 TypeScript 编写 React 时，以 .tsx 为后缀。
+
+3.编写一个Hello World
+
+  创建一个.ts文件 Hellow.tx；
+
+    

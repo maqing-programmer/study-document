@@ -1,0 +1,254 @@
+1.ES6 函数
+
+  -默认参数
+
+  function fn(name,age=10){
+    console.log(name+","+age)
+  }
+
+  fn('张三',10);
+
+  fn('any');
+
+-不定参数
+
+ function fn(...params){
+    ...
+ }  
+
+ fn(1,2)；
+
+ fn(1,2,3);
+
+ -箭头函数
+
+  箭头函数就是一种更加简洁的函数书写方式;基本语法如下：
+
+  参数 => 函数体
+
+  let f= v => v ;
+
+  等价于: let f=function(a){
+           return a;
+         }
+  
+  f(1)； //调用
+
+  当箭头函数没有参数或者有多个参数时，需要()括起来
+
+  let f1= ()=> console.log('箭头函数') ;
+
+  let f2= (a,b)=>a+b ;
+
+  f1(); //调用
+
+  f2(1,2)； //调用
+
+  当箭头函数函数体有多行语句时，需要用{}括起来
+
+  let f= (a,b)=>{
+
+    let result=a+b;
+
+    console.log(result);
+
+  }
+
+  f(1,2) ; //调用
+
+  当箭头函数要返回对象时,为了区分代码块，要用()将对象包裹起来
+
+  var f= (id,name) =( {id:id, name:name} );
+
+  f(1，张三) ;// 调用
+
+-ES6 class 类
+
+ JavaScript 语言中，生成实例对象的传统方法是通过构造函数。下面是一个例子。
+
+ function Point(x, y) {
+  this.x = x;
+  this.y = y;
+}
+
+Point.prototype.toString = function () {
+  return '(' + this.x + ', ' + this.y + ')';
+};
+
+var p = new Point(1, 2);
+
+上面这种写法跟传统的面向对象语言（比如 C++ 和 Java）差异很大，很容易让新学习这门语言的程序员感到困惑。
+
+ 在ES6中，class(类) 作为对象模板被引入，可以通过class关键字定义类
+
+ class的本质是function 
+
+ class Point {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  toString() {
+    return '(' + this.x + ', ' + this.y + ')';
+  }
+}
+
+上面代码定义了一个“类”，可以看到里面有一个constructor方法，这就是构造方法，而this关键字则代表实例对象。也就是说，ES5 的构造函数Point，对应 ES6 的Point类的构造方法。
+
+Point类除了构造方法，还定义了一个toString方法。注意，定义“类”的方法的时候，前面不需要加上function这个关键字，直接把函数定义放进去了就可以了。另外，方法之间不需要逗号分隔，加了会报错。
+
+-class 表达式
+ 
+ 与函数一样，类也可以使用表达式的形式定义
+
+ const MyClass=class Me{
+   getClassName(){
+      return Me.name;
+   }
+ }
+
+ 上面代码使用表达式定义一个类，这个类的名字是Me,但是Me只在class
+
+ 内部可使用，指代当前类。在class 外部，这个类只能用MyClass引用
+
+ let myclass=new MyClass();
+ myclass.getClassName();       
+
+ 如果类的内部没有使用到这个类名Me的话，可以省略
+
+ const MyClass= class {
+    ...
+ }
+
+ 采用class 表达式，可以写出立即执行的class
+
+ let person =new class{
+
+   constructor(name){
+       this.name=name;
+   }
+
+   printName(){
+     console.log(this.name);
+   } 
+ } ('张三') ;
+
+ person,printName();
+
+ -静态方法
+
+  class Person{
+
+    constructor(name){
+      this.name=name;
+    }
+
+    static log(){
+
+       console.log('Person');
+    }
+
+  }
+
+  Person.log(); //通过类名直接调用
+
+-实例属性的新写法
+
+ 实例属性除了定义在constructor()中，也可以定义在最顶层
+
+ class Person(){
+
+    constructor(){
+
+        this.age=10;
+
+    }
+
+     printAge(){
+       console.log(this.age);
+    }
+
+ }  
+
+ 上面代码，实例属性age是定义在constructor()构造方法中，也可以像这样写
+
+ class Person{
+    age=0;
+    
+    printAge(){
+       console.log(this.age);
+    }
+
+ }
+
+-静态属性
+
+ class Person{
+    static age=0;
+
+ }
+
+ Person.age=2; //调用
+
+-类的继承
+
+ class 可以通过extends关键字实现继承
+
+ class Person{
+     name='';
+     age=0;
+ }
+
+ class Programmer extends Person{
+       
+       constructor(name,age){
+         super();
+         this.name=name;
+         this.age=age;
+       }
+
+ } 
+
+ Programmer继承Person,会继承Person类所有属性和方法,
+
+ 子类必须在constructor方法中调用父类构造方法也就是
+
+ super方法
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,74 @@
+1.
+
+  createDrawerNavigator.tsx文件分析：
+  
+  使用TypeScript编写React Native，文件名字就是.tsx文件
+
+  定义函数： defaultContentComponent
+
+  参数props类型是DrawerContentCompinentProps 对象类型
+  {
+
+
+  }
+
+  函数体：返回一个对象这个对象是React Native代码 也就是UI部分
+
+  函数名：
+
+  DrawerNavigator 也是一个函数
+
+  有两个参数：
+
+  第一个参数：
+
+  routeConfigs: 是NavigatorRouteConfigMap<NavigationDrawerOptions, 
+             NavigationDrawerProp<NavigationRoute, any>
+  >
+
+  实际就是是NavigatorRouteConfigMap 这种类型,也就是一种对象类型
+
+  查看NavigationRouteConfigMap是一个接口，实际上是描述一个数组
+
+  索引是string类型，然后值是NavigationRouteConfig类型
+
+  查看NavigationRouteConfig类型
+
+  第二个参数：
+
+  config 是一个参数为CreateNavigatorConfig的函数,返回的是一个空对象
+
+  -函数体
+   
+   调用createNavigator方法创建一个NavifationNavigator
+
+   总结: createDrawerNavigator.tsx 最终导出来的就是DrawerNavigator这个组件
+
+2.FirstApp 
+
+  -侧滑菜单 
+
+   第三方库:https://github.com/react-native-community/react-native-side-menu
+   
+  -吐司
+   
+   第三方库：https://github.com/magicismight/react-native-root-toast
+
+   
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+

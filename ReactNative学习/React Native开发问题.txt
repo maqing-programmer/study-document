@@ -1,0 +1,310 @@
+1.Debug模式运行应用之后,杀死应用,再正常运行时,
+
+  总是报 Faild Connect To Debugger
+
+  打开应用，摇一摇手机，弹出操作选项，选择stop debug，
+
+  然后正常运行即可
+  
+2.代码中打印的Log怎么显示
+
+   代码中使用console.log('')打印内容之后,要想查看打印内容，需要在
+
+   WebStorm的terminal 中输入以下命令
+
+   Android： react-native log-android
+
+   iOS: react-native log-ios
+
+   输入命令之后就可以看到打印内容  
+
+3.怎么打包Android平台APK
+
+  -生成签名文件
+
+   生成APK签名文件，按照Android开发中生成签名文件即可
+
+   可以在Android Studio中生成
+
+  -在android/app目录下的build.gralde中配置签名文件
+
+   -首先把生成的签名文件 这里以 nadoinc.jks为例，放到 android/app目录下
+
+   -编辑android目录下的gradle.properties文件
+    
+    MYAPP_RELEASE_STORE_FILE=nadoinc.jks
+   
+    MYAPP_RELEASE_KEY_ALIAS=nadoinc
+   
+    MYAPP_RELEASE_STORE_PASSWORD=nadoinc
+   
+    MYAPP_RELEASE_KEY_PASSWORD=nadoinc
+
+   -在android/app/build.gralde 中配置release签名文件   
+
+    signingConfigs {
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+
+         release {
+                    storeFile file('nadoinc.jks') //重点部分
+                    storePassword 'nadoinc' //重点部分
+                    keyAlias 'nadoinc' //重点部分
+                    keyPassword 'nadoinc' //重点部分
+                }
+
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        release {
+            signingConfig signingConfigs.release  //重点部分
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+    }
+   
+-生成APK包
+
+ $ cd android && ./gradlew assembleRelease
+
+ 以WebStorm为例，我们在WebStorm的Terminal中 cd android 进入项目的android目录
+
+ ./gradlew assembleRelease在macOS、Linux或是windows的PowerShell环境中表示执行当前目录下的名为grad
+
+ lew的脚本文件，且其运行参数为assembleRelease，注意这个./不可省略；而在windows的传统CM
+
+ D命令行下则需
+
+ 要去掉./。
+
+ Gradle的assembleRelease参数会把所有用到的JavaScript代码都打包到一起，然后内置到APK包中。
+
+ 注意：windows 下，直接在Terminal中输入 gradlew assembleRelease即可不需要加"./"
+
+
+5.如何运行一个已经存在的React Native项目
+
+  如果项目目录中存在node_module目录,删除掉，然后在cmd进入项目根目录执行
+
+  npm install命令，等待完成会重新生成node-module目录，然后再导入WebStorm
+
+  运行即可;或者直接在cmd中进入项目的android目录执行yarn android或者
+
+  yarn react-native run-android命令都可以
+
+6.windows 运行React Native项目报错 
+  
+  The development server returned response error code:500
+
+  WebStorm 下方Run中选择react-native start 查看有错误：
+
+  error Invalid regular expression: /(.*\\__fixtures__\\.*|node_modules[\\\]react[\\\]dist[\\\].*|website\\node_modules\\.*|heapCapture\\bundle\.js|.*\\__tests__\\.*)$/: Unterminated character class. Run CLI with --verbose flag for more details.
+
+  解决办法：
+
+7. 运行React Native 项目报错
+     
+   The development server returned response error code:500 
+
+   WebStorm 下方Run中选择react-native start 查看有错误：
+
+   Error: listen EADDRINUSE: address already in use :::8081
+   
+   解决：
+
+   打开cmd,输入netstat -ano 然后找到8081端口被哪个进程占用了
+   
+   cmd中显示的最后一列数字就是这个进程的pid;
+
+   然后使用 tskill pid 杀掉占用8081端口的程序即可;
+
+   然后重新运行React Native项目
+
+8.运行项目 ，项目报错
+  
+  The development server returned response error code:500 
+
+  WebStorm 下方 Problems或者TypeScript3.9.5 查看报错
+  
+  E:\workspace\RN_WanAndroid\node_modules\react-navigation\typescript\react-navigation.d.ts
+
+  Type 'T' does not satisfy the constraint 'new (...args: any) => any'.
+
+  由于是react-navigation源码报错，经过google后,修改package.json中
+  
+  dependencies下,react-navigation的版本为5.1.1 
+
+  "react-navigation": "^5.1.1", 
+
+  虽然WebStorm Problems或者TypeScript3.9.5 还是报错，但是运行是正常的，不会报错了;
+
+9.React Native运行项目报错
+  
+  Unable to load script. Make sure youre either running a Metore Server .........
+
+  错误原因：端口占用 
+
+  events.js:292
+  throw er; // Unhandled 'error' event
+
+10.删除导入的第三方库
+
+   cmd 进入项目根目录,使用 npm uninstall 库名
+
+   例子：react-native-navigation-drawer
+
+11.父组件如何传值到子组件
+
+   首先父组件向子组件传值，说明子组件需要值；
+
+   -在子组件中定义属性;
+
+    如果子组件是函数型组件，则参数即为属性，
+
+    如果是class组件，则可以在constructor函数参数即为属性
+    
+   -父组件中使用子组件时，设置属性即可 
+
+12.JS打印JSON字符串
+
+    console.log(JSON.stringify(data));
+
+13.ScrollView嵌套FlatList onEndReached 一直触发,不断调用
+
+   不要使用ScrollView嵌套FlatList，FlatList有一个ListHeaderComponent
+
+   可以添加一个头部组件；
+
+14.react-native-webview 使用WebView加载链接，不显示
+
+   解决办法：WebView的容器View要设置具体的height,或者设置具体的flex
+
+15.class组件中，class中定义的方法如果想使用this.props,必须要在constructor
+
+   中bind  
+
+16.FlatList 数据更新时，使用this.setState()更新数据后，发现FlatList没有刷新
+
+   解决方法：
+
+   需要给FlatList设置extraData={this.state}
+
+17.React Native 在WebStorm打开,运行报错：
+
+   :app:mergeExtDexDebug FAILED
+
+   Deprecated Gradle features were used in this build, making it incompatible with Gradle 7.0.
+
+   java.nio.file.NoSuchFileException: android\app\build\intermediates\external_file_lib_dex_archives\debug\out
+
+   解决办法:
+
+   删除项目目录下.gradle目录中的所有文件
+
+18.React Native 运行项目报错
+
+   A failure occurred while executing com.android.build.gradle.internal.tasks.Workers$ActionFacade
+   
+   解决办法：
+
+   删除项目android目录下build目录和android/app/下的build目录
+
+19.terminal 中查看Android具体错误信息:gradlew  assembleDebug  --stacktrace
+
+
+20.FlatList 
+
+   FlatList使用运行报错：
+
+   Invariant Violation: TaskQueue: Error with task : Tried to get frame for out of range index NaN
+
+   原因：应该是FlatLIst 数据源data 设置的有问题，不是数组，或者为空导致的;
+
+21.React Native项目运行突然报错:
+
+   React Native error Android project not found. Are you sure this is a React Native project? If your Android files are located in a non-standard location (e.g. not inside 'android' folder), consider setting `project.android.sourceDir`  
+
+  解决：1.查看是不是android目录中某些文件是不是不小心误碰加了一些字符串
+        
+        2.或者删除android/app下的build目录，重新运行 
+
+        
+
+
+
+
+
+   
+
+ 
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
+
+
+
+
+
+
+

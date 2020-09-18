@@ -44,9 +44,151 @@
 
     注意：JDK 的版本必须是 1.8（目前不支持 1.9 及更高版本）
 
+    配置环境变量 这个步骤太常用了，不做详细介绍
+
   -AndroidStudio 
   
    安装版本：AndroidStudio 4.0.1
+
+   安装好之后需要配合Android的环境变量
+
+  -配置 ANDROID_HOME 环境变量
+
+   React Native 需要通过环境变量来了解你的 Android SDK 装在什么路径，从而正常进行编译
+
+   -打开控制面板 -> 系统和安全 -> 系统 -> 高级系统设置 -> 高级 -> 环境变量 -> 
+
+   新建，创建一个名为ANDROID_HOME的环境变量（系统或用户变量均可），指向你的 Android SDK 
+
+   所在的目录（具体的路径可能和下图不一致，请自行确认）：
+
+   -把一些工具目录添加到环境变量 Path 中
+
+   打开控制面板 -> 系统和安全 -> 系统 -> 高级系统设置 -> 高级 -> 环境变量，选中Path变量，然后点击编
+
+   辑。点击新建然后把这些工具目录路径添加进去：platform-tools、emulator、tools、tools/bin
+
+   %ANDROID_HOME%\platform-tools
+   
+   %ANDROID_HOME%\emulator
+   
+   %ANDROID_HOME%\tools
+
+   %ANDROID_HOME%\tools\bin
+
+   如果已经打开了cmd，cmd窗口需要关闭后重新打开，这样cmd中执行一些编译Android应用操作时，新的环境变
+
+   量才能生效。
+
+2.创建一个ReactNative项目
+  
+  上述的环境安装好了之后，我们就可以创建一个ReactNative项目了；
+
+  npx react-native init ReactNativeDemo
+
+  在cmd中输入以上命令创建一个名字为ReactNativeDemo的项目
+
+3.编译运行创建的应用
+
+  将创建的ReactNativeDemo项目编译并且运行到Android设备上；
+
+  -前提是你的步骤一中搭建环境变量时，Android环境变量配置成功；
+
+  -然后要保证启动了一个Android模拟器，或者连接上了真机
+
+   可以在cmd中通过adb devices查看是否打开了模拟器或者是否连接上了真机
+
+  -在cmd中进入到项目目录,然后使用
+
+   yarn android
+
+   或者 yarn react-native run-android
+
+   命令都可以编译运行
+
+4.编辑器 
+
+  (1)使用WebStorm编辑器
+
+  我们这里使用WebStorm作为编辑器来开发ReactNative
+
+  -下载WebStorm
+
+  -WebStorm配置ReactNative开发
+
+   https://pgzxc.com/posts/c8be3adf.html
+
+   https://pgzxc.com/posts/3a8bdbec.html
+
+   按照以上两个网址配置即可
+
+  -WebStorm试用到期
+
+   解决方法：
+
+   https://www.downkuai.com/soft/118668.html 
+ 
+ (2)使用Visual Studio Code编辑器开发
+
+    -下载Visual Studio Code
+
+      https://code.visualstudio.com/
+    
+    -配置React Native开发
+
+     -在Visual Studio Code的Extensions中搜索React Native Tools 插件 安装
+     
+     -在CMD中创建一个React Native项目
+
+      进入windows中的cmd中，进入指定目录
+
+      输入:npx react-native init ProjectName
+
+      创建指定名称的项目
+
+     -将创建好的项目拖到Visual Studio Code中
+
+     -在Run下点击 Add Configuration 
+
+      在配置中选择 React Native :Debug Android  
+
+
+5.打印的Log怎么显示
+
+   代码中使用console.log('')打印内容之后,要想查看打印内容，需要在
+
+   WebStorm的terminal 中输入以下命令
+
+   Android： react-native log-android
+
+   iOS: react-native log-ios
+
+   输入命令之后就可以看到打印内容 
+
+6.ReactNative学习文档
+  
+  http://www.cpengx.cn/p/536.html
+
+7.腾讯物联网平台
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
      
 

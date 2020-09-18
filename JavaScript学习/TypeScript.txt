@@ -1,0 +1,466 @@
+1.TypeScript
+  
+  -TypeScript简介
+
+  TypeScript 是JavaScript的一个超集,主要提供了类型系统和对ES6的支持;
+
+  它是由Miscrosoft开发的开源的语言;
+  
+  TypeScript可以编译成纯 JavaScript。编译出来的 JavaScript 可以运行在任何浏览器上;
+
+  TypeScript编译工具可以运行在任何服务器和任何系统上;
+
+2.安装TypeScript
+
+  在cmd中输入以下命令安装:
+
+  npm install -g typescript
+
+  以上命令会在全局环境下安装 tsc 命令，安装完成之后，我们就可以在任何地方执行 tsc 命令了
+
+  TypeScript 编写的文件以 .ts 为后缀，用 TypeScript 编写 React 时，以 .tsx 为后缀。
+
+3.编写一个Hello World
+
+  创建一个.ts文件 Hello.tx；
+
+  function sayHello(person: string) {
+    return 'Hello, ' + person;
+}
+
+let user = 'Tom';
+console.log(sayHello(user));
+
+然后执行:tsc hello.ts
+
+会生成一个编译好的文件hello.js
+
+4.原始数据类型
+
+  -在TypeScript 中，使用 : 指定变量的类型 
+
+  let name:string ='张三';
+  
+  -数据类型
+
+  -boolean 
+
+  let isFocus:boolean =false;
+
+  注意：使用构造函数Boolean创造的对象不是布尔值
+
+  let isFocus:boolean=new Boolean(1)； //这样写会报错，因为new Boolean(1)
+
+  返回的是一个Boolean对象，而不是boolean值
+
+  -number定义数值
+
+   let num:number=1;
+
+  -string
+  
+   使用string 定义字符串类型
+
+   let name:string='张三';
+
+  -空值
+  
+   JavaScript没有空值Void的概念,在TypeScript使用void表示没有任何返回值的函数
+
+   声明一个 void 类型的变量没有什么用，因为你只能将它赋值为 undefined 和 null：
+
+   let un:void=null;
+
+   let un1:void=undefined;
+
+   -any
+
+   any是任意值类型,表示允许赋值为任意类型
+
+   如果是一个普通类型,在赋值过程中改变类型是不被允许的:
+
+   let name:string='张三';
+
+   name=2;   //这样写是会报错的;
+
+   但是如果定义为任意类型:
+
+   let name:any='张三';
+
+   name=2; //这样就不会报错了;
+
+   注意：声明一个变量为任意值之后，对它的任何操作，返回的内容的类型都是任意值。
+
+   -未声明类型的变量
+
+    变量在声明的时候，如果没有指定类型，则会被识别为任意类型
+
+    let name;
+
+    name='张三';
+
+    name=7; //这样是可以的，因为name在声明的时候没有指定类型
+
+    但是TypeScript中有类型推导，如果你在声明变量的时候没有指定类型，但是赋值了，
+
+    就会确定类型；
+
+    let name='张三' 
+
+    let name=7;//这样写是会报错的，因为name定义的时候虽然没有指定类型，但是
+
+                 赋值了一个字符串，所以name会被推导成一个string类型，所以
+
+                  不能再赋值number类型的7了
+
+-联合类型
+
+ 联合类型使用 | 分隔每个类型,表示取值可以是多个类型中的一种
+
+ let name:string|number;
+
+ name='张三';
+
+ name=2;
+
+ 访问联合类型的属性和方法
+
+ 当TypeScript不确定一个联合类型的变量到底是哪个类型的时候，只能访问此联合类型的
+
+ 所有类型里共有的属性和方法;
+
+ function getLength(param:string|number){
+
+     return param.length;
+
+ }
+
+ 这样写就会报错,因为length不是string和number的共有属性或者方法,所以会报错
+ 
+ function getLength(param:string|number){
+
+     return param.toString();
+
+ }
+
+ toString方法是string和number共有的方法，所以这样写就不会报错;
+
+5.对象类型
+
+  在TypeScript中使用接口Interfaces来定义对象的类型
+
+  interface Person{
+    name:string;
+    age:number;
+  }
+
+  let tom:Person{
+    name:'Tom',
+    age:20
+  }
+
+  上面就是定义了一个接口Person,定义了一个变量tom类型是Person;
+
+  定义的变量比接口少一些属性是不被允许的,多一些属性也是不行的;
+
+  只读属性readonly:如果我们希望对象中的一些字段只能在创建的时候被赋值，那么就可以用
+
+  -readonly定义只读属性
+
+  interface Person{
+     readonly id:number;
+     name:string;
+     age:number;
+  }
+
+  let tom:Person{
+    id:100,
+    name:'Tom',
+    age:25
+  }
+  
+  tom.id=101;//id是readonly属性，只能在对象创建的时候初始化一次,所以再次赋值会报错
+
+-可选属性
+
+ 有时候我们希望不要完全匹配一个接口，那么就可以用可选属性
+
+ interface Person{
+    name:string;
+    age?:number;
+ }
+
+ let tom:Person={
+     name:'Tom'
+ }  
+
+ -任意属性
+
+  有时候我们希望一个接口允许有任意的属性
+
+  interface Person{
+     name:string;
+     age:number;
+     [proName:string]:any;
+  }
+
+  使用[proName:string] 定义了任意属性取string类型的值;
+
+  注意：一旦定义了任意属性，那么确定属性和可选属性的类型都必须是它的类型的
+
+        子集;，并且一个接口只能定义一个任意属性
+
+  interface Person{
+     name:string;
+     age?:number;
+     [proName:string]:string;
+  }
+
+  let tom:Person{
+     name:'Tome',
+     age:25,
+     gender:'male'
+  }  
+
+  //这里定义tom就会报错,因为接口Person中的定义了任意属性[proName:string]:string 
+
+  是string类型的，但是可选属性age的值却是number,number不是string的子类型,所以会报错
+
+  我们可以在定义任意属性的时候使用联合属性来解决这个问题 
+
+  即:
+  
+  interface Person{
+     name:string;
+     age?:number;
+     [proName:string]:string | number;
+  }
+
+-数组类型
+
+ 在TypeScript中，数组类型有多种定义方式，比较灵活
+
+ let names:string[]=['张三','李四','王五'];
+
+ 数组的一些方法的参数也会根据数组在定义时约定的类型进行限制
+
+ let ages:number[]=[10,20,30];
+
+ ages.push('张三');//这里就会报错，因为ages是一个number类型的数组，所以push字符串就会
+
+ 报错
+
+ -数组泛型
+
+  我们可以使用数组泛型 Array<>来表述数组
+
+  let set:Array<number> ={1,2,3,4,5};
+
+ -用接口表示数组
+
+  接口也可以用来描述数组
+  
+  interface NumberArray{
+
+    [index:number] : number;
+  }
+
+  let nums:NumberArray=[1,2,3,4,5];
+
+  NumberArray 表示：只要索引的类型是数字时，那么值的类型必须是数字
+
+  虽然接口可以用来表示数字,但是一般不会这样做，不过接口表示数组常用来
+
+  表示类数组
+
+ -类
+
+  TypeScript是面向对象的JavaScript;TypeScript支持面向对象的所有特性，
+
+  类，接口等；
+
+  定义类
+
+  class Person{
+
+  }
+
+  类中可以定义属性，方法，构造方法
+
+  class Person{
+    name:string;
+    age:number;
+
+    constructor(name:string){
+        this.name=name;
+    }
+
+    function printName(){
+       console.log(name);
+    }
+  }
+
+  创建实例化对象
+   
+  let tom=new Person('Tom');
+  
+  访问类的属性和方法 可以使用 "."
+
+  let name=tom.name;
+
+  tom.printName();
+
+-类的继承
+ 
+ TypeScript支持类的继承,和Java是一样的，单继承;
+
+ extends 关键字 ，子类除了不能继承父类的私有成员(方法和属性)
+
+ 和构造函数，其他的都可以继承。
+
+ class A{
+
+ }
+
+ class B extends A{
+
+ }
+
+ -继承类的方法重写
+
+  子类继承父类，可以对继承的父类的方法重写;
+
+  class A{
+
+   name:string;
+
+   function printName(){
+      console.log(name);
+   } 
+
+  }
+
+  class B extends A{
+
+    printName(){
+      this.name='child:'+name;
+      super.printName();
+    }    
+
+  }
+
+-static 关键字
+
+ static 关键字用于定义类的静态属性和方法，可以通过类名直接调用;
+
+-instanceof 运算符
+
+ instanceof用于比较对象是否是指定类型
+
+ class Person{
+
+ } 
+
+ let p=new Person();
+
+ let result=p instanceof Person;
+
+-访问修饰符
+
+ TypeScript可以使用访问修饰符来不糊对类，变量，方法，构造方法的访问；
+
+ TypeScript支持3种不同的访问权限;
+
+ public 默认修饰符，可以在任何地方被访问;
+ 
+ protected 受保护，可以被自身以及子类访问
+
+ private 私有 ，只能在类中访问 
+
+-接口实现 
+
+ 类可以使用implements关键字来实现接口
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
